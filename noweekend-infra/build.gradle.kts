@@ -1,3 +1,11 @@
+tasks.getByName("bootJar") {
+    enabled = false
+}
+
+tasks.getByName("jar") {
+    enabled = true
+}
+
 allOpen {
     annotation("jakarta.persistence.Entity")
     annotation("jakarta.persistence.MappedSuperclass")
