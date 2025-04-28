@@ -1,6 +1,7 @@
-
-tasks.getByName("bootJar") {
-    enabled = false
+plugins {
+    kotlin("jvm")
+    kotlin("kapt")
+    kotlin("plugin.spring")
 }
 
 tasks.getByName("jar") {
@@ -9,4 +10,7 @@ tasks.getByName("jar") {
 
 dependencies {
     implementation(project(":noweekend-core"))
+
+    implementation("org.springframework:spring-context")
+    implementation("org.springframework:spring-tx")
 }
