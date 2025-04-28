@@ -37,11 +37,6 @@ subprojects {
         }
     }
 
-    tasks.register<Wrapper>("wrapper") {
-        gradleVersion = "8.11.1"
-        distributionType = Wrapper.DistributionType.ALL
-    }
-
     tasks.register("prepareKotlinBuildScriptModel", DefaultTask::class.java)
 
     dependencies {

@@ -1,0 +1,3 @@
+package noweekend.application
+
+interface NoWeekendApplication
