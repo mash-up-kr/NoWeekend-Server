@@ -1,0 +1,27 @@
+import org.springframework.boot.gradle.tasks.bundling.BootJar
+
+dependencies {
+    implementation("org.springframework.boot:spring-boot-starter-web")
+    implementation("org.springframework.boot:spring-boot-starter-validation")
+
+    implementation(project(":noweekend-core:core-domain"))
+    implementation(project(":noweekend-clients:client-example"))
+    implementation(project(":noweekend-support:monitoring"))
+    implementation(project(":noweekend-support:logging"))
+    implementation(project(":noweekend-storage:db-core"))
+
+    testImplementation(project(":noweekend-tests:api-docs"))
+}
+
+tasks.named<BootJar>("bootJar") {
+    enabled = true
+    dependsOn("copyApiDocument")
+
+    from("src/main/resources/static/docs") {
+        into("static/docs")
+    }
+}
+
+tasks.getByName("jar") {
+    enabled = false
+}
