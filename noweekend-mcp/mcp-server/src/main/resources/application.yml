@@ -1,0 +1,36 @@
+spring:
+  ai:
+    mcp:
+      server:
+        name: author-tool-server
+        version: 1.0.0
+        type: SYNC
+        sse-message-endpoint: /mcp/message
+        stdio: false
+        enabled: true
+
+server:
+  port: 8081
+
+logging:
+  level:
+    org:
+      springframework:
+        ai: DEBUG
+
+#resilience4j:
+#  ratelimiter:
+#    instances:
+#      amadeus:
+#        limit-for-period: 8
+#        limit-refresh-period: 1s
+#        timeout-duration: 30s
+#        subscribe-for-events: true
+#        register-health-indicator: true
+#  retry:
+#    instances:
+#      amadeus:
+#        max-attempts: 3
+#        wait-duration: 1s
+#        retry-exceptions:
+#          - feign.FeignException.TooManyRequests
