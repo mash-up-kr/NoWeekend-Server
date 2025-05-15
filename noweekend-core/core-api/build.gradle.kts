@@ -5,7 +5,8 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-validation")
 
     implementation(project(":noweekend-core:core-domain"))
-    implementation(project(":noweekend-clients:client-example"))
+    implementation(project(":noweekend-clients:client-apple"))
+    implementation(project(":noweekend-clients:client-kakao"))
     implementation(project(":noweekend-support:monitoring"))
     implementation(project(":noweekend-support:logging"))
     implementation(project(":noweekend-storage:db-core"))

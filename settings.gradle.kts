@@ -7,7 +7,8 @@ include(
     "noweekend-tests:api-docs",
     "noweekend-support:logging",
     "noweekend-support:monitoring",
-    "noweekend-clients:client-example",
+    "noweekend-clients:client-apple",
+    "noweekend-clients:client-kakao"
 )
 
 pluginManagement {
@@ -32,4 +33,10 @@ pluginManagement {
         }
     }
 }
-
+plugins {
+    id("org.gradle.toolchains.foojay-resolver-convention") version "0.8.0"
+}
+include("noweekend-clients:client-kakao")
+findProject(":noweekend-clients:client-kakao")?.name = "client-kakao"
+include("noweekend-clients:client-apple")
+findProject(":noweekend-clients:client-apple")?.name = "client-apple"
