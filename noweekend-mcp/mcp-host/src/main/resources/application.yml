@@ -1,0 +1,44 @@
+spring:
+  ai:
+    anthropic:
+      api-key: ${ANTHROPIC_API_KEY}
+      chat:
+        options:
+          model: claude-3-7-sonnet-20250219
+
+    mcp:
+      client:
+        enabled: true
+        toolcallback:
+          enabled: true
+        sse:
+          connections:
+            author-tool-server:
+              url: http://localhost:8081
+              enabled: true
+
+        stdio:
+          connections:
+            brave-search:
+              command: npx
+              args:
+                - "-y"
+                - "@modelcontextprotocol/server-brave-search"
+              # 이미 환경변수로 주입 중이네요
+              env:
+                BRAVE_API_KEY: ${BRAVE_API_KEY}
+
+            filesystem:
+              command: npx
+              args:
+                - "-y"
+                - "@modelcontextprotocol/server-filesystem"
+                - "./"
+        type: SYNC
+        request-timeout: 60s
+
+logging:
+  level:
+    org:
+      springframework:
+        ai: DEBUG
