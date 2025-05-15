@@ -15,16 +15,23 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
+
       - name: Set up JDK
         uses: actions/setup-java@v3
         with:
           java-version: '21'
           distribution: 'adopt'
+
+      - name: Make Gradle wrapper executable
+        run: chmod +x ./gradlew
+
       - name: Lint
         uses: gradle/gradle-build-action@67421db6bd0bf253fb4bd25b31ebb98943c375e1
         with:
           arguments: ktlintCheck
-      - name: Test
-        uses: gradle/gradle-build-action@67421db6bd0bf253fb4bd25b31ebb98943c375e1
-        with:
-          arguments: test
+
+# ToDo Test code 작성 후 활성화
+#      - name: Test
+#        uses: gradle/gradle-build-action@67421db6bd0bf253fb4bd25b31ebb98943c375e1
+#        with:
+#          arguments: test
