@@ -7,8 +7,6 @@ import org.springframework.transaction.annotation.EnableTransactionManagement
 
 @Configuration
 @EnableTransactionManagement
-//@EntityScan(basePackages = ["io.dodn.springboot.storage.db.core"])
 @EntityScan(basePackages = ["noweekend.storage.db.core"])
-//@EnableJpaRepositories(basePackages = ["io.dodn.springboot.storage.db.core"])
 @EnableJpaRepositories(basePackages = ["noweekend.storage.db.core"])
 internal class CoreJpaConfig
