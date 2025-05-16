@@ -6,7 +6,6 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RestController
 
-@Deprecated("just test")
 @RestController
 class ChatbotController(
     private val chatbotService: ChatbotService,

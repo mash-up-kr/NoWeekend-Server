@@ -2,6 +2,10 @@ example:
   api:
     url: https://default.example.example
 
+mcp:
+  host:
+    url: http://localhost:8081
+
 spring.cloud.openfeign:
   client:
     config:
