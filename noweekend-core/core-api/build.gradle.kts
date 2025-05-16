@@ -7,6 +7,7 @@ dependencies {
     implementation(project(":noweekend-core:core-domain"))
     implementation(project(":noweekend-clients:client-apple"))
     implementation(project(":noweekend-clients:client-kakao"))
+    implementation(project(":noweekend-clients:client-mcp"))
     implementation(project(":noweekend-support:monitoring"))
     implementation(project(":noweekend-support:logging"))
     implementation(project(":noweekend-storage:db-core"))
