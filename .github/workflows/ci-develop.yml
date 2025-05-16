@@ -1,0 +1,67 @@
+name: CI
+
+on:
+  push:
+    branches: [ "develop" ]
+  pull_request:
+    branches: [ "develop" ]
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up JDK
+        uses: actions/setup-java@v3
+        with:
+          java-version: '21'
+          distribution: 'adopt'
+
+      - name: Make Gradle wrapper executable
+        run: chmod +x ./gradlew
+
+      # 1) 변경된 모듈 목록 생성
+      - name: Gather changed modules
+        id: gather
+        shell: bash
+        run: |
+          BASE=${{ github.event.pull_request.base.ref || github.ref_name }}
+          git fetch origin $BASE --depth=1
+
+          CHANGED=$(git diff --name-only origin/$BASE ${{ github.sha }})
+          MODULE_DIRS=$(echo "$CHANGED" | awk -F/ '
+            NF>=2 { print $1"/"$2; next }
+            NF==1 { print $1 }
+          ' | sort -u)
+
+          TASKS=()
+          for m in $MODULE_DIRS; do
+            if [ -f "$m/build.gradle.kts" ] || [ -f "$m/build.gradle" ]; then
+              TASKS+=(":${m}:ktlintCheck")
+            fi
+          done
+
+          # 하나의 문자열로 합쳐서 output 설정
+          echo "tasks=${TASKS[*]}" >> $GITHUB_OUTPUT
+
+      # 2) gradle-build-action 에 tasks 인자로 전달
+      - name: Lint
+        if: steps.gather.outputs.tasks != ''
+        uses: gradle/gradle-build-action@v3
+        with:
+          arguments: ${{ steps.gather.outputs.tasks }}
+
+      - name: Skip Lint
+        if: steps.gather.outputs.tasks == ''
+        run: echo "No Kotlin modules changed—skipping ktlintCheck."
+
+# ToDo Test code 작성 후 활성화
+#      - name: Test
+#        uses: gradle/gradle-build-action@v3
+#        with:
+#          arguments: test
