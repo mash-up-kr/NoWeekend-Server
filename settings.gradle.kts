@@ -8,7 +8,8 @@ include(
     "noweekend-support:logging",
     "noweekend-support:monitoring",
     "noweekend-clients:client-apple",
-    "noweekend-clients:client-kakao"
+    "noweekend-clients:client-kakao",
+    "noweekend-clients:client-mcp"
 )
 
 pluginManagement {
@@ -40,3 +41,5 @@ include("noweekend-clients:client-kakao")
 findProject(":noweekend-clients:client-kakao")?.name = "client-kakao"
 include("noweekend-clients:client-apple")
 findProject(":noweekend-clients:client-apple")?.name = "client-apple"
+include("noweekend-clients:client-mcp")
+findProject(":noweekend-clients:client-mcp")?.name = "client-mcp"

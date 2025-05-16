@@ -9,6 +9,7 @@ spring:
       - db-core.yml
       - client-apple.yml
       - client-kakao.yml
+      - client-mcp.yml
   web.resources.add-mappings: false
 
 server:
