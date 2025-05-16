@@ -9,14 +9,14 @@ import org.springframework.web.bind.annotation.RestController
 @Deprecated("just test")
 @RestController
 class ChatbotController(
-    private val chatbotService: ChatbotService
+    private val chatbotService: ChatbotService,
 ) {
 
     @PostMapping("/just-chat")
     fun chat(@RequestBody chatRequest: ChatRequest): ResponseEntity<ChatResponse> {
         println("chatRequest.question = ${chatRequest.question}")
         return ResponseEntity.ok(
-            ChatResponse(chatbotService.chat(chatRequest.question))
+            ChatResponse(chatbotService.chat(chatRequest.question)),
         )
     }
 
@@ -24,7 +24,7 @@ class ChatbotController(
     fun getFutureWeather(@RequestBody chatRequest: ChatRequest): ResponseEntity<ChatResponse> {
         println("getFutureWeather.question = ${chatRequest.question}")
         return ResponseEntity.ok(
-            ChatResponse(chatbotService.chatWeatherPrompt(chatRequest.question))
+            ChatResponse(chatbotService.chatWeatherPrompt(chatRequest.question)),
         )
     }
 }

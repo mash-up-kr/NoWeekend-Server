@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service
 
 @Service
 class ChatbotService(
-    private val chatClient: ChatClient
+    private val chatClient: ChatClient,
 ) {
 
     fun chat(question: String): String {
@@ -14,9 +14,7 @@ class ChatbotService(
             .call()
             .content()
             ?: throw IllegalStateException("Chat response content is null for question: $question")
-
     }
-
 
     fun chatWeatherPrompt(question: String): String {
         val formatInstruction = """
@@ -33,5 +31,4 @@ class ChatbotService(
             .content()
             ?: throw IllegalStateException("ChatWeather response content is null for question: $question")
     }
-
 }
