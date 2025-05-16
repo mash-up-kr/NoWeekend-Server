@@ -42,14 +42,15 @@ jobs:
           TASKS=()
           for m in $MODULE_DIRS; do
             if [ -f "$m/build.gradle.kts" ] || [ -f "$m/build.gradle" ]; then
-              TASKS+=(":${m}:ktlintCheck")
+              PROJECT_PATH=$(echo "$m" | tr '/' ':')
+              TASKS+=(":${PROJECT_PATH}:ktlintCheck")
             fi
           done
 
           # 하나의 문자열로 합쳐서 output 설정
           echo "tasks=${TASKS[*]}" >> $GITHUB_OUTPUT
 
-      # 2) gradle-build-action 에 tasks 인자로 전달
+      # 2) gradle-build-action에 tasks 인자로 전달
       - name: Lint
         if: steps.gather.outputs.tasks != ''
         uses: gradle/gradle-build-action@v3
