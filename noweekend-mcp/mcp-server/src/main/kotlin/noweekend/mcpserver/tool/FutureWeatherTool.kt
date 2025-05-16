@@ -9,13 +9,13 @@ import org.springframework.stereotype.Component
 
 @Component
 class FutureWeatherTool(
-    private val climateClient: ClimateClient
+    private val climateClient: ClimateClient,
 ) {
 
     companion object {
-        private const val MODELS     = "EC_Earth3P_HR"
+        private const val MODELS = "EC_Earth3P_HR"
         private const val DAILY_VARS = "temperature_2m_mean,precipitation_sum"
-        private const val TIMEZONE   = "Asia/Seoul"
+        private const val TIMEZONE = "Asia/Seoul"
     }
 
     /**
@@ -28,7 +28,7 @@ class FutureWeatherTool(
             Return a list of daily mean temperature (°C) and precipitation (mm)
             for each day between startDate and endDate (≤ 2050-01-01) at a given
             latitude/longitude.
-        """
+        """,
     )
     fun getFutureWeatherDaily(req: FutureWeatherRequest): List<DailyClimateData> {
         val cr: ClimateResponse = climateClient.getClimate(
@@ -38,7 +38,7 @@ class FutureWeatherTool(
             req.endDate,
             MODELS,
             DAILY_VARS,
-            TIMEZONE
+            TIMEZONE,
         )
 
         // --- 배열 → DTO 리스트 매핑 ---
@@ -48,9 +48,9 @@ class FutureWeatherTool(
 
         return times.indices.map { i ->
             DailyClimateData(
-                date       = times[i],
+                date = times[i],
                 meanTemp = temps[i],
-                precipitation = precs[i]
+                precipitation = precs[i],
             )
         }
     }

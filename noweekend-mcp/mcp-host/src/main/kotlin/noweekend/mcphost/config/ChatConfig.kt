@@ -11,7 +11,7 @@ class ChatConfig {
     @Bean
     fun chatClient(
         chatClientBuilder: ChatClient.Builder,
-        tools: ToolCallbackProvider
+        tools: ToolCallbackProvider,
     ): ChatClient =
         chatClientBuilder
             .defaultTools(tools)

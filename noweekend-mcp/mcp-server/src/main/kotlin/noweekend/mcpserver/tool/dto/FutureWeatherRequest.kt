@@ -16,5 +16,5 @@ data class FutureWeatherRequest(
     val startDate: String,
 
     @field:ToolParam(description = "조회 종료 날짜 (YYYY-MM-DD)", required = true)
-    val endDate: String
+    val endDate: String,
 )

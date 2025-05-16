@@ -18,14 +18,14 @@ data class ClimateResponse(
     val elevation: Double,
     @JsonProperty("daily_units")
     val dailyUnits: DailyUnits,
-    val daily: DailyData
+    val daily: DailyData,
 ) {
     data class DailyUnits(
         val time: String,
         @JsonProperty("temperature_2m_mean")
         val temperature2mMean: String,
         @JsonProperty("precipitation_sum")
-        val precipitationSum: String
+        val precipitationSum: String,
     )
 
     data class DailyData(
@@ -33,6 +33,6 @@ data class ClimateResponse(
         @JsonProperty("temperature_2m_mean")
         val temperature2mMean: List<Double>,
         @JsonProperty("precipitation_sum")
-        val precipitationSum: List<Double>
+        val precipitationSum: List<Double>,
     )
 }

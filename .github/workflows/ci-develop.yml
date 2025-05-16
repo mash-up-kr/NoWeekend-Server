@@ -1,0 +1,71 @@
+name: CI
+
+on:
+  push:
+    branches: [ "develop" ]
+  pull_request:
+    branches: [ "develop" ]
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up JDK
+        uses: actions/setup-java@v3
+        with:
+          java-version: '21'
+          distribution: 'adopt'
+
+      - name: Make Gradle wrapper executable
+        run: chmod +x ./gradlew
+
+      # 1) 변경된 모듈 목록 생성
+      - name: Gather changed modules
+        id: gather
+        shell: bash
+        run: |
+          BASE=${{ github.event.pull_request.base.ref || github.ref_name }}
+          git fetch origin $BASE --depth=1
+
+          CHANGED=$(git diff --name-only origin/$BASE ${{ github.sha }})
+          MODULE_DIRS=$(echo "$CHANGED" | awk -F/ '
+            NF>=2 { print $1"/"$2; next }
+            NF==1 { print $1 }
+          ' | sort -u)
+
+          # build.gradle(.kts) 있는 디렉터리만 필터
+          VALID_MODULES=()
+          for m in $MODULE_DIRS; do
+            if [ -f "$m/build.gradle.kts" ] || [ -f "$m/build.gradle" ]; then
+              VALID_MODULES+=("$m")
+            fi
+          done
+
+          echo "modules=${VALID_MODULES[*]}" >> $GITHUB_OUTPUT
+
+      # 2) 변경된 모듈별로 gradlew -p <module> ktlintCheck 실행
+      - name: Lint changed modules
+        if: steps.gather.outputs.modules != ''
+        shell: bash
+        run: |
+          echo "Modules to lint: ${{ steps.gather.outputs.modules }}"
+          for m in ${{ steps.gather.outputs.modules }}; do
+            echo "→ Linting $m"
+            ./gradlew -p "$m" ktlintCheck --no-daemon
+          done
+
+      - name: Skip Lint
+        if: steps.gather.outputs.modules == ''
+        run: echo "No Kotlin modules changed—skipping ktlintCheck."
+
+# ToDo Test code 작성 후 활성화
+#      - name: Test
+#        uses: gradle/gradle-build-action@v3
+#        with:
+#          arguments: test
