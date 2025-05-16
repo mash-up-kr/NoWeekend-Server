@@ -40,10 +40,11 @@ jobs:
           ' | sort -u)
 
           TASKS=()
-          for m in $MODULE_DIRS; do
-            if [ -f "$m/build.gradle.kts" ] || [ -f "$m/build.gradle" ]; then
-              PROJECT_PATH=$(echo "$m" | tr '/' ':')
-              TASKS+=(":${PROJECT_PATH}:ktlintCheck")
+          for dir in $MODULE_DIRS; do
+            if [ -f "$dir/build.gradle.kts" ] || [ -f "$dir/build.gradle" ]; then
+              # Gradle 프로젝트 이름은 맨 뒤 폴더명(basename)이라고 가정
+              name=$(basename "$dir")
+              TASKS+=(":${name}:ktlintCheck")
             fi
           done
 
