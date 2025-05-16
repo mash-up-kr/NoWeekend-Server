@@ -16,6 +16,6 @@ interface ClimateClient {
         @RequestParam("end_date") endDate: String,
         @RequestParam("models") models: String,
         @RequestParam("daily") dailyVars: String,
-        @RequestParam("timezone") timezone: String
+        @RequestParam("timezone") timezone: String,
     ): ClimateResponse
 }

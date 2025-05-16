@@ -5,5 +5,4 @@ import org.springframework.context.annotation.Configuration
 
 @Configuration
 @EnableFeignClients(basePackages = ["noweekend.mcpserver.client"])
-class FeignClientConfig {
-}
+class FeignClientConfig

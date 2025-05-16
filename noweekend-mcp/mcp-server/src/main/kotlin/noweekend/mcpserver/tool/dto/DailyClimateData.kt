@@ -10,5 +10,5 @@ package noweekend.mcpserver.tool.dto
 data class DailyClimateData(
     val date: String,
     val meanTemp: Double,
-    val precipitation: Double
+    val precipitation: Double,
 )
