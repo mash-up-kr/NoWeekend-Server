@@ -39,27 +39,29 @@ jobs:
             NF==1 { print $1 }
           ' | sort -u)
 
-          TASKS=()
-          for dir in $MODULE_DIRS; do
-            if [ -f "$dir/build.gradle.kts" ] || [ -f "$dir/build.gradle" ]; then
-              # Gradle 프로젝트 이름은 맨 뒤 폴더명(basename)이라고 가정
-              name=$(basename "$dir")
-              TASKS+=(":${name}:ktlintCheck")
+          # build.gradle(.kts) 있는 디렉터리만 필터
+          VALID_MODULES=()
+          for m in $MODULE_DIRS; do
+            if [ -f "$m/build.gradle.kts" ] || [ -f "$m/build.gradle" ]; then
+              VALID_MODULES+=("$m")
             fi
           done
 
-          # 하나의 문자열로 합쳐서 output 설정
-          echo "tasks=${TASKS[*]}" >> $GITHUB_OUTPUT
+          echo "modules=${VALID_MODULES[*]}" >> $GITHUB_OUTPUT
 
-      # 2) gradle-build-action에 tasks 인자로 전달
-      - name: Lint
-        if: steps.gather.outputs.tasks != ''
-        uses: gradle/gradle-build-action@v3
-        with:
-          arguments: ${{ steps.gather.outputs.tasks }}
+      # 2) 변경된 모듈별로 gradlew -p <module> ktlintCheck 실행
+      - name: Lint changed modules
+        if: steps.gather.outputs.modules != ''
+        shell: bash
+        run: |
+          echo "Modules to lint: ${{ steps.gather.outputs.modules }}"
+          for m in ${{ steps.gather.outputs.modules }}; do
+            echo "→ Linting $m"
+            ./gradlew -p "$m" ktlintCheck --no-daemon
+          done
 
       - name: Skip Lint
-        if: steps.gather.outputs.tasks == ''
+        if: steps.gather.outputs.modules == ''
         run: echo "No Kotlin modules changed—skipping ktlintCheck."
 
 # ToDo Test code 작성 후 활성화
