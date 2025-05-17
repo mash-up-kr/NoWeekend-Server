@@ -12,6 +12,9 @@ dependencies {
     implementation(project(":noweekend-support:logging"))
     implementation(project(":noweekend-storage:db-core"))
 
+    implementation("org.springframework.boot:spring-boot-starter-security")
+    implementation("io.jsonwebtoken:jjwt-api:0.11.5")
+
     testImplementation(project(":noweekend-tests:api-docs"))
 }
 
