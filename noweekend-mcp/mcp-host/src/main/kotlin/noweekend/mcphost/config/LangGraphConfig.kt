@@ -53,7 +53,7 @@ class LangGraphConfig(
                     val reply = chatClient.prompt()
                         .system(systemPrompt1 + today + systemPrompt2)
                         .user(st.question())
-                        .call() // boundedElastic 上で実行される
+                        .call()
                         .content()
                         .orEmpty()
 

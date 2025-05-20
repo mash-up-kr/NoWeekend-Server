@@ -27,7 +27,7 @@ class ChatbotController(
     fun langChat(@RequestBody req: ChatRequest): Mono<ChatResponse> {
         println("req.question = ${req.question}")
         return Mono.fromCallable { graphChatService.chat(req.question) }
-            .subscribeOn(Schedulers.boundedElastic()) // ← 여기서만 블로킹 허용
+            .subscribeOn(Schedulers.boundedElastic())
             .map { ChatResponse(it) }
     }
 
