@@ -20,7 +20,7 @@ server:
       min-spare: 100
 
 jwt:
-  secret: IamJwtSecretIamJwtSecretIamJwtSecretIamJwtSecret
+  secret: ENC(NlQZbTD2BJvq1B2SjY2NZazSBwND6KsuQGRGN65eUeODAdDv29aU3iOxo8PNylhFqv1adtCvyxfuNYPTBQGQDtJ09iNxJdF3WhPrdgSHi/U=)
   issuer: https://www.noweekend.com
   expiration: 86400000
 
