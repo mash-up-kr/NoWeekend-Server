@@ -59,6 +59,14 @@ dependencies {
     // MCP SDK 명시적 버전 지정
     implementation("io.modelcontextprotocol.sdk:mcp:0.8.0")
     implementation("io.modelcontextprotocol.sdk:mcp-spring-webflux:0.8.0")
+
+    // LangChain4j Spring Starter
+    implementation("dev.langchain4j:langchain4j-spring-boot-starter:1.0.0-beta5")
+
+    // LangGraph4j core
+    implementation("org.bsc.langgraph4j:langgraph4j-core:1.5.12")
+
+    implementation("dev.langchain4j:langchain4j-spring-boot-starter:1.0.0-beta5")
 }
 
 configurations.all {
