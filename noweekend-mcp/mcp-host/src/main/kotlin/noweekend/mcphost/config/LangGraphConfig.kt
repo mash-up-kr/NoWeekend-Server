@@ -2,6 +2,7 @@ package noweekend.mcphost.config
 
 import org.bsc.langgraph4j.StateGraph
 import org.bsc.langgraph4j.action.AsyncNodeAction
+import org.slf4j.LoggerFactory
 import org.springframework.ai.chat.client.ChatClient
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -19,7 +20,7 @@ class LangGraphConfig(
             .addNode(
                 "dispatch",
                 AsyncNodeAction.node_async { st ->
-                    println("[LangGraph] dispatch 노드 진입, question=${st.question()}")
+                    logger.info("[LangGraph] dispatch 노드 진입, question=${st.question()}")
                     val today: LocalDateTime = LocalDateTime.now(ZoneId.of("Asia/Seoul"))
                     val systemPrompt1 = """
                         You are an AI assistant. Always communicate in polite Korean honorifics.
@@ -62,4 +63,8 @@ class LangGraphConfig(
             )
             .addEdge("dispatch", StateGraph.END)
             .compile()
+
+    companion object {
+        private val logger = LoggerFactory.getLogger(LangGraphConfig::class.java)
+    }
 }
