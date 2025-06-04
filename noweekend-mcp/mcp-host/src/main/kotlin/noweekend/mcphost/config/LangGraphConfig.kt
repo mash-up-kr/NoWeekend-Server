@@ -51,12 +51,17 @@ class LangGraphConfig(
                         7. Return only the final Korean text—no code, no markdown.
                     """.trimIndent()
 
-                    val reply = chatClient.prompt()
-                        .system(systemPrompt1 + today + systemPrompt2)
-                        .user(st.question())
-                        .call()
-                        .content()
-                        .orEmpty()
+                    val reply = try {
+                        chatClient.prompt()
+                            .system("$systemPrompt1$today$systemPrompt2")
+                            .user(st.question())
+                            .call()
+                            .content()
+                            .orEmpty()
+                    } catch (e: Exception) {
+                        logger.error("Failed to get chat response", e)
+                        "죄송합니다. 요청을 처리하는 중 오류가 발생했습니다."
+                    }
 
                     mapOf("chat_response" to reply)
                 },
