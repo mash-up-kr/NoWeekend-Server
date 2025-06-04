@@ -1,6 +1,6 @@
-example:
+google:
   api:
-    url: https://default.example.example
+    url: https://openidconnect.googleapis.com
 
 spring.cloud.openfeign:
   client:
