@@ -1,8 +1,8 @@
 package noweekend.core.api.config
 
 import noweekend.core.api.security.filter.JwtAuthenticationFilter
+import noweekend.core.domain.jwt.JwtProperties
 import org.springframework.beans.factory.annotation.Qualifier
-import org.springframework.boot.context.properties.ConfigurationProperties
 import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.boot.web.servlet.FilterRegistrationBean
 import org.springframework.context.annotation.Bean
@@ -100,10 +100,3 @@ class SecurityConfig {
         return ProviderManager(providers)
     }
 }
-
-@ConfigurationProperties(prefix = "jwt")
-data class JwtProperties(
-    val secret: String,
-    val issuer: String,
-    val expiration: Long,
-)

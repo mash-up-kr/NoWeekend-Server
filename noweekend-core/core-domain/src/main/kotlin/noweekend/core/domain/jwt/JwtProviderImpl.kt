@@ -1,9 +1,8 @@
-package noweekend.core.api.security.jwt
+package noweekend.core.domain.jwt
 
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.SignatureAlgorithm
 import io.jsonwebtoken.security.Keys
-import noweekend.core.api.config.JwtProperties
 import org.springframework.stereotype.Component
 import java.util.Date
 
@@ -24,17 +23,17 @@ class JwtProviderImpl(private val jwtProperties: JwtProperties) : JwtProvider {
         }
     }
 
-    override fun getUserIdFromToken(token: String): Long {
+    override fun getUserIdFromToken(token: String): String {
         val claims = Jwts.parserBuilder()
             .setSigningKey(key)
             .build()
             .parseClaimsJws(token)
             .body
 
-        return claims.audience.toLong()
+        return claims.audience.toString()
     }
 
-    override fun generate(userId: Long): String {
+    override fun generate(userId: String): String {
         val claims = Jwts
             .claims()
             .setAudience(userId.toString())

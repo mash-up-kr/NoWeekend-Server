@@ -12,7 +12,6 @@ dependencies {
     implementation(project(":noweekend-storage:db-core"))
 
     implementation("org.springframework.boot:spring-boot-starter-security")
-    implementation("io.jsonwebtoken:jjwt-api:0.11.5")
 
     implementation("com.github.ulisesbocchio:jasypt-spring-boot-starter:3.0.5")
 
