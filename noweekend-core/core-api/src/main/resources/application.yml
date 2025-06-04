@@ -7,8 +7,7 @@ spring:
       - monitoring.yml
       - logging.yml
       - db-core.yml
-      - client-apple.yml
-      - client-kakao.yml
+      - client-oauth.yml
       - client-mcp.yml
   web.resources.add-mappings: false
 

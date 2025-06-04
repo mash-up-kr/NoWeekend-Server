@@ -1,4 +1,4 @@
-package noweekend.core.api
+package noweekend.core
 
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.context.properties.ConfigurationPropertiesScan
