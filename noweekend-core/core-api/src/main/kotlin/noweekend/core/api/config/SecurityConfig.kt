@@ -1,6 +1,6 @@
-package noweekend.core.api.core.api.config
+package noweekend.core.api.config
 
-import noweekend.core.api.core.api.security.filter.JwtAuthenticationFilter
+import noweekend.core.api.security.filter.JwtAuthenticationFilter
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.boot.context.properties.ConfigurationProperties
 import org.springframework.boot.context.properties.EnableConfigurationProperties

@@ -1,9 +1,9 @@
-package noweekend.core.api.core.api.security.jwt
+package noweekend.core.api.security.jwt
 
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.SignatureAlgorithm
 import io.jsonwebtoken.security.Keys
-import noweekend.core.api.core.api.config.JwtProperties
+import noweekend.core.api.config.JwtProperties
 import org.springframework.stereotype.Component
 import java.util.Date
 

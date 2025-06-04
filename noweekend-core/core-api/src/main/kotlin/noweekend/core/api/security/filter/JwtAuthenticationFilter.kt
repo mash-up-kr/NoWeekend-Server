@@ -1,12 +1,12 @@
-package noweekend.core.api.core.api.security.filter
+package noweekend.core.api.security.filter
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import jakarta.servlet.FilterChain
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
-import noweekend.core.api.core.api.security.authentication.UserAuthenticationToken
-import noweekend.core.api.core.support.error.ErrorMessage
-import noweekend.core.api.core.support.error.ErrorType
+import noweekend.core.api.security.authentication.UserAuthenticationToken
+import noweekend.core.support.error.ErrorMessage
+import noweekend.core.support.error.ErrorType
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType

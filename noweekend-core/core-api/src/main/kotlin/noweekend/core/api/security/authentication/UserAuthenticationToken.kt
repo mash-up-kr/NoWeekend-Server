@@ -1,4 +1,4 @@
-package noweekend.core.api.core.api.security.authentication
+package noweekend.core.api.security.authentication
 
 import org.springframework.security.authentication.AbstractAuthenticationToken
 

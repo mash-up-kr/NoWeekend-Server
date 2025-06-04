@@ -1,4 +1,4 @@
-package noweekend.core.api.core.api.security.jwt
+package noweekend.core.api.security.jwt
 
 interface JwtProvider {
     fun validate(token: String): Boolean

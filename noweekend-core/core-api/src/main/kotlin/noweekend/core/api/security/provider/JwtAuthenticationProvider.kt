@@ -1,8 +1,8 @@
-package noweekend.core.api.core.api.security.provider
+package noweekend.core.api.security.provider
 
-import noweekend.core.api.core.api.security.authentication.AuthenticatedUserToken
-import noweekend.core.api.core.api.security.authentication.UserAuthenticationToken
-import noweekend.core.api.core.api.security.jwt.JwtProvider
+import noweekend.core.api.security.authentication.AuthenticatedUserToken
+import noweekend.core.api.security.authentication.UserAuthenticationToken
+import noweekend.core.api.security.jwt.JwtProvider
 import org.springframework.security.authentication.AuthenticationProvider
 import org.springframework.security.core.Authentication
 import org.springframework.stereotype.Component

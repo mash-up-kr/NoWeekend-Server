@@ -1,4 +1,4 @@
-package noweekend.core.api.core.api.config
+package noweekend.core.api.config
 
 import com.ulisesbocchio.jasyptspringboot.annotation.EnableEncryptableProperties
 import org.springframework.context.annotation.Configuration
