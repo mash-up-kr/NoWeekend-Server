@@ -65,8 +65,6 @@ dependencies {
 
     // LangGraph4j core
     implementation("org.bsc.langgraph4j:langgraph4j-core:1.5.12")
-
-    implementation("dev.langchain4j:langchain4j-spring-boot-starter:1.0.0-beta5")
 }
 
 configurations.all {
