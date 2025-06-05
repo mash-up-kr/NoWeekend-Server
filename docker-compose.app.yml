@@ -1,0 +1,42 @@
+version: "3.9"
+services:
+  mcp-server:
+    build:
+      context: ./noweekend-mcp/mcp-server
+    image: mcp-server:latest
+    environment:
+      SPRING_PROFILES_ACTIVE: local
+      SERVER_PORT: 8082
+    networks:
+      - mashupnet
+
+  mcp-host:
+    build:
+      context: ./noweekend-mcp/mcp-host
+    image: mcp-host:latest
+    environment:
+      SPRING_PROFILES_ACTIVE: local
+      SERVER_PORT: 8081
+    networks:
+      - mashupnet
+    depends_on:
+      - mcp-server
+
+  core-api:
+    build:
+      context: ./noweekend-core/core-api
+    image: core-api:latest
+    ports:
+      - "8080:8080"
+    environment:
+      JASYPT_ENCRYPTOR_PASSWORD: ${JASYPT_ENCRYPTOR_PASSWORD}
+      SPRING_PROFILES_ACTIVE: local
+      SERVER_PORT: 8080
+    networks:
+      - mashupnet
+    depends_on:
+      - mcp-host
+
+networks:
+  mashupnet:
+    external: true
