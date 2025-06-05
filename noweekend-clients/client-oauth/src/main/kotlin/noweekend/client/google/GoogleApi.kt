@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestHeader
     value = "google-userinfo",
     url = "\${google.api.url}",
 )
-internal interface GoogleUserInfoApi {
+internal interface GoogleApi {
     @GetMapping(
         value = ["/v1/userinfo"],
         consumes = [MediaType.APPLICATION_JSON_VALUE],

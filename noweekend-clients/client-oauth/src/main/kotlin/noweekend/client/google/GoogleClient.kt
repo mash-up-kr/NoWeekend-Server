@@ -4,12 +4,12 @@ import noweekend.client.model.GoogleEmailResult
 import org.springframework.stereotype.Component
 
 @Component
-class GoogleUserInfoClient internal constructor(
-    private val googleUserInfoApi: GoogleUserInfoApi,
+class GoogleClient internal constructor(
+    private val googleApi: GoogleApi,
 ) {
     fun getEmail(request: GoogleUserInfoRequest): GoogleEmailResult {
         val tokenHeader = "Bearer ${request.accessToken}"
-        val response = googleUserInfoApi.getUserInfo(tokenHeader)
+        val response = googleApi.getUserInfo(tokenHeader)
         return response.result()
     }
 }
