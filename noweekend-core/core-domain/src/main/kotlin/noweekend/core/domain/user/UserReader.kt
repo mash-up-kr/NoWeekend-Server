@@ -6,7 +6,11 @@ import org.springframework.stereotype.Component
 class UserReader(
     private val userRepository: UserRepository,
 ) {
-    fun findById(id: String): User {
+    fun findUserById(id: String): User {
         return userRepository.findUserById(id)
+    }
+
+    fun findUserProviderAndEmail(provider: ProviderType, email: String): User? {
+        return userRepository.findUserByProviderAndEmail(provider, email)
     }
 }

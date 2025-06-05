@@ -8,24 +8,29 @@ class UserWriter(
 ) {
     fun append(
         id: String,
-        profileImg: String,
         name: String,
         providerType: ProviderType,
         role: Role,
-    ): String = userRepository.append(id, profileImg, name, providerType, role)
+    ): String = userRepository.append(id, name, providerType, role)
+
+    fun register(
+        id: String,
+        email: String,
+        name: String,
+        providerType: ProviderType,
+        role: Role,
+    ): String = userRepository.register(id, email, name, providerType, role)
 
     fun upsert(
         id: String,
-        profileImg: String,
         name: String,
         providerType: ProviderType,
         role: Role,
-    ): String = userRepository.upsert(id, profileImg, name, providerType, role)
+    ): String = userRepository.upsert(id, name, providerType, role)
 
     fun modify(
         id: String,
-        profileImg: String,
         name: String,
         role: Role,
-    ): String = userRepository.modify(id, profileImg, name, role)
+    ): String = userRepository.modify(id, name, role)
 }

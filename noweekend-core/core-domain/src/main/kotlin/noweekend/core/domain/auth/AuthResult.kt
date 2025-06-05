@@ -1,6 +1,6 @@
 package noweekend.core.domain.auth
 
 data class AuthResult(
-    val email: String,
+    val accessToken: String,
     val exists: Boolean,
 )
