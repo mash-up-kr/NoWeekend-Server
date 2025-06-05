@@ -3,6 +3,7 @@ package noweekend.mcphost.config
 import org.bsc.langgraph4j.state.AgentState
 import org.bsc.langgraph4j.state.Channel
 import org.bsc.langgraph4j.state.Channels
+import java.util.function.Supplier
 
 class MyAgentState(initData: Map<String, Any>) : AgentState(initData) {
 
@@ -18,9 +19,9 @@ class MyAgentState(initData: Map<String, Any>) : AgentState(initData) {
     companion object {
         @JvmStatic
         val SCHEMA: Map<String, Channel<*>> = mapOf(
-            "question" to Channels.base { "" },
-            "chat_response" to Channels.base { "" },
-            "weather_json" to Channels.base { "" },
+            "question" to Channels.base(Supplier { "" }),
+            "chat_response" to Channels.base(Supplier { "" }),
+            "weather_json" to Channels.base(Supplier { "" }),
         )
     }
 }
