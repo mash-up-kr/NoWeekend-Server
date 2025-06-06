@@ -12,6 +12,10 @@ spring:
       - domain.yml
   web.resources.add-mappings: false
 
+jasypt:
+  encryptor:
+    password: ${JASYPT_ENCRYPTOR_PASSWORD}
+
 server:
   tomcat:
     max-connections: 20000

@@ -24,7 +24,7 @@ storage:
       driver-class-name: com.mysql.cj.jdbc.Driver
       jdbc-url: jdbc:mysql://localhost:3306/noweekend
       username: root
-      password: 12345678
+      password: mash-up-noweekend
       pool-name: core-db-pool
       data-source-properties:
         rewriteBatchedStatements: true
@@ -101,9 +101,9 @@ storage:
   datasource:
     core:
       driver-class-name: com.mysql.cj.jdbc.Driver
-      jdbc-url: jdbc:mysql://${storage.database.core-db.url}
-      username: ${storage.database.core-db.username}
-      password: ${storage.database.core-db.password}
+      jdbc-url: jdbc:mysql://mysql:3306/noweekend
+      username: root
+      password: mash-up-noweekend
       maximum-pool-size: 5
       connection-timeout: 1100
       keepalive-time: 30000
