@@ -50,8 +50,8 @@ jobs:
           username: root
           key: ${{ secrets.NCP_SSH_KEY }}
           source: |
-            ./core-api.tar
-            ./docker-compose.app.yml
+            - core-api.tar
+            - docker-compose.app.yml
           target: /root/organized/app/
           debug: true
 
