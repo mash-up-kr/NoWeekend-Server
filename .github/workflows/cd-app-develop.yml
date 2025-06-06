@@ -40,13 +40,18 @@ jobs:
           echo "===== FILES ====="
           ls -al
 
+      - name: List all files recursively
+        run: find . -type f -ls
+
       - name: SCP Docker images and Compose file to NCP
         uses: appleboy/scp-action@v0.1.7
         with:
           host: ${{ secrets.NCP_SERVER_HOST }}
           username: root
           key: ${{ secrets.NCP_SSH_KEY }}
-          source: core-api.tar docker-compose.app.yml
+          source: |
+            ./core-api.tar
+            ./docker-compose.app.yml
           target: /root/organized/app/
           debug: true
 
