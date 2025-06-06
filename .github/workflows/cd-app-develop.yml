@@ -48,6 +48,7 @@ jobs:
           key: ${{ secrets.NCP_SSH_KEY }}
           source: core-api.tar docker-compose.app.yml
           target: /root/organized/app/
+          debug: true
 
       - name: SSH into server and deploy
         uses: appleboy/ssh-action@v1.0.0
