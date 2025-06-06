@@ -41,7 +41,7 @@ jobs:
           ls -al
 
       - name: SCP Docker images and Compose file to NCP
-        uses: appleboy/scp-action@v0.1.9
+        uses: appleboy/scp-action@v0.1.7
         with:
           host: ${{ secrets.NCP_SERVER_HOST }}
           username: root
