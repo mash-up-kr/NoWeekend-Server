@@ -28,6 +28,7 @@ class SecurityConfig {
             "/health",
             "/api-docs/**",
             "/swagger-ui/**",
+            "/favicon.ico",
         ),
         "deny" to arrayOf(),
     )
@@ -41,6 +42,7 @@ class SecurityConfig {
         "deny" to arrayOf(
             "/api-docs/**",
             "/swagger-ui/**",
+            "/favicon.ico",
         ),
     )
 
