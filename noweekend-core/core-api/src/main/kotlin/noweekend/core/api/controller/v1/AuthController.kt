@@ -29,7 +29,11 @@ class AuthController(
             name = req.name,
         )
         return ApiResponse.success(
-            GoogleLoginResponse(result.accessToken, result.exists),
+            GoogleLoginResponse(
+                email = apiResult.email,
+                exists = result.exists,
+                accessToken = result.accessToken,
+            ),
         )
     }
 }
