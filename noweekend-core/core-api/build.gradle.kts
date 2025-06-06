@@ -13,8 +13,6 @@ dependencies {
 
     implementation("org.springframework.boot:spring-boot-starter-security")
 
-    implementation("com.github.ulisesbocchio:jasypt-spring-boot-starter:3.0.5")
-
     testImplementation(project(":noweekend-tests:api-docs"))
 }
 
