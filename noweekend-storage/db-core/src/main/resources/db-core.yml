@@ -102,7 +102,7 @@ storage:
     core:
       driver-class-name: com.mysql.cj.jdbc.Driver
       jdbc-url: jdbc:mysql://mysql:3306/noweekend
-      username: mash-up-noweekend
+      username: root
       password: mash-up-noweekend
       maximum-pool-size: 5
       connection-timeout: 1100
