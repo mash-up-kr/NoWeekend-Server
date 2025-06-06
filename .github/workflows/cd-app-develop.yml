@@ -3,7 +3,7 @@ name: Deploy to NCP
 on:
   push:
     branches:
-      - docs/swagger
+      - develop
 
 jobs:
   build-deploy:
