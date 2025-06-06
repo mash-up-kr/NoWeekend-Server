@@ -12,6 +12,7 @@ import org.springframework.context.annotation.ComponentScan
         "noweekend.core.api",
         "noweekend.core.domain",
         "noweekend.client",
+        "noweekend.storage.db.core",
     ],
 )
 class CoreApiApplication
