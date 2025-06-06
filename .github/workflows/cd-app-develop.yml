@@ -28,6 +28,10 @@ jobs:
       - name: Save Docker images as tar
         run: |
           docker save core-api:latest -o core-api.tar
+          sleep 2
+
+      - name: Fix permissions for all artifacts
+        run: chmod 644 core-api.tar docker-compose.app.yml
 
       - name: Check files in workspace before SCP
         run: |
@@ -37,7 +41,7 @@ jobs:
           ls -al
 
       - name: SCP Docker images and Compose file to NCP
-        uses: appleboy/scp-action@v0.1.7
+        uses: appleboy/scp-action@v0.1.9
         with:
           host: ${{ secrets.NCP_SERVER_HOST }}
           username: root
