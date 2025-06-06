@@ -31,17 +31,9 @@ jobs:
       - name: Build core-api Docker image
         run: docker build -t core-api:latest -f ./noweekend-core/core-api/Dockerfile ./noweekend-core/core-api
 
-      - name: Build mcp-host Docker image
-        run: docker build -t mcp-host:latest -f ./noweekend-mcp/mcp-host/Dockerfile ./noweekend-mcp/mcp-host
-
-      - name: Build mcp-server Docker image
-        run: docker build -t mcp-server:latest -f ./noweekend-mcp/mcp-server/Dockerfile ./noweekend-mcp/mcp-server
-
       - name: Save Docker images as tar
         run: |
           docker save core-api:latest -o core-api.tar
-          docker save mcp-host:latest -o mcp-host.tar
-          docker save mcp-server:latest -o mcp-server.tar
 
       - name: SCP Docker images and Compose file to NCP
         uses: appleboy/scp-action@v0.1.7
@@ -51,8 +43,6 @@ jobs:
           key: ${{ secrets.NCP_SSH_KEY }}
           source: |
             core-api.tar
-            mcp-host.tar
-            mcp-server.tar
             docker-compose.app.yml
           target: /root/organized/app/
 
@@ -65,6 +55,4 @@ jobs:
           script: |
             cd /root/organized/app
             docker load -i core-api.tar
-            docker load -i mcp-host.tar
-            docker load -i mcp-server.tar
             docker compose -f docker-compose.app.yml up --build -d
