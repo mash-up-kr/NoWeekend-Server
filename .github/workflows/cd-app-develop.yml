@@ -42,9 +42,7 @@ jobs:
           host: ${{ secrets.NCP_SERVER_HOST }}
           username: root
           key: ${{ secrets.NCP_SSH_KEY }}
-          source: |
-            core-api.tar
-            docker-compose.app.yml
+          source: core-api.tar docker-compose.app.yml
           target: /root/organized/app/
 
       - name: SSH into server and deploy
