@@ -34,7 +34,7 @@ class AuthService(
         userWriter.register(
             id = newUser.id,
             email = newUser.email,
-            name = newUser.name,
+            name = name,
             providerType = newUser.providerType,
             role = newUser.role,
         )

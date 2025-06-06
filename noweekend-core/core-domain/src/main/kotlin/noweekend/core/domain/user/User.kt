@@ -6,8 +6,8 @@ import java.time.LocalDateTime
 data class User(
     val id: String,
     val email: String,
-    val name: String,
-    val gender: Gender = Gender.NONE,
+    var name: String?,
+    var gender: Gender = Gender.NONE,
     val providerType: ProviderType,
     val role: Role,
     val createdAt: LocalDateTime?,
