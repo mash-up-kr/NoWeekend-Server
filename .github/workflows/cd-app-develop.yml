@@ -3,7 +3,7 @@ name: Deploy to NCP
 on:
   push:
     branches:
-      - develop
+      - chore/automatic-cd-test1
 
 jobs:
   build-deploy:
@@ -22,29 +22,29 @@ jobs:
       - name: Build core-api jar
         run: ./gradlew :noweekend-core:core-api:clean :noweekend-core:core-api:bootJar
 
-      - name: Build mcp-host jar
-        run: ./gradlew :noweekend-mcp:mcp-host:clean :noweekend-mcp:mcp-host:bootJar
-
-      - name: Build mcp-server jar
-        run: ./gradlew :noweekend-mcp:mcp-server:clean :noweekend-mcp:mcp-server:bootJar
-
       - name: Build core-api Docker image
         run: docker build -t core-api:latest -f ./noweekend-core/core-api/Dockerfile ./noweekend-core/core-api
 
       - name: Save Docker images as tar
         run: |
           docker save core-api:latest -o core-api.tar
+          sleep 2
 
-      - name: SCP Docker images and Compose file to NCP
+      - name: Fix permissions for all artifacts
+        run: chmod 644 core-api.tar docker-compose.app.yml
+
+      - name: Zip up deploy artifacts
+        run: zip deploy-artifacts.zip core-api.tar docker-compose.app.yml
+
+      - name: SCP zipped artifacts to NCP
         uses: appleboy/scp-action@v0.1.7
         with:
           host: ${{ secrets.NCP_SERVER_HOST }}
           username: root
           key: ${{ secrets.NCP_SSH_KEY }}
-          source: |
-            core-api.tar
-            docker-compose.app.yml
+          source: deploy-artifacts.zip
           target: /root/organized/app/
+          debug: true
 
       - name: SSH into server and deploy
         uses: appleboy/ssh-action@v1.0.0
@@ -54,5 +54,8 @@ jobs:
           key: ${{ secrets.NCP_SSH_KEY }}
           script: |
             cd /root/organized/app
+            rm -f core-api.tar docker-compose.app.yml
+            unzip -o deploy-artifacts.zip
+            rm -f deploy-artifacts.zip
             docker load -i core-api.tar
-            docker compose -f docker-compose.app.yml up --build -d
+            docker compose -f docker-compose.app.yml up -d
