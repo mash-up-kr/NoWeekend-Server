@@ -29,14 +29,12 @@ jobs:
         run: |
           docker save core-api:latest -o core-api.tar
 
-      - name: Copy Compose file to workspace
-        # docker-compose.app.yml의 실제 위치가 루트가 아닐 경우 반드시 복사해줘야 함!
-        # 만약 이미 루트면 생략 가능
-        run: |
-          cp ./docker-compose.app.yml .
-
       - name: Check files in workspace before SCP
-        run: ls -al
+        run: |
+          echo "===== CURRENT DIR ====="
+          pwd
+          echo "===== FILES ====="
+          ls -al
 
       - name: SCP Docker images and Compose file to NCP
         uses: appleboy/scp-action@v0.1.7
