@@ -40,10 +40,9 @@ class SecurityConfig {
             "/swagger-ui/**",
             "/v3/api-docs/**",
         ),
-//        "deny" to arrayOf(
-//            "/api-docs/**",
-//            "/swagger-ui/**",
-//        ),
+        "deny" to arrayOf(
+            "/example",
+        ),
     )
 
     @Bean
