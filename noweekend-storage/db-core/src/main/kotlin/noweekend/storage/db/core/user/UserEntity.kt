@@ -54,3 +54,12 @@ class UserEntity(
         updatedAt = this.updatedAt,
     )
 }
+
+fun User.toEntity(): UserEntity = UserEntity(
+    id = this.id,
+    email = this.email,
+    name = this.name,
+    gender = this.gender,
+    providerType = this.providerType,
+    role = this.role,
+)

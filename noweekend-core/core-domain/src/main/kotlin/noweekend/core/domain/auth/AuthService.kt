@@ -31,13 +31,7 @@ class AuthService(
             providerType = ProviderType.GOOGLE,
             role = Role.USER,
         )
-        userWriter.register(
-            id = newUser.id,
-            email = newUser.email,
-            name = name,
-            providerType = newUser.providerType,
-            role = newUser.role,
-        )
+        userWriter.register(newUser)
         return respondWithToken(
             userId = newUser.id,
             exists = false,

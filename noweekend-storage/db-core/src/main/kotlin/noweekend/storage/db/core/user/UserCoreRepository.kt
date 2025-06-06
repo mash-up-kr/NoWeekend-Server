@@ -35,7 +35,9 @@ class UserCoreRepository(
         TODO("Not yet implemented")
     }
 
-    override fun register(id: String, email: String, name: String, providerType: ProviderType, role: Role): String {
-        TODO("Not yet implemented")
+    override fun register(user: User): User {
+        val userEntity = user.toEntity()
+        val saveUserEntity = jpaRepository.save(userEntity)
+        return saveUserEntity.toUser()
     }
 }

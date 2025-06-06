@@ -1,8 +1,10 @@
 package noweekend.core.domain.user
 
 import org.springframework.stereotype.Component
+import org.springframework.transaction.annotation.Transactional
 
 @Component
+@Transactional(readOnly = true)
 class UserReader(
     private val userRepository: UserRepository,
 ) {
