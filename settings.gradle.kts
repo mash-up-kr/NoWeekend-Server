@@ -7,8 +7,7 @@ include(
     "noweekend-tests:api-docs",
     "noweekend-support:logging",
     "noweekend-support:monitoring",
-    "noweekend-clients:client-apple",
-    "noweekend-clients:client-kakao",
+    "noweekend-clients:client-oauth",
     "noweekend-clients:client-mcp"
 )
 
@@ -37,9 +36,7 @@ pluginManagement {
 plugins {
     id("org.gradle.toolchains.foojay-resolver-convention") version "0.8.0"
 }
-include("noweekend-clients:client-kakao")
-findProject(":noweekend-clients:client-kakao")?.name = "client-kakao"
-include("noweekend-clients:client-apple")
-findProject(":noweekend-clients:client-apple")?.name = "client-apple"
+include("noweekend-clients:client-oauth")
+findProject(":noweekend-clients:client-oauth")?.name = "client-oauth"
 include("noweekend-clients:client-mcp")
 findProject(":noweekend-clients:client-mcp")?.name = "client-mcp"

@@ -7,9 +7,9 @@ spring:
       - monitoring.yml
       - logging.yml
       - db-core.yml
-      - client-apple.yml
-      - client-kakao.yml
+      - client-oauth.yml
       - client-mcp.yml
+      - domain.yml
   web.resources.add-mappings: false
 
 server:
@@ -18,11 +18,6 @@ server:
     threads:
       max: 600
       min-spare: 100
-
-jwt:
-  secret: ENC(NlQZbTD2BJvq1B2SjY2NZazSBwND6KsuQGRGN65eUeODAdDv29aU3iOxo8PNylhFqv1adtCvyxfuNYPTBQGQDtJ09iNxJdF3WhPrdgSHi/U=)
-  issuer: https://www.noweekend.com
-  expiration: 86400000
 
 ---
 spring.config.activate.on-profile: local
