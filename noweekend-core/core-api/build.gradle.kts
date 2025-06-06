@@ -15,10 +15,9 @@ dependencies {
 
     testImplementation(project(":noweekend-tests:api-docs"))
 
-    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.2.0") {
+    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.7.0") {
         exclude(group = "io.swagger.core.v3", module = "swagger-annotations")
     }
-    implementation("io.swagger.core.v3:swagger-annotations:2.2.15")
 }
 
 tasks.named<BootJar>("bootJar") {
