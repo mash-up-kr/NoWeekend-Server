@@ -6,6 +6,7 @@ import noweekend.core.api.controller.v1.request.LoginRequest
 import noweekend.core.api.controller.v1.response.GoogleLoginResponse
 import noweekend.core.domain.auth.AuthService
 import noweekend.core.support.response.ApiResponse
+import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
@@ -19,7 +20,7 @@ class AuthController(
 ) {
     @PostMapping("/google")
     fun loginWithGoogle(
-        @RequestBody req: LoginRequest,
+        @Validated @RequestBody req: LoginRequest,
     ): ApiResponse<GoogleLoginResponse> {
         val apiResult = googleClient.getEmail(
             GoogleUserInfoRequest(req.accessToken),
