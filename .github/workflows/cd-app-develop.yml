@@ -3,7 +3,7 @@ name: Deploy to NCP
 on:
   push:
     branches:
-      - chore/automatic-cd-test1
+      - develop
 
 jobs:
   build-deploy:
