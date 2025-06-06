@@ -54,7 +54,8 @@ jobs:
           key: ${{ secrets.NCP_SSH_KEY }}
           script: |
             cd /root/organized/app
-            rm -f core-api.tar docker-compose.app.yml deploy-artifacts.zip
+            rm -f core-api.tar docker-compose.app.yml
             unzip -o deploy-artifacts.zip
+            rm -f deploy-artifacts.zip
             docker load -i core-api.tar
             docker compose -f docker-compose.app.yml up -d
