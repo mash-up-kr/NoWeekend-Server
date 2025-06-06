@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - chore/automatic-cd-test1
-
 jobs:
   build-deploy:
     runs-on: ubuntu-latest
@@ -33,25 +32,16 @@ jobs:
       - name: Fix permissions for all artifacts
         run: chmod 644 core-api.tar docker-compose.app.yml
 
-      - name: Check files in workspace before SCP
-        run: |
-          echo "===== CURRENT DIR ====="
-          pwd
-          echo "===== FILES ====="
-          ls -al
+      - name: Zip up deploy artifacts
+        run: zip deploy-artifacts.zip core-api.tar docker-compose.app.yml
 
-      - name: List all files recursively
-        run: find . -type f -ls
-
-      - name: SCP Docker images and Compose file to NCP
+      - name: SCP zipped artifacts to NCP
         uses: appleboy/scp-action@v0.1.7
         with:
           host: ${{ secrets.NCP_SERVER_HOST }}
           username: root
           key: ${{ secrets.NCP_SSH_KEY }}
-          source: |
-            - core-api.tar
-            - docker-compose.app.yml
+          source: deploy-artifacts.zip
           target: /root/organized/app/
           debug: true
 
@@ -63,5 +53,6 @@ jobs:
           key: ${{ secrets.NCP_SSH_KEY }}
           script: |
             cd /root/organized/app
+            unzip -o deploy-artifacts.zip
             docker load -i core-api.tar
             docker compose -f docker-compose.app.yml up --build -d
