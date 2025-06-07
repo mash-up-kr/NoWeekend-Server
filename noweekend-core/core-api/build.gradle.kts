@@ -14,6 +14,10 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-security")
 
     testImplementation(project(":noweekend-tests:api-docs"))
+
+    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.7.0") {
+        exclude(group = "io.swagger.core.v3", module = "swagger-annotations")
+    }
 }
 
 tasks.named<BootJar>("bootJar") {

@@ -26,8 +26,8 @@ class SecurityConfig {
     fun permitDenyPathsOnDevelopment() = mapOf(
         "permit" to arrayOf(
             "/health",
-            "/api-docs/**",
             "/swagger-ui/**",
+            "/v3/api-docs/**",
         ),
         "deny" to arrayOf(),
     )
@@ -37,10 +37,11 @@ class SecurityConfig {
     fun permitDenyPathsOnProduction() = mapOf(
         "permit" to arrayOf(
             "/health",
+            "/swagger-ui/**",
+            "/v3/api-docs/**",
         ),
         "deny" to arrayOf(
-            "/api-docs/**",
-            "/swagger-ui/**",
+            "/example",
         ),
     )
 
