@@ -33,6 +33,7 @@ class AuthController(
             required = true,
             content = [
                 Content(
+                    mediaType = "application/json",
                     schema = Schema(implementation = LoginRequest::class),
                 ),
             ],
@@ -41,7 +42,12 @@ class AuthController(
             SwaggerApiResponse(
                 responseCode = "200",
                 description = "로그인 성공",
-                content = [Content(schema = Schema(implementation = GoogleLoginResponse::class))],
+                content = [
+                    Content(
+                        mediaType = "application/json",
+                        schema = Schema(implementation = GoogleLoginResponse::class),
+                    ),
+                ],
             ),
             SwaggerApiResponse(
                 responseCode = "400",
