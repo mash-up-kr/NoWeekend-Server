@@ -1,5 +1,6 @@
 package noweekend.core.domain.auth
 
+import io.micrometer.common.util.StringUtils
 import noweekend.core.domain.jwt.JwtProvider
 import noweekend.core.domain.user.ProviderType
 import noweekend.core.domain.user.Role
@@ -25,6 +26,10 @@ class AuthService(
 
     private fun registerAndRespond(email: String, name: String?): AuthResult {
         require(!name.isNullOrBlank()) { "신규 회원가입 시 이름(name) 정보가 필요합니다." }
+        if (StringUtils.isBlank(name)) {
+            // todo custom error
+            throw Exception("신규 회원가입 시 이름(name) 정보가 필요합니다.")
+        }
         val newUser = User.newUser(
             email = email,
             name = name,

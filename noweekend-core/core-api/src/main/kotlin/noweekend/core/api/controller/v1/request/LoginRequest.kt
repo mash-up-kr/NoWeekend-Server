@@ -9,6 +9,6 @@ data class LoginRequest(
     @Schema(description = "구글 OAuth AccessToken", example = "ya29.a0Af...")
     val accessToken: String,
 
-    @Schema(description = "사용자 이름 (선택)", example = "홍길동")
+    @Schema(description = "사용자 이름. 회원가입시 필수, 로그인시 null로 보내시면됩니다.", example = "홍길동")
     val name: String?,
 )

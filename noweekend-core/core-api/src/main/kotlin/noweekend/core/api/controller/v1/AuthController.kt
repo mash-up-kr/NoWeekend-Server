@@ -28,7 +28,7 @@ class AuthController(
 
     @Operation(
         summary = "구글 로그인",
-        description = "구글 AccessToken을 이용한 회원 인증/가입 처리",
+        description = "구글 AccessToken을 이용한 회원 인증/가입 처리. 회원가입시 google accessToken과 name을 함께 보내주셔야하고, 로그인시에는 google accessToken만 보내주시면됩니다.",
         requestBody = SwaggerRequestBody(
             required = true,
             content = [
