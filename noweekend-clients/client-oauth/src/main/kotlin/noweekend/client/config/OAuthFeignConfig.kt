@@ -10,4 +10,4 @@ import org.springframework.context.annotation.Configuration
     ],
 )
 @Configuration
-internal class OauthFeignConfig
+internal class OAuthFeignConfig

@@ -1,6 +1,15 @@
-google:
-  api:
-    url: https://openidconnect.googleapis.com
+oauth:
+  google:
+    client-id: GoogleClientId
+    client-secret: GoogleSecret
+    token-base-url: https://oauth2.googleapis.com
+    resource-base-url: https://www.googleapis.com
+  apple:
+    app-id: AppleAppId
+    key-id: AppleKeyId
+    team-id: AppleTeamId
+    api-url: https://appleid.apple.com
+    secret-key-file-path: AppleSecretKeyPath
 
 spring.cloud.openfeign:
   client:
