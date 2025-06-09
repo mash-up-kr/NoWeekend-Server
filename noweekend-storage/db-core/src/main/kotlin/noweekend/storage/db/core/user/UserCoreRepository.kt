@@ -17,9 +17,9 @@ class UserCoreRepository(
             .toUser()
     }
 
-    override fun findUserByProviderAndEmail(providerType: ProviderType, email: String): User {
+    override fun findUserByProviderAndEmail(providerType: ProviderType, email: String): User? {
         val userEntity = queryDslRepository.findUserByProviderAndEmail(providerType, email)
-            ?: throw NoSuchElementException("User not found: $providerType, $email")
+            ?: return null
         return userEntity.toUser()
     }
 

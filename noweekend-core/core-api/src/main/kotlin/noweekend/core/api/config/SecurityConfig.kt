@@ -28,6 +28,7 @@ class SecurityConfig {
             "/health",
             "/swagger-ui/**",
             "/v3/api-docs/**",
+            "/api/v1/login/**",
         ),
         "deny" to arrayOf(),
     )
@@ -39,6 +40,7 @@ class SecurityConfig {
             "/health",
             "/swagger-ui/**",
             "/v3/api-docs/**",
+            "/api/v1/login/**",
         ),
         "deny" to arrayOf(
             "/example",
