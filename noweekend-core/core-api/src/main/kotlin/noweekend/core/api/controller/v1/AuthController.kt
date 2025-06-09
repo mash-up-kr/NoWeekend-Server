@@ -5,7 +5,7 @@ import io.swagger.v3.oas.annotations.media.Content
 import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.tags.Tag
 import noweekend.client.google.GoogleClient
-import noweekend.client.google.GoogleUserInfoRequest
+import noweekend.client.google.GoogleTokensRequest
 import noweekend.core.api.controller.v1.request.LoginRequest
 import noweekend.core.api.controller.v1.response.GoogleLoginResponse
 import noweekend.core.domain.auth.AuthService
@@ -60,7 +60,7 @@ class AuthController(
         @Validated @RequestBody req: LoginRequest,
     ): ApiResponse<GoogleLoginResponse> {
         val apiResult = googleClient.getEmail(
-            GoogleUserInfoRequest(req.accessToken),
+            GoogleTokensRequest(req.accessToken),
         )
         val result = authService.googleLogin(
             email = apiResult.email,

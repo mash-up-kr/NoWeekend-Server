@@ -1,20 +1,19 @@
 package noweekend.client.google
 
 import org.springframework.cloud.openfeign.FeignClient
+import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestHeader
 
 @FeignClient(
-    value = "google-userinfo",
-    url = "\${google.api.url}",
+    value = "google-resource-api",
+    url = "\${oauth.google.resource-base-url}",
 )
-internal interface GoogleApi {
+internal interface GoogleResourceApi {
     @GetMapping(
-        value = ["/v1/userinfo"],
+        value = ["/oauth2/v1/userinfo"],
         consumes = [MediaType.APPLICATION_JSON_VALUE],
     )
-    fun getUserInfo(
-        @RequestHeader("Authorization") authorization: String,
-    ): GoogleUserInfoResponse
+    fun getUserInfo(@RequestHeader(HttpHeaders.AUTHORIZATION) accessToken: String): GoogleOAuthInfo
 }
