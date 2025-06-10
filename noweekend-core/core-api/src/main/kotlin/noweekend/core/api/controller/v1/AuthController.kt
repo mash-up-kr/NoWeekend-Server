@@ -4,13 +4,15 @@ import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.media.Content
 import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.tags.Tag
-import noweekend.client.google.GoogleClient
-import noweekend.client.google.GoogleTokensRequest
 import noweekend.core.api.controller.v1.request.LoginRequest
+import noweekend.core.api.controller.v1.request.toOAuthLoginParams
 import noweekend.core.api.controller.v1.response.GoogleLoginResponse
-import noweekend.core.domain.auth.AuthService
+import noweekend.core.api.controller.v1.response.OAuthLoginResponse
+import noweekend.core.domain.auth.AuthApplicationService
+import noweekend.core.domain.user.ProviderType
 import noweekend.core.support.response.ApiResponse
 import org.springframework.validation.annotation.Validated
+import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
@@ -22,13 +24,12 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse as SwaggerApiResponse
 @RestController
 @RequestMapping("/api/v1/login")
 class AuthController(
-    private val authService: AuthService,
-    private val googleClient: GoogleClient,
+    private val authApplicationService: AuthApplicationService,
 ) {
 
     @Operation(
-        summary = "구글 로그인",
-        description = "구글 AccessToken을 이용한 회원 인증/가입 처리. 회원가입시 google accessToken과 name을 함께 보내주셔야하고, 로그인시에는 google accessToken만 보내주시면됩니다.",
+        summary = "소셜 로그인",
+        description = "소셜 AccessToken을 이용한 회원 인증/가입 처리. 회원가입시 authorizationCode와 name을 함께 보내주셔야하고, 로그인시에는 authorizationCode 보내주시면됩니다.",
         requestBody = SwaggerRequestBody(
             required = true,
             content = [
@@ -55,23 +56,13 @@ class AuthController(
             ),
         ],
     )
-    @PostMapping("/google")
+    @PostMapping("/{providerType}")
     fun loginWithGoogle(
-        @Validated @RequestBody req: LoginRequest,
-    ): ApiResponse<GoogleLoginResponse> {
-        val apiResult = googleClient.getEmail(
-            GoogleTokensRequest(req.accessToken),
-        )
-        val result = authService.googleLogin(
-            email = apiResult.email,
-            name = req.name,
-        )
+        @PathVariable("providerType") providerType: ProviderType,
+        @Validated @RequestBody request: LoginRequest,
+    ): ApiResponse<OAuthLoginResponse> {
         return ApiResponse.success(
-            GoogleLoginResponse(
-                email = apiResult.email,
-                exists = result.exists,
-                accessToken = result.accessToken,
-            ),
+            authApplicationService.signInForSocial(request.toOAuthLoginParams(providerType), request.name),
         )
     }
 }

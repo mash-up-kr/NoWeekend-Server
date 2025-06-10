@@ -9,11 +9,11 @@ class UserQueryDslRepository(
     private val jpaQueryFactory: JPAQueryFactory,
 ) {
 
-    fun findUserByProviderAndEmail(providerType: ProviderType, email: String): UserEntity? {
+    fun findUserByProviderAndProviderId(providerType: ProviderType, providerId: String): UserEntity? {
         val userEntity = QUserEntity.userEntity
         return jpaQueryFactory
             .selectFrom(userEntity)
-            .where(userEntity.email.eq(email), userEntity.providerType.eq(providerType))
+            .where(userEntity.providerId.eq(providerId), userEntity.providerType.eq(providerType))
             .fetchOne()
     }
 }

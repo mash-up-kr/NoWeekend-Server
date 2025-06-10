@@ -7,28 +7,45 @@ import noweekend.core.domain.user.User
 import noweekend.core.domain.user.UserReader
 import noweekend.core.domain.user.UserWriter
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 
 @Service
+@Transactional(readOnly = true)
 class AuthService(
     private val userWriter: UserWriter,
     private val userReader: UserReader,
     private val jwtProvider: JwtProvider,
 ) {
-    fun googleLogin(email: String, name: String?): AuthResult {
-        val user = userReader.findUserProviderAndEmail(ProviderType.GOOGLE, email)
-            ?: return registerAndRespond(email, name)
+
+    @Transactional
+    fun socialLogin(
+        providerType: ProviderType,
+        providerId: String,
+        name: String?,
+        revocableToken: String?,
+    ): AuthResult {
+        val user = userReader.findUserProviderAndProviderId(providerType, providerId)
+            ?: return registerAndRespond(providerType, providerId, null, name, revocableToken)
         return respondWithToken(
             userId = user.id,
             exists = true,
         )
     }
 
-    private fun registerAndRespond(email: String, name: String?): AuthResult {
+    private fun registerAndRespond(
+        providerType: ProviderType,
+        providerId: String,
+        email: String?,
+        name: String?,
+        revocableToken: String?,
+    ): AuthResult {
         require(!name.isNullOrBlank()) { "신규 회원가입 시 이름(name) 정보가 필요합니다." }
         val newUser = User.newUser(
             email = email,
             name = name,
-            providerType = ProviderType.GOOGLE,
+            providerType = providerType,
+            providerId = providerId,
+            revocableToken = revocableToken,
             role = Role.USER,
         )
         userWriter.register(newUser)
