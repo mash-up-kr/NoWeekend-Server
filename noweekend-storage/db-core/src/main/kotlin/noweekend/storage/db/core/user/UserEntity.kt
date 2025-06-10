@@ -18,6 +18,7 @@ import noweekend.storage.db.core.BaseEntity
     name = "users",
     uniqueConstraints = [
         UniqueConstraint(name = "uk_users_email", columnNames = ["email"]),
+        UniqueConstraint(name = "uk_users_provider_type_provider_id", columnNames = ["provider_type", "provider_id"]),
     ],
 )
 class UserEntity(
@@ -25,8 +26,8 @@ class UserEntity(
     @Column(name = "id")
     val id: String,
 
-    @Column(name = "email", length = 100, nullable = false, unique = true)
-    val email: String,
+    @Column(name = "email", length = 100, nullable = true, unique = true)
+    val email: String?,
 
     @Column(name = "name", length = 20)
     var name: String? = null,
@@ -39,6 +40,12 @@ class UserEntity(
     @Column(name = "provider_type", length = 10, nullable = false)
     val providerType: ProviderType,
 
+    @Column(name = "provider_id", length = 100, nullable = false)
+    val providerId: String,
+
+    @Column(name = "revocable_token", length = 100, nullable = true)
+    val revocableToken: String?,
+
     @Enumerated(EnumType.STRING)
     @Column(name = "role", length = 10, nullable = false)
     val role: Role,
@@ -49,6 +56,8 @@ class UserEntity(
         name = this.name,
         gender = this.gender,
         providerType = this.providerType,
+        providerId = this.providerId,
+        revocableToken = this.revocableToken,
         role = this.role,
         createdAt = this.createdAt,
         updatedAt = this.updatedAt,
@@ -61,5 +70,7 @@ fun User.toEntity(): UserEntity = UserEntity(
     name = this.name,
     gender = this.gender,
     providerType = this.providerType,
+    providerId = this.providerId,
+    revocableToken = this.revocableToken,
     role = this.role,
 )

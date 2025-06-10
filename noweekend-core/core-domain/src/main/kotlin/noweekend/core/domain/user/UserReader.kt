@@ -12,7 +12,7 @@ class UserReader(
         return userRepository.findUserById(id)
     }
 
-    fun findUserProviderAndEmail(provider: ProviderType, email: String): User? {
-        return userRepository.findUserByProviderAndEmail(provider, email)
+    fun findUserProviderAndProviderId(provider: ProviderType, providerId: String): User? {
+        return userRepository.findUserByProviderAndProviderId(provider, providerId)
     }
 }

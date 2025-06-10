@@ -2,13 +2,24 @@ package noweekend.core.api.controller.v1.request
 
 import io.swagger.v3.oas.annotations.media.Schema
 import jakarta.validation.constraints.NotBlank
+import noweekend.client.apple.AppleLoginParams
+import noweekend.client.common.OAuthLoginParams
+import noweekend.client.google.GoogleLoginParams
+import noweekend.core.domain.user.ProviderType
 
-@Schema(description = "구글 로그인 요청 DTO")
+@Schema(description = "소셜 로그인 요청 DTO")
 data class LoginRequest(
-    @field:NotBlank(message = "accessToken은 필수입니다.")
-    @field:Schema(description = "구글 OAuth AccessToken", example = "ya29.a0Af...")
-    val accessToken: String,
+    @field:NotBlank(message = "authorizationCode는 필수입니다.")
+    @field:Schema(description = "OAuth Authorization Code")
+    val authorizationCode: String,
 
     @field:Schema(description = "사용자 이름. 회원가입시 필수, 로그인시 null로 보내시면됩니다.", example = "홍길동")
     val name: String?,
 )
+
+fun LoginRequest.toOAuthLoginParams(providerType: ProviderType): OAuthLoginParams {
+    return when (providerType) {
+        ProviderType.GOOGLE -> GoogleLoginParams(authorizationCode)
+        ProviderType.APPLE -> AppleLoginParams(authorizationCode)
+    }
+}
