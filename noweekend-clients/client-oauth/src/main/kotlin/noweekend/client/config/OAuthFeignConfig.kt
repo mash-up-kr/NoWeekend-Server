@@ -6,8 +6,8 @@ import org.springframework.context.annotation.Configuration
 @EnableFeignClients(
     basePackages = [
         "noweekend.client.google",
-//        "noweekend.client.apple",
+        "noweekend.client.apple",
     ],
 )
 @Configuration
-internal class OauthFeignConfig
+internal class OAuthFeignConfig
