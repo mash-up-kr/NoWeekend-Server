@@ -9,7 +9,7 @@ oauth:
     key-id: 3KH8VX9ZH5
     team-id: SQ5T25W9V5
     api-url: https://appleid.apple.com
-    secret-key-file-path: /data/noweekend/secret/apple_auth_key.p8
+    secret-key-file-path: /root/organized/app/secret/apple_auth_key.p8
 
 spring.cloud.openfeign:
   client:
