@@ -5,7 +5,6 @@ import noweekend.client.common.OAuthLoginParams
 import noweekend.core.api.controller.v1.response.OAuthLoginResponse
 import org.springframework.stereotype.Service
 
-// TODO: Transactional 넣어야 함
 @Service
 class AuthApplicationServiceImpl(
     private val oauthClients: List<OAuthClient>,
