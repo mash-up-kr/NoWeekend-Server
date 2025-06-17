@@ -45,7 +45,6 @@ jobs:
           source: deploy-artifacts.zip
           target: /root/organized/app/
           debug: true
-
       - name: SSH into server and deploy
         uses: appleboy/ssh-action@v1.0.0
         with:
@@ -57,5 +56,8 @@ jobs:
             rm -f core-api.tar docker-compose.app.yml
             unzip -o deploy-artifacts.zip
             rm -f deploy-artifacts.zip
+            mkdir -p /root/organized/app/secret
+            echo "${{ secrets.APPLE_SECRET_KEY_BASE64 }}" | base64 -d > /root/organized/app/secret/apple_auth_key.p8
+            chmod 600 /root/organized/app/secret/apple_auth_key.p8
             docker load -i core-api.tar
             docker compose -f docker-compose.app.yml up -d
