@@ -5,11 +5,11 @@ oauth:
     token-base-url: https://oauth2.googleapis.com
     resource-base-url: https://www.googleapis.com
   apple:
-    app-id: AppleAppId
-    key-id: AppleKeyId
-    team-id: AppleTeamId
+    app-id: com.noweekend.app
+    key-id: 3KH8VX9ZH5
+    team-id: SQ5T25W9V5
     api-url: https://appleid.apple.com
-    secret-key-file-path: AppleSecretKeyPath
+    secret-key-file-path: /data/noweekend/secret/apple_auth_key.p8
 
 spring.cloud.openfeign:
   client:
