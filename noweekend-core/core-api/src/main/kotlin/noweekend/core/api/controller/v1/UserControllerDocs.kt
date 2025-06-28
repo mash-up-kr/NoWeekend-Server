@@ -1,16 +1,20 @@
 package noweekend.core.api.controller.v1
 
 import io.swagger.v3.oas.annotations.Operation
+import io.swagger.v3.oas.annotations.Parameter
 import io.swagger.v3.oas.annotations.media.Content
 import io.swagger.v3.oas.annotations.media.ExampleObject
 import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.parameters.RequestBody
+import io.swagger.v3.oas.annotations.tags.Tag
 import noweekend.core.api.controller.v1.request.LeaveInputRequest
 import noweekend.core.api.controller.v1.request.OnboardingRequest
 import noweekend.core.api.controller.v1.request.ScheduleRequest
+import noweekend.core.api.security.annotations.CurrentUserId
 import noweekend.core.support.response.ApiResponse
 import io.swagger.v3.oas.annotations.responses.ApiResponse as SwaggerApiResponse
 
+@Tag(name = "온보딩", description = "온보딩 등록 API")
 interface UserControllerDocs {
     @Operation(
         summary = "온보딩: 자주하는 일정 등록",
@@ -59,7 +63,10 @@ interface UserControllerDocs {
             ),
         ],
     )
-    fun saveUserSchedules(request: ScheduleRequest): ApiResponse<String>
+    fun saveUserSchedules(
+        @Parameter(hidden = true) @CurrentUserId userId: String,
+        request: ScheduleRequest,
+    ): ApiResponse<String>
 
     @Operation(
         summary = "온보딩: 닉네임/생년월일 등록",
