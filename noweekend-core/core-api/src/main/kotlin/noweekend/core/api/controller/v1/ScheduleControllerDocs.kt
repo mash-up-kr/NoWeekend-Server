@@ -52,9 +52,10 @@ interface ScheduleControllerDocs {
                             value = """
                             {
                               "title": "회의",
-                              "startTime": "2025-05-01T10:00:00",
-                              "endTime": "2025-05-01T11:00:00",
-                              "category": "회사",
+                              "date": "2025-05-01",
+                              "startTime": "10:00:00",
+                              "endTime": "11:00:00",
+                              "category": "COMPANY",
                               "temperature": 3,
                               "allDay": false,
                               "alarmOption": "FIFTEEN_MINUTES_BEFORE"
@@ -82,7 +83,7 @@ interface ScheduleControllerDocs {
                                   "title": "회의",
                                   "startTime": "2025-05-01T10:00:00",
                                   "endTime": "2025-05-01T11:00:00",
-                                  "category": "회사",
+                                  "category": "COMPANY",
                                   "temperature": 3,
                                   "allDay": false,
                                   "alarmOption": "FIFTEEN_MINUTES_BEFORE",

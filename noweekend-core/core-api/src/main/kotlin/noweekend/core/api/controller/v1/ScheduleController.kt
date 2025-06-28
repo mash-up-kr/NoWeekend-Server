@@ -5,6 +5,7 @@ import noweekend.core.api.controller.v1.request.ScheduleUpdateRequest
 import noweekend.core.api.controller.v1.response.DailyScheduleResponse
 import noweekend.core.api.controller.v1.response.ScheduleResponse
 import noweekend.core.api.security.annotations.CurrentUserId
+import noweekend.core.api.service.schedule.ScheduleApplicationService
 import noweekend.core.support.response.ApiResponse
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.DeleteMapping
@@ -20,7 +21,9 @@ import java.time.LocalDate
 
 @RestController
 @RequestMapping("/api/v1/schedule")
-class ScheduleController : ScheduleControllerDocs {
+class ScheduleController(
+    private val scheduleApplicationService: ScheduleApplicationService,
+) : ScheduleControllerDocs {
 
     @GetMapping
     override fun getSchedules(
@@ -28,7 +31,8 @@ class ScheduleController : ScheduleControllerDocs {
         @RequestParam(name = "start_date", required = true) startDate: LocalDate,
         @RequestParam(name = "end_date", required = true) endDate: LocalDate,
     ): ApiResponse<List<DailyScheduleResponse>> {
-        return ApiResponse.success(listOf(1, 2, 3).map { DailyScheduleResponse.sample() })
+        val schedules = scheduleApplicationService.getSchedulesByDateRange(userId, startDate, endDate)
+        return ApiResponse.success(schedules)
     }
 
     @PostMapping
@@ -36,7 +40,8 @@ class ScheduleController : ScheduleControllerDocs {
         @CurrentUserId userId: String,
         @Validated @RequestBody request: ScheduleCreateRequest,
     ): ApiResponse<ScheduleResponse> {
-        return ApiResponse.success(ScheduleResponse.sample())
+        val schedule = scheduleApplicationService.createSchedule(userId, request)
+        return ApiResponse.success(schedule)
     }
 
     @PutMapping("/{id}")
@@ -45,11 +50,13 @@ class ScheduleController : ScheduleControllerDocs {
         @PathVariable id: String,
         @Validated @RequestBody request: ScheduleUpdateRequest,
     ): ApiResponse<ScheduleResponse> {
-        return ApiResponse.success(ScheduleResponse.sample())
+        val schedule = scheduleApplicationService.updateSchedule(userId, id, request)
+        return ApiResponse.success(schedule)
     }
 
     @DeleteMapping("/{id}")
     override fun deleteSchedule(@CurrentUserId userId: String, @PathVariable id: String): ApiResponse<String> {
-        return ApiResponse.success(id)
+        scheduleApplicationService.deleteSchedule(userId, id)
+        return ApiResponse.success("Schedule deleted successfully")
     }
 }

@@ -2,6 +2,7 @@ package noweekend.core.api.controller.v1.response
 
 import io.swagger.v3.oas.annotations.media.Schema
 import noweekend.core.domain.enumerate.AlarmOption
+import noweekend.core.domain.enumerate.ScheduleCategory
 import java.time.LocalDate
 import java.time.LocalDateTime
 
@@ -20,7 +21,7 @@ data class ScheduleResponse(
     val endTime: LocalDateTime,
 
     @Schema(description = "카테고리")
-    val category: String,
+    val category: ScheduleCategory,
 
     @Schema(description = "온도")
     val temperature: Int,
@@ -33,21 +34,7 @@ data class ScheduleResponse(
 
     @Schema(description = "완료 여부")
     val completed: Boolean,
-) {
-    companion object {
-        fun sample(): ScheduleResponse = ScheduleResponse(
-            id = "sample-id-123",
-            title = "샘플 일정",
-            startTime = LocalDateTime.of(2025, 5, 1, 10, 0),
-            endTime = LocalDateTime.of(2025, 5, 1, 11, 0),
-            category = "회사",
-            temperature = 3,
-            allDay = false,
-            alarmOption = AlarmOption.FIFTEEN_MINUTES_BEFORE,
-            completed = false,
-        )
-    }
-}
+)
 
 @Schema(description = "하루 스케줄 응답")
 data class DailyScheduleResponse(
@@ -59,12 +46,4 @@ data class DailyScheduleResponse(
 
     @Schema(description = "일정 리스트")
     val schedules: List<ScheduleResponse>,
-) {
-    companion object {
-        fun sample(): DailyScheduleResponse = DailyScheduleResponse(
-            date = LocalDate.of(2025, 5, 1),
-            dailyTemperature = 2,
-            schedules = listOf(ScheduleResponse.sample()),
-        )
-    }
-}
+)
