@@ -26,3 +26,18 @@ data class TagRequest(
         return result
     }
 }
+
+@Schema(description = "자주하는 일정 DTO")
+data class TagUpdateRequest(
+    @field:Schema(
+        description = "자주하는 일정 태그(한글) 목록, 예시: [\"회의 참석\", \"헬스장 운동\", \"스터디\"]",
+        example = "[\"회의 참석\", \"헬스장 운동\", \"스터디\"]",
+    )
+    val addScheduleTags: List<String>,
+
+    @field:Schema(
+        description = "자주하는 일정 태그(한글) 목록, 예시: [\"회의 참석\", \"헬스장 운동\", \"스터디\"]",
+        example = "[\"회의 참석\", \"헬스장 운동\", \"스터디\"]",
+    )
+    val deleteScheduleTags: List<String>,
+)
