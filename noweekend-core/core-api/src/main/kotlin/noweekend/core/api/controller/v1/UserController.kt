@@ -1,6 +1,7 @@
 package noweekend.core.api.controller.v1
 
 import io.swagger.v3.oas.annotations.tags.Tag
+import noweekend.core.api.controller.v1.request.LeaveInputRequest
 import noweekend.core.api.controller.v1.request.OnboardingRequest
 import noweekend.core.api.controller.v1.request.ScheduleRequest
 import noweekend.core.support.response.ApiResponse
@@ -30,6 +31,15 @@ class UserController() : UserControllerDocs {
     ): ApiResponse<String> {
         return ApiResponse.success(
             "닉네임 및 생년월일 등록이 성공적으로 완료되었습니다.",
+        )
+    }
+
+    @PostMapping("/leave")
+    override fun submitLeave(
+        @Validated @RequestBody request: LeaveInputRequest,
+    ): ApiResponse<String> {
+        return ApiResponse.success(
+            "연차 정보가 성공적으로 저장되었습니다.",
         )
     }
 }
