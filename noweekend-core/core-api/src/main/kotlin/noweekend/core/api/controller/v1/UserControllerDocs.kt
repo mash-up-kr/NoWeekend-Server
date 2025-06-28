@@ -242,7 +242,7 @@ interface UserControllerDocs {
                             value = """
                         {
                           "days": 8,
-                          "hours": 6
+                          "hours": 4
                         }
                         """,
                         ),
