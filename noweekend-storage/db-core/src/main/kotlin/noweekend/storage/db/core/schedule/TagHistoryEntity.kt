@@ -14,9 +14,9 @@ import noweekend.storage.db.core.BaseEntity
     uniqueConstraints = [
         UniqueConstraint(
             name = "uk_user_content",
-            columnNames = ["user_id", "content"]
-        )
-    ]
+            columnNames = ["user_id", "content"],
+        ),
+    ],
 )
 class TagHistoryEntity(
     @Id
