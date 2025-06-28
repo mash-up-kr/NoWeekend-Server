@@ -1,7 +1,7 @@
 package noweekend.storage.db.core.schedule
 
-import noweekend.core.domain.schedule.Schedule
-import noweekend.core.domain.schedule.ScheduleRepository
+import noweekend.core.domain.tag.Schedule
+import noweekend.core.domain.tag.ScheduleRepository
 import org.springframework.stereotype.Repository
 import java.time.LocalDateTime
 

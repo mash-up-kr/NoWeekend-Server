@@ -1,7 +1,7 @@
 package noweekend.storage.db.core.schedule
 
-import noweekend.core.domain.schedule.Tag
-import noweekend.core.domain.schedule.TagRepository
+import noweekend.core.domain.tag.Tag
+import noweekend.core.domain.tag.TagRepository
 import org.springframework.stereotype.Repository
 
 @Repository

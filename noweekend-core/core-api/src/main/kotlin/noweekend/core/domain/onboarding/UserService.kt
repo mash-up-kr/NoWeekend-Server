@@ -3,8 +3,8 @@ package noweekend.core.domain.onboarding
 import noweekend.core.api.controller.v1.request.LeaveInputRequest
 import noweekend.core.api.controller.v1.request.ProfileRequest
 import noweekend.core.api.controller.v1.request.TagUpdateRequest
-import noweekend.core.domain.schedule.BasicTag
-import noweekend.core.domain.schedule.UserTags
+import noweekend.core.domain.tag.BasicTag
+import noweekend.core.domain.tag.UserTags
 
 interface UserService {
     fun registerSelectedBasicTag(basicTag: List<BasicTag>, userId: String)

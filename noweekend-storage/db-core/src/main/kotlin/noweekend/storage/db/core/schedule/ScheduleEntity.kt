@@ -9,7 +9,7 @@ import jakarta.persistence.Index
 import jakarta.persistence.Table
 import noweekend.core.domain.enumerate.AlarmOption
 import noweekend.core.domain.enumerate.ScheduleCategory
-import noweekend.core.domain.schedule.Schedule
+import noweekend.core.domain.tag.Schedule
 import noweekend.storage.db.core.BaseEntity
 import java.time.LocalDateTime
 

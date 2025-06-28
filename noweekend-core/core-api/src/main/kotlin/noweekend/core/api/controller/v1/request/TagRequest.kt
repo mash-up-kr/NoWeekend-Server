@@ -1,7 +1,7 @@
 package noweekend.core.api.controller.v1.request
 
 import io.swagger.v3.oas.annotations.media.Schema
-import noweekend.core.domain.schedule.BasicTag
+import noweekend.core.domain.tag.BasicTag
 
 @Schema(description = "자주하는 일정 DTO")
 data class TagRequest(
@@ -30,13 +30,13 @@ data class TagRequest(
 @Schema(description = "자주하는 일정 DTO")
 data class TagUpdateRequest(
     @field:Schema(
-        description = "자주하는 일정 태그(한글) 목록, 예시: [\"회의 참석\", \"헬스장 운동\", \"스터디\"]",
+        description = "추가할 자주하는 일정 태그(한글) 목록, 예시: [\"회의 참석\", \"헬스장 운동\", \"스터디\"]",
         example = "[\"회의 참석\", \"헬스장 운동\", \"스터디\"]",
     )
     val addScheduleTags: List<String>,
 
     @field:Schema(
-        description = "자주하는 일정 태그(한글) 목록, 예시: [\"회의 참석\", \"헬스장 운동\", \"스터디\"]",
+        description = "삭제할 자주하는 일정 태그(한글) 목록, 예시: [\"회의 참석\", \"헬스장 운동\", \"스터디\"]",
         example = "[\"회의 참석\", \"헬스장 운동\", \"스터디\"]",
     )
     val deleteScheduleTags: List<String>,

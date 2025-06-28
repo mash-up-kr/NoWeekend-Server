@@ -1,4 +1,4 @@
-package noweekend.core.domain.schedule
+package noweekend.core.domain.tag
 
 interface TagRepository {
     fun register(tag: Tag)

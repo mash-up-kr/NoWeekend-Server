@@ -11,7 +11,7 @@ import noweekend.core.api.controller.v1.request.LeaveInputRequest
 import noweekend.core.api.controller.v1.request.ProfileRequest
 import noweekend.core.api.controller.v1.request.TagUpdateRequest
 import noweekend.core.api.security.annotations.CurrentUserId
-import noweekend.core.domain.schedule.UserTags
+import noweekend.core.domain.tag.UserTags
 import noweekend.core.support.response.ApiResponse
 import io.swagger.v3.oas.annotations.responses.ApiResponse as SwaggerApiResponse
 
