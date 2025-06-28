@@ -7,16 +7,16 @@ import io.swagger.v3.oas.annotations.media.ExampleObject
 import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.parameters.RequestBody
 import io.swagger.v3.oas.annotations.tags.Tag
-import noweekend.core.api.controller.v1.request.EditNickname
 import noweekend.core.api.controller.v1.request.LeaveInputRequest
-import noweekend.core.api.controller.v1.request.OnboardingRequest
-import noweekend.core.api.controller.v1.request.ScheduleRequest
+import noweekend.core.api.controller.v1.request.ProfileRequest
+import noweekend.core.api.controller.v1.request.TagRequest
+import noweekend.core.api.controller.v1.response.DefaultTags
 import noweekend.core.api.security.annotations.CurrentUserId
 import noweekend.core.support.response.ApiResponse
 import io.swagger.v3.oas.annotations.responses.ApiResponse as SwaggerApiResponse
 
 @Tag(name = "온보딩", description = "온보딩 등록 API")
-interface UserControllerDocs {
+interface OnboardingControllerDocs {
     @Operation(
         summary = "온보딩: 자주하는 일정 등록",
         description = "유저가 온보딩 시 자주하는 일정 태그(영문, Enum)를 리스트로 등록합니다.",
@@ -25,13 +25,13 @@ interface UserControllerDocs {
             content = arrayOf(
                 Content(
                     mediaType = "application/json",
-                    schema = Schema(implementation = ScheduleRequest::class),
+                    schema = Schema(implementation = TagRequest::class),
                     examples = arrayOf(
                         ExampleObject(
                             name = "예시 요청",
                             value = """
                         {
-                          "scheduleTags": ["COMMUTE", "LEAVE", "GYM"]
+                          "scheduleTags": ["집안일", "은행 업무", "관공서 업무"]
                         }
                         """,
                         ),
@@ -64,9 +64,9 @@ interface UserControllerDocs {
             ),
         ],
     )
-    fun saveUserSchedules(
+    fun registerSelectedDefaultTag(
         @Parameter(hidden = true) @CurrentUserId userId: String,
-        request: ScheduleRequest,
+        request: TagRequest,
     ): ApiResponse<String>
 
     @Operation(
@@ -77,7 +77,7 @@ interface UserControllerDocs {
             content = [
                 Content(
                     mediaType = "application/json",
-                    schema = Schema(implementation = OnboardingRequest::class),
+                    schema = Schema(implementation = ProfileRequest::class),
                     examples = [
                         ExampleObject(
                             name = "예시 요청",
@@ -119,7 +119,7 @@ interface UserControllerDocs {
     )
     fun submitProfile(
         @Parameter(hidden = true) @CurrentUserId userId: String,
-        request: OnboardingRequest,
+        request: ProfileRequest,
     ): ApiResponse<String>
 
     @Operation(
@@ -176,40 +176,52 @@ interface UserControllerDocs {
     ): ApiResponse<String>
 
     @Operation(
-        summary = "프로필: 닉네임 수정",
-        description = "유저가 닉네임을 수정합니다.",
-        requestBody = RequestBody(
-            required = true,
-            content = [
-                Content(
-                    mediaType = "application/json",
-                    schema = Schema(implementation = EditNickname::class),
-                    examples = [
-                        ExampleObject(
-                            name = "예시 요청",
-                            value = """
-                        {
-                          "nickname": "뉴닉네임"
-                        }
-                        """,
-                        ),
-                    ],
-                ),
-            ],
-        ),
+        summary = "온보딩: 기본 일정 태그 조회",
+        description = "온보딩 시 선택 가능한 기본 일정 태그(한글)를 모두 반환합니다.",
         responses = [
             SwaggerApiResponse(
                 responseCode = "200",
-                description = "닉네임 수정 성공",
+                description = "기본 일정 태그 조회 성공",
                 content = [
                     Content(
                         mediaType = "application/json",
-                        schema = Schema(implementation = String::class),
+                        schema = Schema(implementation = DefaultTags::class),
                         examples = [
                             ExampleObject(
-                                name = "예시 응답",
+                                name = "응답",
                                 value = """
-                                "닉네임이 성공적으로 수정되었습니다."
+{
+    "data": {
+        "tags": [
+            "회의 참석",
+            "점심 식사 약속",
+            "헬스장 운동",
+            "장 보기 / 마트 가기",
+            "가족 모임",
+            "병원 예약",
+            "카페에서 작업 / 휴식",
+            "친구 만남",
+            "술자리",
+            "스터디",
+            "학원 수업",
+            "야근",
+            "추가 업무",
+            "산책",
+            "반려동물 산책",
+            "집안일",
+            "은행 업무",
+            "관공서 업무",
+            "독서",
+            "데이트",
+            "미용실",
+            "드라이브",
+            "나들이",
+            "넷플릭스 시청",
+            "유튜브 시청",
+            "치지직 시청"
+        ]
+    }
+}
                             """,
                             ),
                         ],
@@ -222,61 +234,7 @@ interface UserControllerDocs {
             ),
         ],
     )
-    fun updateNickname(
+    fun getDefaultTag(
         @Parameter(hidden = true) @CurrentUserId userId: String,
-        editNickname: EditNickname,
-    ): ApiResponse<String>
-
-    @Operation(
-        summary = "프로필: 연차 정보 수정",
-        description = "유저가 연차 정보를 수정합니다.",
-        requestBody = RequestBody(
-            required = true,
-            content = [
-                Content(
-                    mediaType = "application/json",
-                    schema = Schema(implementation = LeaveInputRequest::class),
-                    examples = [
-                        ExampleObject(
-                            name = "예시 요청",
-                            value = """
-                        {
-                          "days": 8,
-                          "hours": 4
-                        }
-                        """,
-                        ),
-                    ],
-                ),
-            ],
-        ),
-        responses = [
-            SwaggerApiResponse(
-                responseCode = "200",
-                description = "연차 정보 수정 성공",
-                content = [
-                    Content(
-                        mediaType = "application/json",
-                        schema = Schema(implementation = String::class),
-                        examples = [
-                            ExampleObject(
-                                name = "예시 응답",
-                                value = """
-                                "연차 정보가 성공적으로 변경되었습니다."
-                            """,
-                            ),
-                        ],
-                    ),
-                ],
-            ),
-            SwaggerApiResponse(
-                responseCode = "400",
-                description = "잘못된 요청",
-            ),
-        ],
-    )
-    fun editLeave(
-        @Parameter(hidden = true) @CurrentUserId userId: String,
-        request: LeaveInputRequest,
-    ): ApiResponse<String>
+    ): ApiResponse<DefaultTags>
 }

@@ -5,6 +5,10 @@ import org.springframework.transaction.annotation.Transactional
 
 @Component
 @Transactional(readOnly = true)
-class ScheduleReader(
-    private val scheduleRepository: ScheduleRepository,
-)
+class TagReader(
+    private val tagRepository: TagRepository,
+) {
+    fun getDefaultTags(): List<String> {
+        return enumValues<BasicTag>().map { it.koreanContent }
+    }
+}

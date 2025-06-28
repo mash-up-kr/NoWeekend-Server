@@ -4,8 +4,8 @@ import io.swagger.v3.oas.annotations.media.Schema
 import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.Size
 
-@Schema(description = "온보딩 시 닉네임/생년월일 등록 DTO")
-data class OnboardingRequest(
+@Schema(description = "닉네임/생년월일 등록 DTO")
+data class ProfileRequest(
     @field:NotBlank(message = "닉네임은 필수입니다.")
     @field:Size(max = 6, message = "닉네임은 6자 이하여야 합니다.")
     @field:Schema(
