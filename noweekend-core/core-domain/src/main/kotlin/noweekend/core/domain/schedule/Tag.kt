@@ -2,17 +2,19 @@ package noweekend.core.domain.schedule
 
 import noweekend.core.domain.util.IdGenerator
 
-data class Schedule(
+data class Tag(
     val id: String,
-    val tag: ScheduleTag,
+    val content: String,
     val userId: String,
+    val selected: Boolean,
 ) {
     companion object {
-        fun register(tag: ScheduleTag, userId: String): Schedule {
-            return Schedule(
+        fun register(content: String, userId: String): Tag {
+            return Tag(
                 id = IdGenerator.generate(),
-                tag = tag,
+                content = content,
                 userId = userId,
+                selected = true,
             )
         }
     }

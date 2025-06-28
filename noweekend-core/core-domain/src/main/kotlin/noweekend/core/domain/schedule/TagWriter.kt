@@ -5,14 +5,14 @@ import org.springframework.transaction.annotation.Transactional
 
 @Component
 @Transactional
-class ScheduleWriter(
-    private val scheduleRepository: ScheduleRepository,
+class TagWriter(
+    private val tagRepository: TagRepository,
 ) {
-    fun registerTags(tags: List<ScheduleTag>, userId: String) {
+    fun registerSelectedBasicTag(tags: List<BasicTag>, userId: String) {
         tags.stream().forEach {
                 tag ->
-            scheduleRepository.register(
-                Schedule.register(tag, userId),
+            tagRepository.register(
+                Tag.register(tag.koreanContent, userId),
             )
         }
     }

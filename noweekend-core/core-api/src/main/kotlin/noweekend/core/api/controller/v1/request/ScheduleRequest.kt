@@ -4,26 +4,25 @@ import io.swagger.v3.oas.annotations.media.Schema
 import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.NotNull
 import noweekend.core.domain.enumerate.AlarmOption
-import noweekend.core.domain.schedule.ScheduleTag
+import noweekend.core.domain.schedule.BasicTag
 import java.time.LocalTime
 
 @Schema(description = "자주하는 일정 DTO")
-data class ScheduleRequest(
-    @field:NotBlank(message = "authorizationCode는 필수입니다.")
+data class TagRequest(
     @field:Schema(
-        description = "자주하는 일정 태그(영문) 목록, 예시: [\"COMMUTE\", \"LEAVE\", \"GYM\"]",
-        example = "[\"COMMUTE\", \"LEAVE\", \"GYM\"]",
+        description = "자주하는 일정 태그(한글) 목록, 예시: [\"회의 참석\", \"헬스장 운동\", \"스터디\"]",
+        example = "[\"회의 참석\", \"헬스장 운동\", \"스터디\"]",
     )
     val scheduleTags: List<String>,
 ) {
-    fun validatedScheduleTags(): List<ScheduleTag> {
-        val result = mutableListOf<ScheduleTag>()
+    fun validatedScheduleTags(): List<BasicTag> {
+        val result = mutableListOf<BasicTag>()
         val invalid = mutableListOf<String>()
 
         scheduleTags.forEach {
             try {
-                result.add(ScheduleTag.valueOf(it.trim().uppercase()))
-            } catch (e: Exception) {
+                result.add(BasicTag.fromKorean(it.trim()))
+            } catch (e: NoSuchElementException) {
                 invalid.add(it)
             }
         }
