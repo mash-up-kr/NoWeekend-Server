@@ -10,4 +10,10 @@ data class ErrorMessage private constructor(
         message = errorType.message,
         data = data,
     )
+
+    constructor(errorType: ErrorType, errorMessage: String? = null, data: Any? = null) : this(
+        code = errorType.code.name,
+        message = errorMessage ?: errorType.message,
+        data = data,
+    )
 }

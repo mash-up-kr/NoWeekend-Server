@@ -1,6 +1,7 @@
 package noweekend.core.support.error
 
-class CoreException(
+open class CoreException(
     val errorType: ErrorType,
     val data: Any? = null,
-) : RuntimeException(errorType.message)
+    errorMessage: String? = null,
+) : RuntimeException(errorMessage ?: errorType.message)
