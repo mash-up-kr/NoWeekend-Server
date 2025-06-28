@@ -1,7 +1,7 @@
 package noweekend.storage.db.core.user
 
-import noweekend.core.domain.user.ProviderType
-import noweekend.core.domain.user.Role
+import noweekend.core.domain.enumerate.ProviderType
+import noweekend.core.domain.enumerate.Role
 import noweekend.core.domain.user.User
 import noweekend.core.domain.user.UserRepository
 import org.springframework.stereotype.Repository

@@ -5,7 +5,7 @@ import jakarta.validation.constraints.NotBlank
 import noweekend.client.apple.AppleLoginParams
 import noweekend.client.common.OAuthLoginParams
 import noweekend.client.google.GoogleLoginParams
-import noweekend.core.domain.user.ProviderType
+import noweekend.core.domain.enumerate.ProviderType
 
 @Schema(description = "소셜 로그인 요청 DTO")
 data class LoginRequest(

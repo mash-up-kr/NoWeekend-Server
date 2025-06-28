@@ -1,7 +1,7 @@
 package noweekend.client.apple
 
 import noweekend.client.common.OAuthInfo
-import noweekend.core.domain.user.ProviderType
+import noweekend.core.domain.enumerate.ProviderType
 
 class AppleOAuthInfo(
     private val id: String,

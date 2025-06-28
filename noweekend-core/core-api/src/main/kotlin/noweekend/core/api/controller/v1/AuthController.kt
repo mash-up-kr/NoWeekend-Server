@@ -9,7 +9,7 @@ import noweekend.core.api.controller.v1.request.toOAuthLoginParams
 import noweekend.core.api.controller.v1.response.GoogleLoginResponse
 import noweekend.core.api.controller.v1.response.OAuthLoginResponse
 import noweekend.core.domain.auth.AuthApplicationService
-import noweekend.core.domain.user.ProviderType
+import noweekend.core.domain.enumerate.ProviderType
 import noweekend.core.support.response.ApiResponse
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.PathVariable

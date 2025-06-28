@@ -1,5 +1,7 @@
 package noweekend.core.domain.user
 
+import noweekend.core.domain.enumerate.ProviderType
+import noweekend.core.domain.enumerate.Role
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
 

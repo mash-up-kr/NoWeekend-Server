@@ -1,5 +1,8 @@
 package noweekend.core.domain.user
 
+import noweekend.core.domain.enumerate.Gender
+import noweekend.core.domain.enumerate.ProviderType
+import noweekend.core.domain.enumerate.Role
 import noweekend.core.domain.util.IdGenerator
 import java.time.LocalDateTime
 
