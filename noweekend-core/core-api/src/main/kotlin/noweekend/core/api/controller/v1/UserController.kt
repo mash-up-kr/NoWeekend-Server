@@ -42,8 +42,10 @@ class UserController(
 
     @PostMapping("/leave")
     override fun submitLeave(
+        @CurrentUserId userId: String,
         @Validated @RequestBody request: LeaveInputRequest,
     ): ApiResponse<String> {
+        onboardingService.registerRemainingAnnualLeave(request, userId)
         return ApiResponse.success(
             "연차 정보가 성공적으로 저장되었습니다.",
         )

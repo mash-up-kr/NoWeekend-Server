@@ -1,5 +1,6 @@
 package noweekend.core.domain.onboding
 
+import noweekend.core.api.controller.v1.request.LeaveInputRequest
 import noweekend.core.api.controller.v1.request.OnboardingRequest
 import noweekend.core.domain.schedule.ScheduleTag
 import noweekend.core.domain.schedule.ScheduleWriter
@@ -27,6 +28,18 @@ class OnboardingServiceImpl(
             birthDate = birthLocalDate,
         )
         userWriter.upsert(merged)
+    }
+
+    override fun registerRemainingAnnualLeave(request: LeaveInputRequest, userId: String) {
+        val user = userReader.findUserById(userId) ?: throw NoSuchElementException("id로 사용자를 찾을 수 없음")
+        var daysToAdd = request.days.toDouble()
+        if (request.hours == 4) {
+            daysToAdd += 0.5
+        }
+        val updatedUser = user.copy(
+            remainingAnnualLeave = user.remainingAnnualLeave + daysToAdd,
+        )
+        userWriter.upsert(updatedUser)
     }
 
     private fun parseLocalDate(request: OnboardingRequest): LocalDate {

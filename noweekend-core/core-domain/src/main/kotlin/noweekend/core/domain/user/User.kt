@@ -17,6 +17,7 @@ data class User(
     val revocableToken: String?,
     val role: Role,
     val birthDate: LocalDate?,
+    val remainingAnnualLeave: Double = 0.0,
     val createdAt: LocalDateTime?,
     val updatedAt: LocalDateTime?,
 ) {

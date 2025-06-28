@@ -169,5 +169,8 @@ interface UserControllerDocs {
             ),
         ],
     )
-    fun submitLeave(request: LeaveInputRequest): ApiResponse<String>
+    fun submitLeave(
+        @Parameter(hidden = true) @CurrentUserId userId: String,
+        request: LeaveInputRequest,
+    ): ApiResponse<String>
 }

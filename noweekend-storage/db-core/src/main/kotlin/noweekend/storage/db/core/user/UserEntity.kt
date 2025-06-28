@@ -53,6 +53,9 @@ class UserEntity(
 
     @Column(name = "birth_date", nullable = true)
     val birthDate: LocalDate? = null,
+
+    @Column(name = "remaining_annual_leave", nullable = true)
+    val remainingAnnualLeave: Double = 0.0,
 ) : BaseEntity() {
     fun toUser(): User = User(
         id = this.id,
@@ -64,6 +67,7 @@ class UserEntity(
         revocableToken = this.revocableToken,
         role = this.role,
         birthDate = this.birthDate,
+        remainingAnnualLeave = this.remainingAnnualLeave,
         createdAt = this.createdAt,
         updatedAt = this.updatedAt,
     )
@@ -78,5 +82,6 @@ fun User.toEntity(): UserEntity = UserEntity(
     providerId = this.providerId,
     revocableToken = this.revocableToken,
     role = this.role,
+    remainingAnnualLeave = this.remainingAnnualLeave,
     birthDate = this.birthDate,
 )
