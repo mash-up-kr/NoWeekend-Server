@@ -31,8 +31,10 @@ class UserController(
 
     @PostMapping("/profile")
     override fun submitProfile(
+        @CurrentUserId userId: String,
         @RequestBody request: OnboardingRequest,
     ): ApiResponse<String> {
+        onboardingService.registerProfile(request, userId)
         return ApiResponse.success(
             "닉네임 및 생년월일 등록이 성공적으로 완료되었습니다.",
         )

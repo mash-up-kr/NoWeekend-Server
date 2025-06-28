@@ -116,7 +116,10 @@ interface UserControllerDocs {
             ),
         ],
     )
-    fun submitProfile(request: OnboardingRequest): ApiResponse<String>
+    fun submitProfile(
+        @Parameter(hidden = true) @CurrentUserId userId: String,
+        request: OnboardingRequest,
+    ): ApiResponse<String>
 
     @Operation(
         summary = "온보딩: 올해 연차 입력",

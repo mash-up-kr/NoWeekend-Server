@@ -9,7 +9,7 @@ import org.springframework.transaction.annotation.Transactional
 class UserReader(
     private val userRepository: UserRepository,
 ) {
-    fun findUserById(id: String): User {
+    fun findUserById(id: String): User? {
         return userRepository.findUserById(id)
     }
 
