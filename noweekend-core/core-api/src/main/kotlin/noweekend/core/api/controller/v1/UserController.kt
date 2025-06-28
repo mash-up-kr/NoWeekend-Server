@@ -1,9 +1,10 @@
 package noweekend.core.api.controller.v1
 
-import io.swagger.v3.oas.annotations.tags.Tag
 import noweekend.core.api.controller.v1.request.LeaveInputRequest
 import noweekend.core.api.controller.v1.request.OnboardingRequest
 import noweekend.core.api.controller.v1.request.ScheduleRequest
+import noweekend.core.api.security.annotations.CurrentUserId
+import noweekend.core.domain.onboarding.OnboardingService
 import noweekend.core.support.response.ApiResponse
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.PostMapping
@@ -11,15 +12,18 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
-@Tag(name = "온보딩", description = "온보딩 등록 API")
 @RestController
 @RequestMapping("/api/v1/user/onboarding")
-class UserController() : UserControllerDocs {
+class UserController(
+    private val onboardingService: OnboardingService,
+) : UserControllerDocs {
     @PostMapping("/schedules")
     override fun saveUserSchedules(
+        @CurrentUserId userId: String,
         @Validated @RequestBody request: ScheduleRequest,
     ): ApiResponse<String> {
-        val enumList = request.validatedScheduleTags()
+        val scheduleTags = request.validatedScheduleTags()
+        onboardingService.registerScheduleTag(scheduleTags, userId)
         return ApiResponse.success(
             "일정 등록이 성공적으로 완료되었습니다.",
         )
@@ -27,8 +31,10 @@ class UserController() : UserControllerDocs {
 
     @PostMapping("/profile")
     override fun submitProfile(
+        @CurrentUserId userId: String,
         @RequestBody request: OnboardingRequest,
     ): ApiResponse<String> {
+        onboardingService.registerProfile(request, userId)
         return ApiResponse.success(
             "닉네임 및 생년월일 등록이 성공적으로 완료되었습니다.",
         )
@@ -36,8 +42,10 @@ class UserController() : UserControllerDocs {
 
     @PostMapping("/leave")
     override fun submitLeave(
+        @CurrentUserId userId: String,
         @Validated @RequestBody request: LeaveInputRequest,
     ): ApiResponse<String> {
+        onboardingService.registerRemainingAnnualLeave(request, userId)
         return ApiResponse.success(
             "연차 정보가 성공적으로 저장되었습니다.",
         )

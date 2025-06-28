@@ -4,6 +4,7 @@ import noweekend.core.domain.enumerate.Gender
 import noweekend.core.domain.enumerate.ProviderType
 import noweekend.core.domain.enumerate.Role
 import noweekend.core.domain.util.IdGenerator
+import java.time.LocalDate
 import java.time.LocalDateTime
 
 data class User(
@@ -15,6 +16,8 @@ data class User(
     val providerType: ProviderType,
     val revocableToken: String?,
     val role: Role,
+    val birthDate: LocalDate?,
+    val remainingAnnualLeave: Double = 0.0,
     val createdAt: LocalDateTime?,
     val updatedAt: LocalDateTime?,
 ) {
@@ -35,6 +38,7 @@ data class User(
                 providerType = providerType,
                 revocableToken = revocableToken,
                 role = role,
+                birthDate = null,
                 createdAt = null,
                 updatedAt = null,
             )

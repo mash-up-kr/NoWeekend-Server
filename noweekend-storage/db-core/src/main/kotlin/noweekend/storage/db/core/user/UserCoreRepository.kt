@@ -11,10 +11,10 @@ class UserCoreRepository(
     private val jpaRepository: UserJpaRepository,
     private val queryDslRepository: UserQueryDslRepository,
 ) : UserRepository {
-    override fun findUserById(id: String): User {
+    override fun findUserById(id: String): User? {
         return jpaRepository.findById(id)
-            .orElseThrow { NoSuchElementException("User not found: $id") }
-            .toUser()
+            .orElse(null)
+            ?.toUser()
     }
 
     override fun findUserByProviderAndProviderId(
@@ -34,8 +34,8 @@ class UserCoreRepository(
         TODO("Not yet implemented")
     }
 
-    override fun upsert(id: String, name: String, providerType: ProviderType, role: Role): String {
-        TODO("Not yet implemented")
+    override fun upsert(user: User): User {
+        return jpaRepository.save(user.toEntity()).toUser()
     }
 
     override fun register(user: User): User {

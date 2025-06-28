@@ -18,11 +18,8 @@ class UserWriter(
     ): String = userRepository.append(id, name, providerType, role)
 
     fun upsert(
-        id: String,
-        name: String,
-        providerType: ProviderType,
-        role: Role,
-    ): String = userRepository.upsert(id, name, providerType, role)
+        user: User,
+    ): User = userRepository.upsert(user)
 
     fun modify(
         id: String,
