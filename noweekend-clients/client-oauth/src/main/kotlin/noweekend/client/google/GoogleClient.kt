@@ -4,7 +4,7 @@ import noweekend.client.common.OAuthClient
 import noweekend.client.common.OAuthInfo
 import noweekend.client.common.OAuthLoginParams
 import noweekend.client.properties.GoogleAuthProperties
-import noweekend.core.domain.user.ProviderType
+import noweekend.core.domain.enumerate.ProviderType
 import org.springframework.stereotype.Component
 
 @Component

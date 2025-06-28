@@ -7,9 +7,9 @@ import jakarta.persistence.Enumerated
 import jakarta.persistence.Id
 import jakarta.persistence.Table
 import jakarta.persistence.UniqueConstraint
-import noweekend.core.domain.user.Gender
-import noweekend.core.domain.user.ProviderType
-import noweekend.core.domain.user.Role
+import noweekend.core.domain.enumerate.Gender
+import noweekend.core.domain.enumerate.ProviderType
+import noweekend.core.domain.enumerate.Role
 import noweekend.core.domain.user.User
 import noweekend.storage.db.core.BaseEntity
 

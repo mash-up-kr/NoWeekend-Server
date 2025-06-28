@@ -1,5 +1,6 @@
 package noweekend.core.domain.user
 
+import noweekend.core.domain.enumerate.ProviderType
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
 

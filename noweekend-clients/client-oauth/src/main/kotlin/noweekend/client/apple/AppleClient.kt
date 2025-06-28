@@ -10,7 +10,7 @@ import noweekend.client.common.OAuthInfo
 import noweekend.client.common.OAuthLoginParams
 import noweekend.client.common.Revocable
 import noweekend.client.properties.AppleAuthProperties
-import noweekend.core.domain.user.ProviderType
+import noweekend.core.domain.enumerate.ProviderType
 import org.bouncycastle.util.io.pem.PemReader
 import org.springframework.core.io.FileSystemResource
 import org.springframework.stereotype.Component

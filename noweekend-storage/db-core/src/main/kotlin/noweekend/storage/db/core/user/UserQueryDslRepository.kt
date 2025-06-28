@@ -1,7 +1,7 @@
 package noweekend.storage.db.core.user
 
 import com.querydsl.jpa.impl.JPAQueryFactory
-import noweekend.core.domain.user.ProviderType
+import noweekend.core.domain.enumerate.ProviderType
 import org.springframework.stereotype.Repository
 
 @Repository

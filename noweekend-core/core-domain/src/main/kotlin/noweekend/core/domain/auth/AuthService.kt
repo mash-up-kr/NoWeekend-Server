@@ -1,8 +1,8 @@
 package noweekend.core.domain.auth
 
+import noweekend.core.domain.enumerate.ProviderType
+import noweekend.core.domain.enumerate.Role
 import noweekend.core.domain.jwt.JwtProvider
-import noweekend.core.domain.user.ProviderType
-import noweekend.core.domain.user.Role
 import noweekend.core.domain.user.User
 import noweekend.core.domain.user.UserReader
 import noweekend.core.domain.user.UserWriter
