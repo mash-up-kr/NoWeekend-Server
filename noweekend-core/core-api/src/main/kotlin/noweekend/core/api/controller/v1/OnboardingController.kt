@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController
 class OnboardingController(
     private val userService: UserService,
 ) : OnboardingControllerDocs {
-    @GetMapping("/onboarding/schedules")
+    @GetMapping("/onboarding/tag")
     override fun getDefaultTag(
         @CurrentUserId userId: String,
     ): ApiResponse<DefaultTags> {
@@ -28,7 +28,7 @@ class OnboardingController(
         )
     }
 
-    @PostMapping("/onboarding/schedules")
+    @PostMapping("/onboarding/tag")
     override fun registerSelectedDefaultTag(
         @CurrentUserId userId: String,
         @Validated @RequestBody request: TagRequest,
