@@ -4,7 +4,7 @@ import noweekend.core.api.controller.v1.request.LeaveInputRequest
 import noweekend.core.api.controller.v1.request.OnboardingRequest
 import noweekend.core.api.controller.v1.request.ScheduleRequest
 import noweekend.core.api.security.annotations.CurrentUserId
-import noweekend.core.domain.onboding.OnboardingService
+import noweekend.core.domain.onboarding.OnboardingService
 import noweekend.core.support.response.ApiResponse
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.PostMapping

@@ -1,4 +1,4 @@
-package noweekend.core.domain.onboding
+package noweekend.core.domain.onboarding
 
 import noweekend.core.api.controller.v1.request.LeaveInputRequest
 import noweekend.core.api.controller.v1.request.OnboardingRequest
