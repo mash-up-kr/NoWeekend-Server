@@ -13,5 +13,5 @@ abstract class BaseEntity {
     @UpdateTimestamp
     val updatedAt: LocalDateTime = LocalDateTime.MIN
 
-    val isDelete: Boolean = false
+    val isDeleted: Boolean = false
 }
