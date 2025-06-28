@@ -17,7 +17,7 @@ class TagHistoryEntity(
     @Column(name = "user_id", nullable = false)
     val userId: String,
 
-    @Column(name = "content", length = 20, nullable = false)
+    @Column(name = "content", length = 50, nullable = false)
     val content: String,
 
     val selected: Boolean = true,
