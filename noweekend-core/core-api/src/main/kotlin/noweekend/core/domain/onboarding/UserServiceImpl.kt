@@ -1,5 +1,6 @@
 package noweekend.core.domain.onboarding
 
+import noweekend.core.api.controller.v1.request.EditNickname
 import noweekend.core.api.controller.v1.request.LeaveInputRequest
 import noweekend.core.api.controller.v1.request.OnboardingRequest
 import noweekend.core.domain.schedule.ScheduleTag
@@ -11,11 +12,11 @@ import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
 @Service
-class OnboardingServiceImpl(
+class UserServiceImpl(
     private val scheduleWriter: ScheduleWriter,
     private val userWriter: UserWriter,
     private val userReader: UserReader,
-) : OnboardingService {
+) : UserService {
     override fun registerScheduleTag(scheduleTag: List<ScheduleTag>, userId: String) {
         scheduleWriter.registerTags(scheduleTag, userId)
     }
@@ -30,7 +31,7 @@ class OnboardingServiceImpl(
         userWriter.upsert(merged)
     }
 
-    override fun registerRemainingAnnualLeave(request: LeaveInputRequest, userId: String) {
+    override fun updateRemainingAnnualLeave(request: LeaveInputRequest, userId: String) {
         val user = userReader.findUserById(userId) ?: throw NoSuchElementException("id로 사용자를 찾을 수 없음")
         var daysToAdd = request.days.toDouble()
         if (request.hours == 4) {
@@ -44,5 +45,13 @@ class OnboardingServiceImpl(
 
     private fun parseLocalDate(request: OnboardingRequest): LocalDate {
         return LocalDate.parse(request.birthDate, DateTimeFormatter.ofPattern("yyyyMMdd"))
+    }
+
+    override fun updateNickname(editNickname: EditNickname, userId: String) {
+        val user = userReader.findUserById(userId) ?: throw NoSuchElementException()
+        val merged = user.copy(
+            name = editNickname.nickname,
+        )
+        userWriter.upsert(merged)
     }
 }
