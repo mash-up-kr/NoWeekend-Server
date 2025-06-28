@@ -26,7 +26,7 @@ class UserController() : UserControllerDocs {
 
     @PostMapping("/profile")
     override fun submitProfile(
-        @RequestBody request: OnboardingRequest
+        @RequestBody request: OnboardingRequest,
     ): ApiResponse<String> {
         return ApiResponse.success(
             "닉네임 및 생년월일 등록이 성공적으로 완료되었습니다.",

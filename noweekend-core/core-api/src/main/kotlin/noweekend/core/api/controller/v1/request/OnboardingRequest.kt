@@ -9,18 +9,18 @@ data class OnboardingRequest(
     @field:NotBlank(message = "닉네임은 필수입니다.")
     @field:Schema(
         description = "닉네임",
-        example = "김매송.."
+        example = "김매송..",
     )
     val nickname: String,
 
     @field:NotBlank(message = "생년월일은 필수입니다.")
     @field:Pattern(
         regexp = "^[0-9]{8}$",
-        message = "생년월일은 8자리 숫자(yyyyMMdd)여야 합니다."
+        message = "생년월일은 8자리 숫자(yyyyMMdd)여야 합니다.",
     )
     @field:Schema(
         description = "생년월일(8자리, yyyyMMdd)",
-        example = "19991213"
+        example = "19991213",
     )
     val birthDate: String,
 )

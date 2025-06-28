@@ -65,40 +65,48 @@ interface UserControllerDocs {
         description = "유저가 온보딩 시 닉네임과 생년월일을 등록합니다.",
         requestBody = RequestBody(
             required = true,
-            content = [Content(
-                mediaType = "application/json",
-                schema = Schema(implementation = OnboardingRequest::class),
-                examples = [ExampleObject(
-                    name = "예시 요청",
-                    value = """
+            content = [
+                Content(
+                    mediaType = "application/json",
+                    schema = Schema(implementation = OnboardingRequest::class),
+                    examples = [
+                        ExampleObject(
+                            name = "예시 요청",
+                            value = """
                         {
                           "nickname": "김매송..",
                           "birthDate": "19991213"
                         }
-                    """
-                )]
-            )]
+                    """,
+                        ),
+                    ],
+                ),
+            ],
         ),
         responses = [
             SwaggerApiResponse(
                 responseCode = "200",
                 description = "닉네임 및 생년월일 등록 성공",
-                content = [Content(
-                    mediaType = "application/json",
-                    schema = Schema(implementation = String::class),
-                    examples = [ExampleObject(
-                        name = "예시 응답",
-                        value = """
+                content = [
+                    Content(
+                        mediaType = "application/json",
+                        schema = Schema(implementation = String::class),
+                        examples = [
+                            ExampleObject(
+                                name = "예시 응답",
+                                value = """
                             "닉네임 및 생년월일 등록이 성공적으로 완료되었습니다."
                         """,
-                    )]
-                )]
+                            ),
+                        ],
+                    ),
+                ],
             ),
             SwaggerApiResponse(
                 responseCode = "400",
-                description = "잘못된 요청"
+                description = "잘못된 요청",
             ),
-        ]
+        ],
     )
     fun submitProfile(request: OnboardingRequest): ApiResponse<String>
 }
