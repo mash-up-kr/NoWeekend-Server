@@ -4,11 +4,20 @@ import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.Id
 import jakarta.persistence.Table
-import noweekend.core.domain.schedule.Tag
+import jakarta.persistence.UniqueConstraint
+import noweekend.core.domain.tag.Tag
 import noweekend.storage.db.core.BaseEntity
 
 @Entity
-@Table(name = "tag_history")
+@Table(
+    name = "tag_history",
+    uniqueConstraints = [
+        UniqueConstraint(
+            name = "uk_user_content",
+            columnNames = ["user_id", "content"]
+        )
+    ]
+)
 class TagHistoryEntity(
     @Id
     @Column(name = "id")
