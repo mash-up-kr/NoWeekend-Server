@@ -36,7 +36,7 @@ class JwtProviderImpl(private val jwtProperties: JwtProperties) : JwtProvider {
     override fun generate(userId: String): String {
         val claims = Jwts
             .claims()
-            .setAudience(userId.toString())
+            .setAudience(userId)
             .setIssuer(jwtProperties.issuer)
 
         val now = Date()

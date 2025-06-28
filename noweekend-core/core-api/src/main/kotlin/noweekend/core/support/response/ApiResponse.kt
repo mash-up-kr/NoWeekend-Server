@@ -17,8 +17,12 @@ data class ApiResponse<T> private constructor(
             return ApiResponse(ResultType.SUCCESS, data, null)
         }
 
-        fun <S> error(error: ErrorType, errorData: Any? = null): ApiResponse<S> {
-            return ApiResponse(ResultType.ERROR, null, ErrorMessage(error, errorData))
+        fun <S> error(error: ErrorType, errorMessage: String? = null, errorData: Any? = null): ApiResponse<S> {
+            return ApiResponse(
+                result = ResultType.ERROR,
+                data = null,
+                error = ErrorMessage(error, errorMessage ?: error.message, errorData),
+            )
         }
     }
 }
