@@ -225,5 +225,58 @@ interface UserControllerDocs {
     fun updateNickname(
         @Parameter(hidden = true) @CurrentUserId userId: String,
         editNickname: EditNickname,
+    ): ApiResponse<String>
+
+    @Operation(
+        summary = "프로필: 연차 정보 수정",
+        description = "유저가 연차 정보를 수정합니다.",
+        requestBody = RequestBody(
+            required = true,
+            content = [
+                Content(
+                    mediaType = "application/json",
+                    schema = Schema(implementation = LeaveInputRequest::class),
+                    examples = [
+                        ExampleObject(
+                            name = "예시 요청",
+                            value = """
+                        {
+                          "days": 8,
+                          "hours": 6
+                        }
+                        """,
+                        ),
+                    ],
+                ),
+            ],
+        ),
+        responses = [
+            SwaggerApiResponse(
+                responseCode = "200",
+                description = "연차 정보 수정 성공",
+                content = [
+                    Content(
+                        mediaType = "application/json",
+                        schema = Schema(implementation = String::class),
+                        examples = [
+                            ExampleObject(
+                                name = "예시 응답",
+                                value = """
+                                "연차 정보가 성공적으로 변경되었습니다."
+                            """,
+                            ),
+                        ],
+                    ),
+                ],
+            ),
+            SwaggerApiResponse(
+                responseCode = "400",
+                description = "잘못된 요청",
+            ),
+        ],
     )
+    fun editLeave(
+        @Parameter(hidden = true) @CurrentUserId userId: String,
+        request: LeaveInputRequest,
+    ): ApiResponse<String>
 }
