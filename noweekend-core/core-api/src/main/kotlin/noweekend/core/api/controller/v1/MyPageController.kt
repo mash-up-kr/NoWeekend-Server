@@ -2,6 +2,7 @@ package noweekend.core.api.controller.v1
 
 import noweekend.core.api.controller.v1.request.LeaveInputRequest
 import noweekend.core.api.controller.v1.request.ProfileRequest
+import noweekend.core.api.controller.v1.request.TagUpdateRequest
 import noweekend.core.api.security.annotations.CurrentUserId
 import noweekend.core.domain.onboarding.UserService
 import noweekend.core.domain.schedule.UserTags
@@ -46,6 +47,17 @@ class MyPageController(
     ): ApiResponse<UserTags> {
         return ApiResponse.success(
             userService.getStateTags(userId),
+        )
+    }
+
+    @PatchMapping("/tags")
+    override fun updateTags(
+        @CurrentUserId userId: String,
+        @Validated @RequestBody request: TagUpdateRequest,
+    ): ApiResponse<String> {
+        userService.updateTag(request, userId)
+        return ApiResponse.success(
+            "태그들이 성공적으로 변경되었습니다.",
         )
     }
 }

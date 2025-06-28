@@ -2,7 +2,7 @@ package noweekend.core.domain.onboarding
 
 import noweekend.core.api.controller.v1.request.LeaveInputRequest
 import noweekend.core.api.controller.v1.request.ProfileRequest
-import noweekend.core.api.controller.v1.request.TagRequest
+import noweekend.core.api.controller.v1.request.TagUpdateRequest
 import noweekend.core.domain.schedule.BasicTag
 import noweekend.core.domain.schedule.TagReader
 import noweekend.core.domain.schedule.TagWriter
@@ -29,8 +29,14 @@ class UserServiceImpl(
         return tagReader.getUserTags(userId)
     }
 
-    override fun updateTag(request: TagRequest, userId: String) {
-        // ToDo update 구현
+    override fun updateTag(request: TagUpdateRequest, userId: String) {
+        val userTags = tagReader.getUserTags(userId)
+        tagWriter.upsertTags(
+            addScheduleTags = request.addScheduleTags,
+            deleteScheduleTags = request.deleteScheduleTags,
+            userTags = userTags,
+            userId = userId,
+        )
     }
 
     override fun registerSelectedBasicTag(basicTag: List<BasicTag>, userId: String) {
