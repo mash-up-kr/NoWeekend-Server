@@ -16,7 +16,7 @@ class OnboardingServiceImpl(
     private val userWriter: UserWriter,
     private val userReader: UserReader,
 ) : OnboardingService {
-    override fun registerScheduleTage(scheduleTag: List<ScheduleTag>, userId: String) {
+    override fun registerScheduleTag(scheduleTag: List<ScheduleTag>, userId: String) {
         scheduleWriter.registerTags(scheduleTag, userId)
     }
 

@@ -23,7 +23,7 @@ class UserController(
         @Validated @RequestBody request: ScheduleRequest,
     ): ApiResponse<String> {
         val scheduleTags = request.validatedScheduleTags()
-        onboardingService.registerScheduleTage(scheduleTags, userId)
+        onboardingService.registerScheduleTag(scheduleTags, userId)
         return ApiResponse.success(
             "일정 등록이 성공적으로 완료되었습니다.",
         )
