@@ -1,0 +1,61 @@
+package noweekend.core.api.controller.v1
+
+import io.swagger.v3.oas.annotations.Operation
+import io.swagger.v3.oas.annotations.media.Content
+import io.swagger.v3.oas.annotations.media.ExampleObject
+import io.swagger.v3.oas.annotations.media.Schema
+import io.swagger.v3.oas.annotations.parameters.RequestBody
+import noweekend.core.api.controller.v1.request.ScheduleRequest
+import noweekend.core.support.response.ApiResponse
+import io.swagger.v3.oas.annotations.responses.ApiResponse as SwaggerApiResponse
+
+interface UserControllerDocs {
+    @Operation(
+        summary = "온보딩: 자주하는 일정 등록",
+        description = "유저가 온보딩 시 자주하는 일정 태그(영문, Enum)를 리스트로 등록합니다.",
+        requestBody = RequestBody(
+            required = true,
+            content = arrayOf(
+                Content(
+                    mediaType = "application/json",
+                    schema = Schema(implementation = ScheduleRequest::class),
+                    examples = arrayOf(
+                        ExampleObject(
+                            name = "예시 요청",
+                            value = """
+                        {
+                          "scheduleTags": ["COMMUTE", "LEAVE", "GYM"]
+                        }
+                        """,
+                        ),
+                    ),
+                ),
+            ),
+        ),
+        responses = [
+            SwaggerApiResponse(
+                responseCode = "200",
+                description = "일정 등록 성공",
+                content = arrayOf(
+                    Content(
+                        mediaType = "application/json",
+                        schema = Schema(implementation = String::class),
+                        examples = arrayOf(
+                            ExampleObject(
+                                name = "예시 응답",
+                                value = """
+                                "일정 등록이 성공적으로 완료되었습니다."
+                                """,
+                            ),
+                        ),
+                    ),
+                ),
+            ),
+            SwaggerApiResponse(
+                responseCode = "400",
+                description = "잘못된 요청",
+            ),
+        ],
+    )
+    fun saveUserSchedules(request: ScheduleRequest): ApiResponse<String>
+}
