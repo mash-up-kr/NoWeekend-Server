@@ -7,9 +7,10 @@ import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.parameters.RequestBody
 import io.swagger.v3.oas.annotations.tags.Tag
 import noweekend.core.api.controller.v1.request.LoginRequest
-import noweekend.core.api.controller.v1.response.GoogleLoginResponse
 import noweekend.core.api.controller.v1.response.OAuthLoginResponse
 import noweekend.core.support.response.ApiResponse
+import org.springframework.validation.annotation.Validated
+import org.springframework.web.bind.annotation.PathVariable
 
 @Tag(name = "인증", description = "소셜 로그인 및 인증 API")
 interface AuthControllerDocs {
@@ -32,7 +33,7 @@ interface AuthControllerDocs {
                 content = [
                     Content(
                         mediaType = "application/json",
-                        schema = Schema(implementation = GoogleLoginResponse::class),
+                        schema = Schema(implementation = OAuthLoginResponse::class),
                     ),
                 ],
             ),
@@ -64,5 +65,8 @@ interface AuthControllerDocs {
             ),
         ],
     )
-    fun loginWithGoogle(providerType: String, request: LoginRequest): ApiResponse<OAuthLoginResponse>
+    fun loginWithGoogle(
+        @PathVariable("providerType") providerType: String,
+        @Validated @RequestBody request: LoginRequest,
+    ): ApiResponse<OAuthLoginResponse>
 }
