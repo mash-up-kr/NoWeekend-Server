@@ -6,6 +6,8 @@ import noweekend.client.apple.AppleLoginParams
 import noweekend.client.common.OAuthLoginParams
 import noweekend.client.google.GoogleLoginParams
 import noweekend.core.domain.enumerate.ProviderType
+import noweekend.core.support.error.CoreException
+import noweekend.core.support.error.ErrorType
 
 @Schema(description = "소셜 로그인 요청 DTO")
 data class LoginRequest(
@@ -17,7 +19,15 @@ data class LoginRequest(
     val name: String?,
 )
 
-fun LoginRequest.toOAuthLoginParams(providerType: ProviderType): OAuthLoginParams {
+fun LoginRequest.toOAuthLoginParams(providerTypeStr: String): OAuthLoginParams {
+    val providerType = try {
+        ProviderType.valueOf(providerTypeStr.uppercase())
+    } catch (e: Exception) {
+        throw CoreException(
+            ErrorType.INVALID_PROVIDER_TYPE,
+        )
+    }
+
     return when (providerType) {
         ProviderType.GOOGLE -> GoogleLoginParams(authorizationCode)
         ProviderType.APPLE -> AppleLoginParams(authorizationCode)
