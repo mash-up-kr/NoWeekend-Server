@@ -2,7 +2,7 @@ package noweekend.client.google
 
 import org.springframework.cloud.openfeign.FeignClient
 import org.springframework.http.MediaType
-import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestParam
 
 @FeignClient(
@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestParam
 )
 internal interface GoogleTokenApi {
 
-    @GetMapping(
+    @PostMapping(
         value = ["/token"],
         consumes = [MediaType.APPLICATION_JSON_VALUE],
     )
