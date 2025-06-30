@@ -1,4 +1,4 @@
-package noweekend.core.domain.schedule
+package noweekend.core.domain.tag
 
 enum class BasicTag(
     val koreanContent: String,

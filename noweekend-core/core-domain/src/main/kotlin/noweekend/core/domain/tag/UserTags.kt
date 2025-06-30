@@ -1,4 +1,4 @@
-package noweekend.core.domain.schedule
+package noweekend.core.domain.tag
 
 data class UserTags(
     val selectedBasicTags: List<Tag>,

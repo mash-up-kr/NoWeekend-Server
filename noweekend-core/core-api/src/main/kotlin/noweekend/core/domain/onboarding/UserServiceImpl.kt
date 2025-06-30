@@ -3,10 +3,10 @@ package noweekend.core.domain.onboarding
 import noweekend.core.api.controller.v1.request.LeaveInputRequest
 import noweekend.core.api.controller.v1.request.ProfileRequest
 import noweekend.core.api.controller.v1.request.TagUpdateRequest
-import noweekend.core.domain.schedule.BasicTag
-import noweekend.core.domain.schedule.TagReader
-import noweekend.core.domain.schedule.TagWriter
-import noweekend.core.domain.schedule.UserTags
+import noweekend.core.domain.tag.BasicTag
+import noweekend.core.domain.tag.TagReader
+import noweekend.core.domain.tag.TagWriter
+import noweekend.core.domain.tag.UserTags
 import noweekend.core.domain.user.UserReader
 import noweekend.core.domain.user.UserWriter
 import org.springframework.stereotype.Service

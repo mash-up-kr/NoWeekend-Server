@@ -4,9 +4,9 @@ import noweekend.core.api.controller.v1.request.ScheduleCreateRequest
 import noweekend.core.api.controller.v1.request.ScheduleUpdateRequest
 import noweekend.core.api.controller.v1.response.DailyScheduleResponse
 import noweekend.core.api.controller.v1.response.ScheduleResponse
-import noweekend.core.domain.schedule.Schedule
-import noweekend.core.domain.schedule.ScheduleReader
-import noweekend.core.domain.schedule.ScheduleWriter
+import noweekend.core.domain.tag.Schedule
+import noweekend.core.domain.tag.ScheduleReader
+import noweekend.core.domain.tag.ScheduleWriter
 import noweekend.core.support.error.CoreException
 import noweekend.core.support.error.ErrorType
 import org.springframework.stereotype.Service

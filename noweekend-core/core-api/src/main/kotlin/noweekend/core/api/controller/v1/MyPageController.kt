@@ -5,7 +5,7 @@ import noweekend.core.api.controller.v1.request.ProfileRequest
 import noweekend.core.api.controller.v1.request.TagUpdateRequest
 import noweekend.core.api.security.annotations.CurrentUserId
 import noweekend.core.domain.onboarding.UserService
-import noweekend.core.domain.schedule.UserTags
+import noweekend.core.domain.tag.UserTags
 import noweekend.core.support.response.ApiResponse
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.GetMapping
