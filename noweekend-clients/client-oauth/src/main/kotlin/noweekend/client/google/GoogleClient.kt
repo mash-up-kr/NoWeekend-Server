@@ -5,6 +5,8 @@ import noweekend.client.common.OAuthInfo
 import noweekend.client.common.OAuthLoginParams
 import noweekend.client.properties.GoogleAuthProperties
 import noweekend.core.domain.enumerate.ProviderType
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 
 @Component
@@ -24,6 +26,17 @@ class GoogleClient internal constructor(
     }
 
     private fun requestAccessToken(params: OAuthLoginParams): String {
+        log.info(
+            """
+            [GoogleTokenApi Request Params]
+            code: ${params.getCode()}
+            redirectUri: $DEFAULT_REDIRECT_URI
+            clientId: ${googleAuthProperties.clientId}
+            clientSecret: ${googleAuthProperties.clientSecret}
+            grantType: $GOOGLE_AUTHORIZATION_TYPE
+            """.trimIndent(),
+        )
+
         return googleTokenApi.getGoogleToken(
             code = params.getCode(),
             redirectUri = DEFAULT_REDIRECT_URI,
@@ -38,6 +51,7 @@ class GoogleClient internal constructor(
     }
 
     companion object {
+        private val log: Logger = LoggerFactory.getLogger(GoogleClient::class.java)
         private const val GOOGLE_AUTHORIZATION_TYPE = "authorization_code"
         private const val DEFAULT_REDIRECT_URI = "postmessage"
     }

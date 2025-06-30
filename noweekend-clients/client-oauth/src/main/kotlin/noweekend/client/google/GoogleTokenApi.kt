@@ -17,9 +17,9 @@ internal interface GoogleTokenApi {
     )
     fun getGoogleToken(
         @RequestParam("code") code: String,
-        @RequestParam("redirect_uri") redirectUri: String?,
+        @RequestParam("redirect_uri") redirectUri: String,
         @RequestParam("client_id") clientId: String,
         @RequestParam("client_secret") clientSecret: String,
-        @RequestParam("grant_type") grantType: String,
+        @RequestParam("grant_type") grantType: String = "authorization_code",
     ): GoogleTokens
 }
