@@ -10,10 +10,10 @@ import org.springframework.web.bind.annotation.RequestParam
     url = "\${oauth.google.token-base-url}",
 )
 internal interface GoogleTokenApi {
-
     @PostMapping(
         value = ["/token"],
-        consumes = [MediaType.APPLICATION_JSON_VALUE],
+        consumes = [MediaType.APPLICATION_FORM_URLENCODED_VALUE],
+        produces = [MediaType.APPLICATION_JSON_VALUE],
     )
     fun getGoogleToken(
         @RequestParam("code") code: String,
