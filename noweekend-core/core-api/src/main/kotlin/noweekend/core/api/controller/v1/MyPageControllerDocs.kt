@@ -48,13 +48,17 @@ interface MyPageControllerDocs {
                 content = [
                     Content(
                         mediaType = "application/json",
-                        schema = Schema(implementation = String::class),
+                        schema = Schema(implementation = ApiResponse::class),
                         examples = [
                             ExampleObject(
                                 name = "예시 응답",
                                 value = """
-                            "프로필이 성공적으로 변경 되었습니다."
-                            """,
+{
+  "result": "SUCCESS",
+  "data": "프로필이 성공적으로 변경 되었습니다.",
+  "error": null
+}
+"""
                             ),
                         ],
                     ),
@@ -117,19 +121,23 @@ interface MyPageControllerDocs {
             ],
         ),
         responses = [
-            io.swagger.v3.oas.annotations.responses.ApiResponse(
+            SwaggerApiResponse(
                 responseCode = "200",
                 description = "연차 정보 수정 성공",
                 content = [
                     Content(
                         mediaType = "application/json",
-                        schema = Schema(implementation = String::class),
+                        schema = Schema(implementation = ApiResponse::class),
                         examples = [
                             ExampleObject(
                                 name = "예시 응답",
                                 value = """
-                                "연차 정보가 성공적으로 변경되었습니다."
-                            """,
+{
+  "result": "SUCCESS",
+  "data": "연차 정보가 성공적으로 변경되었습니다.",
+  "error": null
+}
+"""
                             ),
                         ],
                     ),
@@ -178,12 +186,14 @@ interface MyPageControllerDocs {
                 content = [
                     Content(
                         mediaType = "application/json",
-                        schema = Schema(implementation = UserTags::class),
+                        schema = Schema(implementation = ApiResponse::class),
                         examples = [
                             ExampleObject(
                                 name = "예시 응답",
                                 value = """
 {
+  "result": "SUCCESS",
+  "data": {
     "selectedBasicTags": [
         {
             "id": "baf123e1-aaaa-bbbb-cccc-1234567890ab",
@@ -228,8 +238,10 @@ interface MyPageControllerDocs {
             "selected": false
         }
     ]
+  },
+  "error": null
 }
-""",
+"""
                             ),
                         ],
                     ),
@@ -297,13 +309,17 @@ interface MyPageControllerDocs {
                 content = [
                     Content(
                         mediaType = "application/json",
-                        schema = Schema(implementation = String::class),
+                        schema = Schema(implementation = ApiResponse::class),
                         examples = [
                             ExampleObject(
                                 name = "예시 응답",
                                 value = """
-"자주하는 일정 태그가 성공적으로 수정되었습니다."
-""",
+{
+  "result": "SUCCESS",
+  "data": "자주하는 일정 태그가 성공적으로 수정되었습니다.",
+  "error": null
+}
+"""
                             ),
                         ],
                     ),

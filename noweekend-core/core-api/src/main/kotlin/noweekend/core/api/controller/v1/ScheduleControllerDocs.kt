@@ -25,7 +25,62 @@ interface ScheduleControllerDocs {
                 content = [
                     Content(
                         mediaType = "application/json",
-                        schema = Schema(implementation = DailyScheduleResponse::class),
+                        schema = Schema(implementation = ApiResponse::class),
+                        examples = [
+                            ExampleObject(
+                                name = "예시 응답",
+                                value = """
+{
+  "result": "SUCCESS",
+  "data": [
+    {
+      "date": "2025-05-01",
+      "schedules": [
+        {
+          "id": "abc123",
+          "title": "회의",
+          "startTime": "2025-05-01T10:00:00",
+          "endTime": "2025-05-01T11:00:00",
+          "category": "COMPANY",
+          "temperature": 3,
+          "allDay": false,
+          "alarmOption": "FIFTEEN_MINUTES_BEFORE",
+          "completed": false
+        }
+      ]
+    }
+  ],
+  "error": null
+}
+""",
+                            ),
+                        ],
+                    ),
+                ],
+            ),
+            SwaggerApiResponse(
+                responseCode = "400",
+                description = "잘못된 요청",
+                content = [
+                    Content(
+                        mediaType = "application/json",
+                        schema = Schema(implementation = ApiResponse::class),
+                        examples = [
+                            ExampleObject(
+                                name = "예시 응답",
+                                value = """
+{
+  "result": "ERROR",
+  "data": null,
+  "error": {
+    "code": "INVALID_PARAMETER",
+    "message": "올바르지 않은 요청입니다.",
+    "data": {}
+  }
+}
+""",
+                            ),
+                        ],
                     ),
                 ],
             ),
@@ -50,17 +105,17 @@ interface ScheduleControllerDocs {
                         ExampleObject(
                             name = "예시 요청",
                             value = """
-                            {
-                              "title": "회의",
-                              "date": "2025-05-01",
-                              "startTime": "10:00:00",
-                              "endTime": "11:00:00",
-                              "category": "COMPANY",
-                              "temperature": 3,
-                              "allDay": false,
-                              "alarmOption": "FIFTEEN_MINUTES_BEFORE"
-                            }
-                            """,
+{
+  "title": "회의",
+  "date": "2025-05-01",
+  "startTime": "10:00:00",
+  "endTime": "11:00:00",
+  "category": "COMPANY",
+  "temperature": 3,
+  "allDay": false,
+  "alarmOption": "FIFTEEN_MINUTES_BEFORE"
+}
+""",
                         ),
                     ],
                 ),
@@ -73,23 +128,53 @@ interface ScheduleControllerDocs {
                 content = [
                     Content(
                         mediaType = "application/json",
-                        schema = Schema(implementation = ScheduleResponse::class),
+                        schema = Schema(implementation = ApiResponse::class),
                         examples = [
                             ExampleObject(
                                 name = "예시 응답",
                                 value = """
-                                {
-                                  "id": "abc123",
-                                  "title": "회의",
-                                  "startTime": "2025-05-01T10:00:00",
-                                  "endTime": "2025-05-01T11:00:00",
-                                  "category": "COMPANY",
-                                  "temperature": 3,
-                                  "allDay": false,
-                                  "alarmOption": "FIFTEEN_MINUTES_BEFORE",
-                                  "completed": false
-                                }
-                                """,
+{
+  "result": "SUCCESS",
+  "data": {
+    "id": "abc123",
+    "title": "회의",
+    "startTime": "2025-05-01T10:00:00",
+    "endTime": "2025-05-01T11:00:00",
+    "category": "COMPANY",
+    "temperature": 3,
+    "allDay": false,
+    "alarmOption": "FIFTEEN_MINUTES_BEFORE",
+    "completed": false
+  },
+  "error": null
+}
+""",
+                            ),
+                        ],
+                    ),
+                ],
+            ),
+            SwaggerApiResponse(
+                responseCode = "400",
+                description = "잘못된 요청",
+                content = [
+                    Content(
+                        mediaType = "application/json",
+                        schema = Schema(implementation = ApiResponse::class),
+                        examples = [
+                            ExampleObject(
+                                name = "예시 응답",
+                                value = """
+{
+  "result": "ERROR",
+  "data": null,
+  "error": {
+    "code": "INVALID_PARAMETER",
+    "message": "올바르지 않은 요청입니다.",
+    "data": {}
+  }
+}
+""",
                             ),
                         ],
                     ),
@@ -121,7 +206,55 @@ interface ScheduleControllerDocs {
                 content = [
                     Content(
                         mediaType = "application/json",
-                        schema = Schema(implementation = ScheduleResponse::class),
+                        schema = Schema(implementation = ApiResponse::class),
+                        examples = [
+                            ExampleObject(
+                                name = "예시 응답",
+                                value = """
+{
+  "result": "SUCCESS",
+  "data": {
+    "id": "abc123",
+    "title": "회의",
+    "startTime": "2025-05-01T10:00:00",
+    "endTime": "2025-05-01T11:00:00",
+    "category": "COMPANY",
+    "temperature": 3,
+    "allDay": false,
+    "alarmOption": "FIFTEEN_MINUTES_BEFORE",
+    "completed": false
+  },
+  "error": null
+}
+""",
+                            ),
+                        ],
+                    ),
+                ],
+            ),
+            SwaggerApiResponse(
+                responseCode = "400",
+                description = "잘못된 요청",
+                content = [
+                    Content(
+                        mediaType = "application/json",
+                        schema = Schema(implementation = ApiResponse::class),
+                        examples = [
+                            ExampleObject(
+                                name = "예시 응답",
+                                value = """
+{
+  "result": "ERROR",
+  "data": null,
+  "error": {
+    "code": "INVALID_PARAMETER",
+    "message": "올바르지 않은 요청입니다.",
+    "data": {}
+  }
+}
+""",
+                            ),
+                        ],
                     ),
                 ],
             ),
@@ -140,8 +273,55 @@ interface ScheduleControllerDocs {
             SwaggerApiResponse(
                 responseCode = "200",
                 description = "일정 삭제 성공",
+                content = [
+                    Content(
+                        mediaType = "application/json",
+                        schema = Schema(implementation = ApiResponse::class),
+                        examples = [
+                            ExampleObject(
+                                name = "예시 응답",
+                                value = """
+{
+  "result": "SUCCESS",
+  "data": "일정이 성공적으로 삭제되었습니다.",
+  "error": null
+}
+""",
+                            ),
+                        ],
+                    ),
+                ],
+            ),
+            SwaggerApiResponse(
+                responseCode = "400",
+                description = "잘못된 요청",
+                content = [
+                    Content(
+                        mediaType = "application/json",
+                        schema = Schema(implementation = ApiResponse::class),
+                        examples = [
+                            ExampleObject(
+                                name = "예시 응답",
+                                value = """
+{
+  "result": "ERROR",
+  "data": null,
+  "error": {
+    "code": "INVALID_PARAMETER",
+    "message": "올바르지 않은 요청입니다.",
+    "data": {}
+  }
+}
+""",
+                            ),
+                        ],
+                    ),
+                ],
             ),
         ],
     )
-    fun deleteSchedule(@Schema(hidden = true) userId: String, id: String): ApiResponse<String>
+    fun deleteSchedule(
+        @Schema(hidden = true) userId: String,
+        id: String
+    ): ApiResponse<String>
 }

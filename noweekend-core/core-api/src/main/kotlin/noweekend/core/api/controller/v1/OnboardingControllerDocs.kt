@@ -17,46 +17,51 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse as SwaggerApiResponse
 
 @Tag(name = "온보딩", description = "온보딩 등록 API")
 interface OnboardingControllerDocs {
+
     @Operation(
         summary = "온보딩: 자주하는 일정 등록",
         description = "유저가 온보딩 시 자주하는 일정 태그(영문, Enum)를 리스트로 등록합니다.",
         requestBody = RequestBody(
             required = true,
-            content = arrayOf(
+            content = [
                 Content(
                     mediaType = "application/json",
                     schema = Schema(implementation = TagRequest::class),
-                    examples = arrayOf(
+                    examples = [
                         ExampleObject(
                             name = "예시 요청",
                             value = """
-                        {
-                          "scheduleTags": ["집안일", "은행 업무", "관공서 업무"]
-                        }
-                        """,
+{
+  "scheduleTags": ["집안일", "은행 업무", "관공서 업무"]
+}
+"""
                         ),
-                    ),
+                    ],
                 ),
-            ),
+            ],
         ),
         responses = [
             SwaggerApiResponse(
                 responseCode = "200",
                 description = "일정 등록 성공",
-                content = arrayOf(
+                content = [
                     Content(
                         mediaType = "application/json",
-                        schema = Schema(implementation = String::class),
-                        examples = arrayOf(
+                        schema = Schema(implementation = ApiResponse::class),
+                        examples = [
                             ExampleObject(
                                 name = "예시 응답",
                                 value = """
-                                "일정 등록이 성공적으로 완료되었습니다."
-                                """,
+{
+  "result": "SUCCESS",
+  "data": "일정 등록이 성공적으로 완료되었습니다.",
+  "error": null
+}
+"""
                             ),
-                        ),
+                        ],
                     ),
-                ),
+                ],
             ),
             SwaggerApiResponse(
                 responseCode = "400",
@@ -78,7 +83,7 @@ interface OnboardingControllerDocs {
     "data": {}
   }
 }
-""",
+"""
                             ),
                         ],
                     ),
@@ -104,11 +109,11 @@ interface OnboardingControllerDocs {
                         ExampleObject(
                             name = "예시 요청",
                             value = """
-                        {
-                          "nickname": "김매송..",
-                          "birthDate": "19991213"
-                        }
-                    """,
+{
+  "nickname": "김매송..",
+  "birthDate": "19991213"
+}
+"""
                         ),
                     ],
                 ),
@@ -121,13 +126,17 @@ interface OnboardingControllerDocs {
                 content = [
                     Content(
                         mediaType = "application/json",
-                        schema = Schema(implementation = String::class),
+                        schema = Schema(implementation = ApiResponse::class),
                         examples = [
                             ExampleObject(
                                 name = "예시 응답",
                                 value = """
-                            "닉네임 및 생년월일 등록이 성공적으로 완료되었습니다."
-                        """,
+{
+  "result": "SUCCESS",
+  "data": "닉네임 및 생년월일 등록이 성공적으로 완료되었습니다.",
+  "error": null
+}
+"""
                             ),
                         ],
                     ),
@@ -153,7 +162,7 @@ interface OnboardingControllerDocs {
     "data": {}
   }
 }
-""",
+"""
                             ),
                         ],
                     ),
@@ -179,11 +188,11 @@ interface OnboardingControllerDocs {
                         ExampleObject(
                             name = "예시 요청",
                             value = """
-                        {
-                          "days": 5,
-                          "hours": 4
-                        }
-                        """,
+{
+  "days": 5,
+  "hours": 4
+}
+"""
                         ),
                     ],
                 ),
@@ -196,13 +205,17 @@ interface OnboardingControllerDocs {
                 content = [
                     Content(
                         mediaType = "application/json",
-                        schema = Schema(implementation = String::class),
+                        schema = Schema(implementation = ApiResponse::class),
                         examples = [
                             ExampleObject(
                                 name = "예시 응답",
                                 value = """
-                            "연차 정보가 성공적으로 저장되었습니다."
-                            """,
+{
+  "result": "SUCCESS",
+  "data": "연차 정보가 성공적으로 저장되었습니다.",
+  "error": null
+}
+"""
                             ),
                         ],
                     ),
@@ -228,7 +241,7 @@ interface OnboardingControllerDocs {
     "data": {}
   }
 }
-""",
+"""
                             ),
                         ],
                     ),
@@ -251,44 +264,46 @@ interface OnboardingControllerDocs {
                 content = [
                     Content(
                         mediaType = "application/json",
-                        schema = Schema(implementation = DefaultTags::class),
+                        schema = Schema(implementation = ApiResponse::class),
                         examples = [
                             ExampleObject(
-                                name = "응답",
+                                name = "예시 응답",
                                 value = """
 {
-    "data": {
-        "tags": [
-            "회의 참석",
-            "점심 식사 약속",
-            "헬스장 운동",
-            "장 보기 / 마트 가기",
-            "가족 모임",
-            "병원 예약",
-            "카페에서 작업 / 휴식",
-            "친구 만남",
-            "술자리",
-            "스터디",
-            "학원 수업",
-            "야근",
-            "추가 업무",
-            "산책",
-            "반려동물 산책",
-            "집안일",
-            "은행 업무",
-            "관공서 업무",
-            "독서",
-            "데이트",
-            "미용실",
-            "드라이브",
-            "나들이",
-            "넷플릭스 시청",
-            "유튜브 시청",
-            "치지직 시청"
-        ]
-    }
+  "result": "SUCCESS",
+  "data": {
+    "tags": [
+      "회의 참석",
+      "점심 식사 약속",
+      "헬스장 운동",
+      "장 보기 / 마트 가기",
+      "가족 모임",
+      "병원 예약",
+      "카페에서 작업 / 휴식",
+      "친구 만남",
+      "술자리",
+      "스터디",
+      "학원 수업",
+      "야근",
+      "추가 업무",
+      "산책",
+      "반려동물 산책",
+      "집안일",
+      "은행 업무",
+      "관공서 업무",
+      "독서",
+      "데이트",
+      "미용실",
+      "드라이브",
+      "나들이",
+      "넷플릭스 시청",
+      "유튜브 시청",
+      "치지직 시청"
+    ]
+  },
+  "error": null
 }
-                            """,
+"""
                             ),
                         ],
                     ),
@@ -314,7 +329,7 @@ interface OnboardingControllerDocs {
     "data": {}
   }
 }
-""",
+"""
                             ),
                         ],
                     ),
