@@ -34,7 +34,7 @@ interface OnboardingControllerDocs {
 {
   "scheduleTags": ["집안일", "은행 업무", "관공서 업무"]
 }
-"""
+""",
                         ),
                     ],
                 ),
@@ -57,7 +57,7 @@ interface OnboardingControllerDocs {
   "data": "일정 등록이 성공적으로 완료되었습니다.",
   "error": null
 }
-"""
+""",
                             ),
                         ],
                     ),
@@ -83,7 +83,7 @@ interface OnboardingControllerDocs {
     "data": {}
   }
 }
-"""
+""",
                             ),
                         ],
                     ),
@@ -113,7 +113,7 @@ interface OnboardingControllerDocs {
   "nickname": "김매송..",
   "birthDate": "19991213"
 }
-"""
+""",
                         ),
                     ],
                 ),
@@ -136,7 +136,7 @@ interface OnboardingControllerDocs {
   "data": "닉네임 및 생년월일 등록이 성공적으로 완료되었습니다.",
   "error": null
 }
-"""
+""",
                             ),
                         ],
                     ),
@@ -162,7 +162,7 @@ interface OnboardingControllerDocs {
     "data": {}
   }
 }
-"""
+""",
                             ),
                         ],
                     ),
@@ -192,7 +192,7 @@ interface OnboardingControllerDocs {
   "days": 5,
   "hours": 4
 }
-"""
+""",
                         ),
                     ],
                 ),
@@ -215,7 +215,7 @@ interface OnboardingControllerDocs {
   "data": "연차 정보가 성공적으로 저장되었습니다.",
   "error": null
 }
-"""
+""",
                             ),
                         ],
                     ),
@@ -241,7 +241,7 @@ interface OnboardingControllerDocs {
     "data": {}
   }
 }
-"""
+""",
                             ),
                         ],
                     ),
@@ -303,7 +303,7 @@ interface OnboardingControllerDocs {
   },
   "error": null
 }
-"""
+""",
                             ),
                         ],
                     ),
@@ -329,7 +329,7 @@ interface OnboardingControllerDocs {
     "data": {}
   }
 }
-"""
+""",
                             ),
                         ],
                     ),

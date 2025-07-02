@@ -322,6 +322,6 @@ interface ScheduleControllerDocs {
     )
     fun deleteSchedule(
         @Schema(hidden = true) userId: String,
-        id: String
+        id: String,
     ): ApiResponse<String>
 }

@@ -1,14 +1,13 @@
-package noweekend.core.domain.onboarding
+package noweekend.core.domain.user
 
 import noweekend.core.api.controller.v1.request.LeaveInputRequest
+import noweekend.core.api.controller.v1.request.LocationRequest
 import noweekend.core.api.controller.v1.request.ProfileRequest
 import noweekend.core.api.controller.v1.request.TagUpdateRequest
 import noweekend.core.domain.tag.BasicTag
 import noweekend.core.domain.tag.TagReader
 import noweekend.core.domain.tag.TagWriter
 import noweekend.core.domain.tag.UserTags
-import noweekend.core.domain.user.UserReader
-import noweekend.core.domain.user.UserWriter
 import org.springframework.stereotype.Service
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -67,5 +66,16 @@ class UserServiceImpl(
 
     private fun parseLocalDate(request: ProfileRequest): LocalDate {
         return LocalDate.parse(request.birthDate, DateTimeFormatter.ofPattern("yyyyMMdd"))
+    }
+
+    override fun updateLocation(request: LocationRequest, userId: String) {
+        val user = userReader.findUserById(userId) ?: throw NoSuchElementException("id로 사용자를 찾을 수 없음")
+        val updateUser = user.copy(
+            location = Location(
+                latitude = request.latitude,
+                longitude = request.longitude,
+            ),
+        )
+        userWriter.upsert(updateUser)
     }
 }
