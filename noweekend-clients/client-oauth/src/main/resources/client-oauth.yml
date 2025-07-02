@@ -1,7 +1,7 @@
 oauth:
   google:
-    client-id: ENC(W066J7wcalMGffnLiIMACI2zeAFQRvnWBI88Xk5X14EnAuOoEqFIFZG362X17k2rDkvPplBAoCV2F9IzXSNCu05g1g8gDgS1hqO6+dLBqqIltElhZXyuHA==)
-    client-secret: ENC(oRJB3wAv3LM797DZy6wamtbOtRcOAp6uY6xCQ2+Hu5Bx2DClECbYEkomeAIct/i+)
+    client-id: ENC(ZNprDNu1+g4Ox8aOO6Ypx/a4Ltq5y/nyzLqSEBR+6yL4CEbmfg33zTm6oBVz6k7CHM5WhOoE6vwFrguS+IS7sIIl3fYI2W84uGRBQG/8ePfj1xEIXdORqOxyRvwndc1JOdXVURavyolat7UEmZgepg==)
+    client-secret: ENC(KHSAbC2Jw0nn01ffrxtczXGXGRDkp5lqqNNwK0o1e21Q7zaUyQ/BYAaONf8kFGwycbFAS+PW3UXQyaH7IeaAxuPJj9JXQsjkbpdSBwukX80=)
     token-base-url: https://oauth2.googleapis.com
     resource-base-url: https://www.googleapis.com
   apple:
