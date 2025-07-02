@@ -4,6 +4,7 @@ import noweekend.core.api.controller.v1.request.LocationRequest
 import noweekend.core.api.security.annotations.CurrentUserId
 import noweekend.core.domain.user.UserService
 import noweekend.core.support.response.ApiResponse
+import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
@@ -18,7 +19,7 @@ class LocationController(
     @PostMapping
     override fun saveLocation(
         @CurrentUserId userId: String,
-        @RequestBody request: LocationRequest,
+        @Validated @RequestBody request: LocationRequest,
     ): ApiResponse<String> {
         userService.updateLocation(
             request = request,

@@ -45,7 +45,7 @@ interface LocationControllerDocs {
                 content = [
                     Content(
                         mediaType = "application/json",
-                        schema = Schema(implementation = String::class),
+                        schema = Schema(implementation = ApiResponse::class),
                         examples = [
                             ExampleObject(
                                 name = "예시 응답",
