@@ -8,6 +8,8 @@ import noweekend.core.domain.tag.BasicTag
 import noweekend.core.domain.tag.TagReader
 import noweekend.core.domain.tag.TagWriter
 import noweekend.core.domain.tag.UserTags
+import noweekend.core.support.error.CoreException
+import noweekend.core.support.error.ErrorType
 import org.springframework.stereotype.Service
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -44,7 +46,7 @@ class UserServiceImpl(
 
     override fun upsertProfile(request: ProfileRequest, userId: String) {
         val birthLocalDate = parseLocalDate(request)
-        val user = userReader.findUserById(userId) ?: throw NoSuchElementException("id로 사용자를 찾을 수 없음")
+        val user = userReader.findUserById(userId) ?: throw CoreException(ErrorType.USER_NOT_FOUND_INTERNAL)
         val merged = user.copy(
             name = request.nickname,
             birthDate = birthLocalDate,
@@ -53,7 +55,7 @@ class UserServiceImpl(
     }
 
     override fun updateRemainingAnnualLeave(request: LeaveInputRequest, userId: String) {
-        val user = userReader.findUserById(userId) ?: throw NoSuchElementException("id로 사용자를 찾을 수 없음")
+        val user = userReader.findUserById(userId) ?: throw CoreException(ErrorType.USER_NOT_FOUND_INTERNAL)
         var daysToAdd = request.days.toDouble()
         if (request.hours == 4) {
             daysToAdd += 0.5
@@ -69,7 +71,7 @@ class UserServiceImpl(
     }
 
     override fun updateLocation(request: LocationRequest, userId: String) {
-        val user = userReader.findUserById(userId) ?: throw NoSuchElementException("id로 사용자를 찾을 수 없음")
+        val user = userReader.findUserById(userId) ?: throw CoreException(ErrorType.USER_NOT_FOUND_INTERNAL)
         val updateUser = user.copy(
             location = Location(
                 latitude = request.latitude,
