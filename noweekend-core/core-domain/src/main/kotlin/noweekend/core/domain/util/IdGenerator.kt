@@ -15,6 +15,6 @@ object IdGenerator {
     fun generate(): String {
         val now = LocalDateTime.now(seoul).format(formatter)
         val uuid = UUID.randomUUID().toString().replace("-", "")
-        return "v1-noweekend-$now-$uuid"
+        return "v1-$now-$uuid"
     }
 }
