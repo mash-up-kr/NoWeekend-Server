@@ -58,7 +58,7 @@ interface MyPageControllerDocs {
   "data": "프로필이 성공적으로 변경 되었습니다.",
   "error": null
 }
-"""
+""",
                             ),
                         ],
                     ),
@@ -137,7 +137,7 @@ interface MyPageControllerDocs {
   "data": "연차 정보가 성공적으로 변경되었습니다.",
   "error": null
 }
-"""
+""",
                             ),
                         ],
                     ),
@@ -241,7 +241,7 @@ interface MyPageControllerDocs {
   },
   "error": null
 }
-"""
+""",
                             ),
                         ],
                     ),
@@ -319,7 +319,7 @@ interface MyPageControllerDocs {
   "data": "자주하는 일정 태그가 성공적으로 수정되었습니다.",
   "error": null
 }
-"""
+""",
                             ),
                         ],
                     ),

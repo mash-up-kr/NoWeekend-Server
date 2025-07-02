@@ -20,6 +20,7 @@ data class User(
     val remainingAnnualLeave: Double = 0.0,
     val createdAt: LocalDateTime?,
     val updatedAt: LocalDateTime?,
+    var location: Location?,
 ) {
     companion object {
         fun newUser(
@@ -41,6 +42,7 @@ data class User(
                 birthDate = null,
                 createdAt = null,
                 updatedAt = null,
+                location = null,
             )
         }
     }

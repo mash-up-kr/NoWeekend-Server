@@ -1,6 +1,7 @@
 package noweekend.storage.db.core.user
 
 import jakarta.persistence.Column
+import jakarta.persistence.Embedded
 import jakarta.persistence.Entity
 import jakarta.persistence.EnumType
 import jakarta.persistence.Enumerated
@@ -10,6 +11,7 @@ import jakarta.persistence.UniqueConstraint
 import noweekend.core.domain.enumerate.Gender
 import noweekend.core.domain.enumerate.ProviderType
 import noweekend.core.domain.enumerate.Role
+import noweekend.core.domain.user.Location
 import noweekend.core.domain.user.User
 import noweekend.storage.db.core.BaseEntity
 import java.time.LocalDate
@@ -56,6 +58,9 @@ class UserEntity(
 
     @Column(name = "remaining_annual_leave", nullable = true)
     val remainingAnnualLeave: Double = 0.0,
+
+    @Embedded
+    var location: Location?,
 ) : BaseEntity() {
     fun toUser(): User = User(
         id = this.id,
@@ -70,6 +75,7 @@ class UserEntity(
         remainingAnnualLeave = this.remainingAnnualLeave,
         createdAt = this.createdAt,
         updatedAt = this.updatedAt,
+        location = this.location,
     )
 }
 
@@ -84,4 +90,5 @@ fun User.toEntity(): UserEntity = UserEntity(
     role = this.role,
     remainingAnnualLeave = this.remainingAnnualLeave,
     birthDate = this.birthDate,
+    location = this.location,
 )
