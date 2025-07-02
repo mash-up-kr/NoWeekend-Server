@@ -1,7 +1,7 @@
 oauth:
   google:
-    client-id: GoogleClientId
-    client-secret: GoogleSecret
+    client-id: ENC(W066J7wcalMGffnLiIMACI2zeAFQRvnWBI88Xk5X14EnAuOoEqFIFZG362X17k2rDkvPplBAoCV2F9IzXSNCu05g1g8gDgS1hqO6+dLBqqIltElhZXyuHA==)
+    client-secret: ENC(oRJB3wAv3LM797DZy6wamtbOtRcOAp6uY6xCQ2+Hu5Bx2DClECbYEkomeAIct/i+)
     token-base-url: https://oauth2.googleapis.com
     resource-base-url: https://www.googleapis.com
   apple:
