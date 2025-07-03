@@ -19,22 +19,40 @@ jobs:
           java-version: 21
           distribution: temurin
 
+      # 기존 core-api 빌드
       - name: Build core-api jar
         run: ./gradlew :noweekend-core:core-api:clean :noweekend-core:core-api:bootJar
 
+      # mcp-host/mcp-server 빌드 추가
+      - name: Build mcp-host jar
+        run: ./gradlew :noweekend-mcp:mcp-host:clean :noweekend-mcp:mcp-host:bootJar
+
+      - name: Build mcp-server jar
+        run: ./gradlew :noweekend-mcp:mcp-server:clean :noweekend-mcp:mcp-server:bootJar
+
+      # Docker build
       - name: Build core-api Docker image
         run: docker build -t core-api:latest -f ./noweekend-core/core-api/Dockerfile ./noweekend-core/core-api
 
+      - name: Build mcp-host Docker image
+        run: docker build -t mcp-host:latest -f ./noweekend-mcp/mcp-host/Dockerfile ./noweekend-mcp/mcp-host
+
+      - name: Build mcp-server Docker image
+        run: docker build -t mcp-server:latest -f ./noweekend-mcp/mcp-server/Dockerfile ./noweekend-mcp/mcp-server
+
+      # Docker save
       - name: Save Docker images as tar
         run: |
           docker save core-api:latest -o core-api.tar
+          docker save mcp-host:latest -o mcp-host.tar
+          docker save mcp-server:latest -o mcp-server.tar
           sleep 2
 
       - name: Fix permissions for all artifacts
-        run: chmod 644 core-api.tar docker-compose.app.yml
+        run: chmod 644 core-api.tar mcp-host.tar mcp-server.tar docker-compose.app.yml
 
       - name: Zip up deploy artifacts
-        run: zip deploy-artifacts.zip core-api.tar docker-compose.app.yml
+        run: zip deploy-artifacts.zip core-api.tar mcp-host.tar mcp-server.tar docker-compose.app.yml
 
       - name: SCP zipped artifacts to NCP
         uses: appleboy/scp-action@v0.1.7
@@ -45,6 +63,7 @@ jobs:
           source: deploy-artifacts.zip
           target: /root/organized/app/
           debug: true
+
       - name: SSH into server and deploy
         uses: appleboy/ssh-action@v1.0.0
         with:
@@ -53,11 +72,14 @@ jobs:
           key: ${{ secrets.NCP_SSH_KEY }}
           script: |
             cd /root/organized/app
-            rm -f core-api.tar docker-compose.app.yml
+            rm -f core-api.tar mcp-host.tar mcp-server.tar docker-compose.app.yml
             unzip -o deploy-artifacts.zip
             rm -f deploy-artifacts.zip
             mkdir -p /root/organized/app/secret
             echo "${{ secrets.APPLE_SECRET_KEY_BASE64 }}" | base64 -d > /root/organized/app/secret/apple_auth_key.p8
             chmod 600 /root/organized/app/secret/apple_auth_key.p8
             docker load -i core-api.tar
+            docker load -i mcp-host.tar
+            docker load -i mcp-server.tar
+            docker image prune -f
             docker compose -f docker-compose.app.yml up -d
