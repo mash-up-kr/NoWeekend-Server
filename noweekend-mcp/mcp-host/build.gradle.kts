@@ -42,8 +42,6 @@ dependencyManagement {
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-webflux")
     implementation("org.springframework.boot:spring-boot-starter-aop")
-    compileOnly("org.projectlombok:lombok")
-    annotationProcessor("org.projectlombok:lombok")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("io.projectreactor:reactor-test")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
@@ -65,6 +63,10 @@ dependencies {
 
     // LangGraph4j core
     implementation("org.bsc.langgraph4j:langgraph4j-core:1.5.12")
+
+    // jasypt
+    implementation("com.github.ulisesbocchio:jasypt-spring-boot-starter:3.0.5")
+    testImplementation("com.github.ulisesbocchio:jasypt-spring-boot-starter:3.0.5")
 }
 
 configurations.all {

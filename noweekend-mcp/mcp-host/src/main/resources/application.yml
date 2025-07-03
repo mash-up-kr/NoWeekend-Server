@@ -1,7 +1,7 @@
 spring:
   ai:
     anthropic:
-      api-key: ${ANTHROPIC_API_KEY}
+      api-key: ENC(DSDMqqudORinUFWutrGj/hFq31Rcp+1B5SqZmhQUZKe5g5G01KIcngKwmep3K0aDGrqMIGsxlAxj9Bx9fe2MwHnpQ+pZYCT/vYAp/6hKIiuSQULyrMWgkTxd08+RWnzP9DNZb7BpX1NYuZ3dsIqPo0qVCVsyLLjc)
       chat:
         options:
           model: claude-3-7-sonnet-20250219
@@ -14,9 +14,8 @@ spring:
         sse:
           connections:
             author-tool-server:
-              url: http://localhost:8081
+              url: http://mcp-server:8081
               enabled: true
-
         stdio:
           connections:
             brave-search:
@@ -24,16 +23,8 @@ spring:
               args:
                 - "-y"
                 - "@modelcontextprotocol/server-brave-search"
-              # 이미 환경변수로 주입 중이네요
               env:
-                BRAVE_API_KEY: ${BRAVE_API_KEY}
-
-            filesystem:
-              command: npx
-              args:
-                - "-y"
-                - "@modelcontextprotocol/server-filesystem"
-                - "./"
+                BRAVE_API_KEY: ENC(tOf1NF3MQ4QX7ou+iVM6BoOB5NrW2B9KkZVC3jn72puMsagRysNFGA==)
         type: SYNC
         request-timeout: 60s
 
@@ -42,3 +33,6 @@ logging:
     org:
       springframework:
         ai: DEBUG
+
+server:
+  port: 8082
