@@ -24,6 +24,14 @@ kma:
   api:
     key: ENC(Tc+YYC2ra7u6yRSzxf7g8T+5X60RlwiW+F79TEDF39JI1xB2wSnx/GBVQx0egxehLS/erq3jO6ZPd0jAYyvRD77cRtMECJeyVdOpgfB3TJtIF3f39LTeaYqAn0xWgAit+WcGS/dgmqQ=)
 
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "health,info"
+  endpoint:
+    health:
+      show-details: "always"
 
 #resilience4j:
 #  ratelimiter:
