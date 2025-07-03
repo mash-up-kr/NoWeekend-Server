@@ -37,11 +37,7 @@ dependencies {
 
     // OpenFeign Client
     implementation("org.springframework.cloud:spring-cloud-starter-openfeign")
-    // JSON 매핑용 Jackson
     implementation("com.fasterxml.jackson.core:jackson-databind")
-
-    compileOnly("org.projectlombok:lombok")
-    annotationProcessor("org.projectlombok:lombok")
 
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("io.projectreactor:reactor-test")
@@ -54,6 +50,10 @@ dependencies {
     implementation("io.modelcontextprotocol.sdk:mcp-spring-webmvc:0.9.0")
 
     implementation("io.github.resilience4j:resilience4j-spring-boot3:2.2.0")
+
+    // jasypt
+    implementation("com.github.ulisesbocchio:jasypt-spring-boot-starter:3.0.5")
+    testImplementation("com.github.ulisesbocchio:jasypt-spring-boot-starter:3.0.5")
 }
 
 configurations.all {
