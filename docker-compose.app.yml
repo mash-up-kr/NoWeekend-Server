@@ -14,7 +14,7 @@ services:
   mcp-server:
     image: mcp-server:latest
     environment:
-      SPRING_PROFILES_ACTIVE: staging
+      JASYPT_ENCRYPTOR_PASSWORD: ${JASYPT_ENCRYPTOR_PASSWORD}
       SERVER_PORT: 8081
     networks:
       - mashupnet
@@ -22,7 +22,7 @@ services:
   mcp-host:
     image: mcp-host:latest
     environment:
-      SPRING_PROFILES_ACTIVE: staging
+      JASYPT_ENCRYPTOR_PASSWORD: ${JASYPT_ENCRYPTOR_PASSWORD}
       SERVER_PORT: 8082
     depends_on:
       - mcp-server
