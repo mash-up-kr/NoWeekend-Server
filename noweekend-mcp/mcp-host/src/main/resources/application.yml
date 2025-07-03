@@ -14,7 +14,7 @@ spring:
         sse:
           connections:
             author-tool-server:
-              url: http://mcp-server:8081
+              url: http://localhost:8081
               enabled: true
         stdio:
           connections:
