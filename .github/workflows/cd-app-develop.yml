@@ -78,8 +78,8 @@ jobs:
             mkdir -p /root/organized/app/secret
             echo "${{ secrets.APPLE_SECRET_KEY_BASE64 }}" | base64 -d > /root/organized/app/secret/apple_auth_key.p8
             chmod 600 /root/organized/app/secret/apple_auth_key.p8
+            docker image prune -f
             docker load -i core-api.tar
             docker load -i mcp-host.tar
             docker load -i mcp-server.tar
-            docker image prune -f
             docker compose -f docker-compose.app.yml up -d
