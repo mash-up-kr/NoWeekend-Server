@@ -27,7 +27,7 @@ class FutureWeatherTool(
 ) {
 
     @Tool(
-        name = "getRawKmaForecast",
+        name = "getRainSnowSummaryByDay",
         description = WEATHER_TOOL_DESCRIPTION,
     )
     fun getRainSnowSummaryByDay(req: LocationRequest): List<DayWeatherSummary> {
