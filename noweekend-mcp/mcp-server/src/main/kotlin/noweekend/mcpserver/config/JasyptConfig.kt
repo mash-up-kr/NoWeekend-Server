@@ -16,6 +16,13 @@ class JasyptConfig {
     @Value("\${JASYPT_ENCRYPTOR_PASSWORD}")
     private val password: String? = null
 
+    /**
+     * Creates and configures a Jasypt string encryptor bean for encrypting and decrypting properties.
+     *
+     * The encryptor uses the password from the environment variable `JASYPT_ENCRYPTOR_PASSWORD`, the `PBEWithMD5AndDES` algorithm, and base64 output encoding.
+     *
+     * @return A configured `StringEncryptor` instance for property encryption.
+     */
     @Bean("jasyptStringEncryptor")
     fun stringEncryptor(): StringEncryptor {
         val encryptor = PooledPBEStringEncryptor()

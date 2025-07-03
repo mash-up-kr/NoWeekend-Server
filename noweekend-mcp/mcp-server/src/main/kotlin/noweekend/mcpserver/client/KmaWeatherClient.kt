@@ -10,6 +10,19 @@ import org.springframework.web.bind.annotation.RequestParam
     url = "https://apis.data.go.kr/1360000/VilageFcstInfoService_2.0",
 )
 interface KmaWeatherClient {
+    /**
+     * Retrieves weather forecast data from the Korea Meteorological Administration (KMA) API for a specified location and time.
+     *
+     * @param serviceKey The API authentication key.
+     * @param dataType The response format (e.g., "JSON"). Defaults to "JSON".
+     * @param baseDate The base date for the forecast, in YYYYMMDD format.
+     * @param baseTime The base time for the forecast, in HHMM format.
+     * @param nx The X coordinate of the forecast grid.
+     * @param ny The Y coordinate of the forecast grid.
+     * @param numOfRows The number of rows to retrieve. Defaults to 1000.
+     * @param pageNo The page number for pagination. Defaults to 1.
+     * @return The weather forecast response from the KMA API.
+     */
     @GetMapping("/getVilageFcst")
     fun getForecast(
         @RequestParam("serviceKey") serviceKey: String,

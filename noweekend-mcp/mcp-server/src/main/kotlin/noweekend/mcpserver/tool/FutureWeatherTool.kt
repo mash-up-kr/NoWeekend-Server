@@ -26,6 +26,14 @@ class FutureWeatherTool(
     @Value("\${kma.api.key}") private val apiKey: String,
 ) {
 
+    /**
+     * Returns a summary of rain and snow periods during work hours for up to three days at the specified location.
+     *
+     * For the given latitude and longitude, retrieves KMA forecast data, identifies periods of rain, snow, mixed precipitation, or possible rain (based on probability), and summarizes these periods by day. Only periods between 07:00 and 20:00 are considered, and consecutive periods of the same type are merged. The summary includes the date, day of week (in Korean), and a list of precipitation periods for each day.
+     *
+     * @param req The location request containing latitude and longitude.
+     * @return A list of daily weather summaries with rain and snow periods for each day.
+     */
     @Tool(
         name = "getRawKmaForecast",
         description = WEATHER_TOOL_DESCRIPTION,
@@ -38,6 +46,13 @@ class FutureWeatherTool(
         return summarizeByDate(datesToCheck, allItems)
     }
 
+    /**
+     * Returns a list of up to three date strings (formatted as "yyyyMMdd") starting from today up to the upcoming Sunday.
+     *
+     * The list always starts with today and includes consecutive days, but is limited to a maximum of three dates or until Sunday, whichever comes first.
+     *
+     * @return List of date strings representing the target forecast dates.
+     */
     private fun getTargetDates(): List<String> {
         val today = LocalDateTime.now()
         val daysUntilSunday = DayOfWeek.SUNDAY.value - today.dayOfWeek.value
@@ -47,6 +62,15 @@ class FutureWeatherTool(
         return dates.take(3)
     }
 
+    /**
+     * Retrieves weather forecast items from the KMA API for the specified grid coordinates and base date/time.
+     *
+     * @param nx The X coordinate in the KMA grid system.
+     * @param ny The Y coordinate in the KMA grid system.
+     * @param baseDate The base date for the forecast request in "yyyyMMdd" format.
+     * @param baseTime The base time for the forecast request in "HHmm" format.
+     * @return A list of forecast items for the given location and time.
+     */
     private fun fetchForecastItems(nx: Int, ny: Int, baseDate: String, baseTime: String): List<KmaForecastItem> {
         return kmaWeatherClient.getForecast(
             serviceKey = apiKey,
@@ -57,6 +81,16 @@ class FutureWeatherTool(
         ).response.body.items.item
     }
 
+    /**
+     * Creates a daily summary of rain and snow periods for each specified date.
+     *
+     * For each date in [datesToCheck], groups the provided forecast items by date, determines the day of the week,
+     * extracts rain and snow periods during work hours, and constructs a `DayWeatherSummary` for that date.
+     *
+     * @param datesToCheck List of target dates in "yyyyMMdd" format.
+     * @param allItems List of forecast items to be summarized.
+     * @return A list of daily weather summaries, each containing the date, day of week, and rain/snow periods.
+     */
     private fun summarizeByDate(
         datesToCheck: List<String>,
         allItems: List<KmaForecastItem>,
@@ -75,6 +109,15 @@ class FutureWeatherTool(
         }
     }
 
+    /**
+     * Extracts and merges rain and snow periods from forecast items during work hours.
+     *
+     * Filters forecast items to time slots between 07:00 and 20:00, determines the precipitation type for each slot,
+     * and merges consecutive slots with the same type into continuous periods.
+     *
+     * @param dailyItems List of forecast items for a single day.
+     * @return List of merged rain or snow periods for the day.
+     */
     private fun extractRainSnowPeriods(dailyItems: List<KmaForecastItem>): List<RainSnowPeriod> {
         val timeTypeList = dailyItems
             .groupBy { it.fcstTime }
@@ -126,11 +169,22 @@ class FutureWeatherTool(
         return result
     }
 
+    /**
+     * Determines whether the given time string (in "HHmm" format) falls within work hours (07:00 to 20:59).
+     *
+     * @param timeStr The time string in "HHmm" format.
+     * @return `true` if the hour is between 7 and 20 inclusive, otherwise `false`.
+     */
     private fun isWorkTime(timeStr: String): Boolean {
         val hour = timeStr.take(2).toIntOrNull() ?: return false
         return hour in 7..20
     }
 
+    /**
+     * Determines the latest available base date and time for KMA forecast requests based on the current time.
+     *
+     * @return A pair containing the base date (yyyyMMdd) and base time (HHmm) to use for forecast data retrieval.
+     */
     private fun getLatestBaseDateTime(): Pair<String, String> {
         val baseTimes = listOf("2300", "2000", "1700", "1400", "1100", "0800", "0500", "0200")
         val now = LocalDateTime.now()
@@ -145,6 +199,16 @@ class FutureWeatherTool(
         return yesterday to "2300"
     }
 
+    /**
+     * Converts geographic coordinates (latitude and longitude) to KMA grid coordinates (nx, ny).
+     *
+     * Uses the Lambert Conformal Conic projection with fixed parameters for Korea to transform WGS84 latitude and longitude
+     * into the integer grid system required by the Korea Meteorological Administration (KMA) forecast API.
+     *
+     * @param latitude The latitude in decimal degrees.
+     * @param longitude The longitude in decimal degrees.
+     * @return A pair of integers representing the KMA grid coordinates (nx, ny).
+     */
     private fun convertLatLngToGrid(latitude: Double, longitude: Double): Pair<Int, Int> {
         val earthRadius = 6371.00877
         val gridSpacing = 5.0

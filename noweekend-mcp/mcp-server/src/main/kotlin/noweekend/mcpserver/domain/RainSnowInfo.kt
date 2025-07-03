@@ -19,7 +19,13 @@ enum class DayOfWeekKor(val display: String) {
     ;
 
     companion object {
-        fun fromDayOfWeek(dow: java.time.DayOfWeek): DayOfWeekKor =
+        /**
+             * Converts a `java.time.DayOfWeek` to its corresponding `DayOfWeekKor` value.
+             *
+             * @param dow The day of the week to convert.
+             * @return The matching `DayOfWeekKor` enum value.
+             */
+            fun fromDayOfWeek(dow: java.time.DayOfWeek): DayOfWeekKor =
             when (dow) {
                 java.time.DayOfWeek.MONDAY -> MON
                 java.time.DayOfWeek.TUESDAY -> TUE

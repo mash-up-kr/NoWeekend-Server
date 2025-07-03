@@ -11,6 +11,11 @@ class WeatherController(
     private val futureWeatherTool: FutureWeatherTool,
 ) {
 
+    /**
+     * Handles GET requests to the `/test` endpoint by retrieving and printing a daily rain and snow forecast summary for a fixed Seoul location.
+     *
+     * This method is intended for testing purposes only and does not return a response to the client.
+     */
     @GetMapping("/test")
     fun test() {
         // 서울 위도, 경도 샘플
