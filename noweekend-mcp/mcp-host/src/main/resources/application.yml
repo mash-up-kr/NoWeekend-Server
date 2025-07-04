@@ -36,3 +36,5 @@ logging:
 
 server:
   port: 8082
+
+JASYPT_ENCRYPTOR_PASSWORD: ${JASYPT_VALUE}

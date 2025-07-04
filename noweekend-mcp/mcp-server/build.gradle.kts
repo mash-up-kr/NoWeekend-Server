@@ -54,6 +54,8 @@ dependencies {
     // jasypt
     implementation("com.github.ulisesbocchio:jasypt-spring-boot-starter:3.0.5")
     testImplementation("com.github.ulisesbocchio:jasypt-spring-boot-starter:3.0.5")
+
+    implementation("org.springframework.boot:spring-boot-starter-actuator")
 }
 
 configurations.all {

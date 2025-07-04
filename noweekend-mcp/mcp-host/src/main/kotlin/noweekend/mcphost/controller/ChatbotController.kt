@@ -33,10 +33,9 @@ class ChatbotController(
     }
 
     @PostMapping("/getFutureWeather")
-    fun getFutureWeather(@RequestBody chatRequest: ChatRequest): ResponseEntity<ChatResponse> {
-        logger.info("getFutureWeather.question = ${chatRequest.question}")
+    fun getFutureWeather(@RequestBody request: WeatherRequest): ResponseEntity<ChatResponse> {
         return ResponseEntity.ok(
-            ChatResponse(chatbotService.chatWeatherPrompt(chatRequest.question)),
+            ChatResponse(chatbotService.weatherRecommendation(request)),
         )
     }
 

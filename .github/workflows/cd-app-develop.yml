@@ -19,28 +19,35 @@ jobs:
           java-version: 21
           distribution: temurin
 
-      # 기존 core-api 빌드
+      # core-api 빌드 (root에서)
       - name: Build core-api jar
         run: ./gradlew :noweekend-core:core-api:clean :noweekend-core:core-api:bootJar
 
-      # mcp-host/mcp-server 빌드 추가
+      # mcp-host 빌드 (별도 디렉토리에서, 해당 gradlew 사용)
       - name: Build mcp-host jar
-        run: ./gradlew :noweekend-mcp:mcp-host:clean :noweekend-mcp:mcp-host:bootJar
+        run: |
+          cd noweekend-mcp/mcp-host
+          ./gradlew clean bootJar
 
+      # mcp-server 빌드 (별도 디렉토리에서, 해당 gradlew 사용)
       - name: Build mcp-server jar
-        run: ./gradlew :noweekend-mcp:mcp-server:clean :noweekend-mcp:mcp-server:bootJar
+        run: |
+          cd noweekend-mcp/mcp-server
+          ./gradlew clean bootJar
 
-      # Docker build
+      # core-api Docker image 빌드 (루트 기준)
       - name: Build core-api Docker image
         run: docker build -t core-api:latest -f ./noweekend-core/core-api/Dockerfile ./noweekend-core/core-api
 
+      # mcp-host Docker image 빌드 (별도 폴더 기준)
       - name: Build mcp-host Docker image
-        run: docker build -t mcp-host:latest -f ./noweekend-mcp/mcp-host/Dockerfile ./noweekend-mcp/mcp-host
+        run: docker build -t mcp-host:latest -f noweekend-mcp/mcp-host/Dockerfile noweekend-mcp/mcp-host
 
+      # mcp-server Docker image 빌드 (별도 폴더 기준)
       - name: Build mcp-server Docker image
-        run: docker build -t mcp-server:latest -f ./noweekend-mcp/mcp-server/Dockerfile ./noweekend-mcp/mcp-server
+        run: docker build -t mcp-server:latest -f noweekend-mcp/mcp-server/Dockerfile noweekend-mcp/mcp-server
 
-      # Docker save
+      # Docker 이미지 tar로 저장
       - name: Save Docker images as tar
         run: |
           docker save core-api:latest -o core-api.tar

@@ -31,6 +31,7 @@ class FutureWeatherTool(
         description = WEATHER_TOOL_DESCRIPTION,
     )
     fun getRainSnowSummaryByDay(req: LocationRequest): List<DayWeatherSummary> {
+        println("도구 호출함 ! FutureWeatherTool.getRainSnowSummaryByDay")
         val datesToCheck = getTargetDates()
         val (nx, ny) = convertLatLngToGrid(req.latitude, req.longitude)
         val (baseDate, baseTime) = getLatestBaseDateTime()
@@ -38,13 +39,20 @@ class FutureWeatherTool(
         return summarizeByDate(datesToCheck, allItems)
     }
 
+    // ToDo 추후에 대한민국 공휴일을 갖고오는 쿼리 작성
     private fun getTargetDates(): List<String> {
-        val today = LocalDateTime.now()
-        val daysUntilSunday = DayOfWeek.SUNDAY.value - today.dayOfWeek.value
-        val dates = (0..daysUntilSunday).map {
-            today.plusDays(it.toLong()).format(DateTimeFormatter.ofPattern("yyyyMMdd"))
+        val today = LocalDate.now()
+        val dates = mutableListOf<String>()
+        var checked = 0
+        var day = today
+        while (dates.size < 3 && checked < 7) {
+            if (day.dayOfWeek != DayOfWeek.SATURDAY && day.dayOfWeek != DayOfWeek.SUNDAY) {
+                dates.add(day.format(DateTimeFormatter.ofPattern("yyyyMMdd")))
+            }
+            day = day.plusDays(1)
+            checked++
         }
-        return dates.take(3)
+        return dates
     }
 
     private fun fetchForecastItems(nx: Int, ny: Int, baseDate: String, baseTime: String): List<KmaForecastItem> {

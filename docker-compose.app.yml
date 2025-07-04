@@ -13,19 +13,29 @@ services:
 
   mcp-server:
     image: mcp-server:latest
+    ports:
+      - "8081:8081"
     environment:
-      SPRING_PROFILES_ACTIVE: staging
+      JASYPT_ENCRYPTOR_PASSWORD: ${JASYPT_ENCRYPTOR_PASSWORD}
       SERVER_PORT: 8081
     networks:
       - mashupnet
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8081/actuator/health"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
 
   mcp-host:
     image: mcp-host:latest
+    ports:
+      - "8082:8082"
     environment:
-      SPRING_PROFILES_ACTIVE: staging
+      JASYPT_ENCRYPTOR_PASSWORD: ${JASYPT_ENCRYPTOR_PASSWORD}
       SERVER_PORT: 8082
     depends_on:
-      - mcp-server
+      mcp-server:
+        condition: service_healthy
     networks:
       - mashupnet
 
