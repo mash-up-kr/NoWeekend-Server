@@ -55,7 +55,6 @@ class FutureWeatherTool(
         return dates
     }
 
-
     private fun fetchForecastItems(nx: Int, ny: Int, baseDate: String, baseTime: String): List<KmaForecastItem> {
         return kmaWeatherClient.getForecast(
             serviceKey = apiKey,
