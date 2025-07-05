@@ -12,10 +12,10 @@ import org.springframework.web.bind.annotation.RestController
 @RequestMapping("/api/v1/recommend")
 class RecommendController(
     private val recommendService: RecommendService,
-) {
+) : RecommendControllerDocs {
 
     @GetMapping("/weather")
-    fun getWeatherRecommend(
+    override fun getWeatherRecommend(
         @CurrentUserId userId: String,
     ): ApiResponse<WeatherApiResponse> {
         return ApiResponse.success(recommendService.getWeatherRecommend(userId))
