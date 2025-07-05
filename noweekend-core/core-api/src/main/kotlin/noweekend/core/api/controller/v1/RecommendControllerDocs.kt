@@ -44,10 +44,6 @@ interface RecommendControllerDocs {
         "recommendContent": "오후에 비 와요, 연차 어때요?"
       },
       {
-        "localDate": "2025-07-05",
-        "recommendContent": "맑음! 출근 걱정 없음"
-      },
-      {
         "localDate": "2025-07-06",
         "recommendContent": "오전 눈 예보, 반차 추천!"
       }
