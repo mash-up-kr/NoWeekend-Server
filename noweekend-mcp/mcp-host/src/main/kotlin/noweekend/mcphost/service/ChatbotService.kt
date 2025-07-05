@@ -1,6 +1,9 @@
 package noweekend.mcphost.service
 
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.module.kotlin.readValue
 import noweekend.mcphost.controller.WeatherRequest
+import noweekend.mcphost.controller.WeatherResponse
 import org.springframework.ai.chat.client.ChatClient
 import org.springframework.stereotype.Service
 import java.time.LocalDate
@@ -9,6 +12,7 @@ import java.time.ZoneId
 @Service
 class ChatbotService(
     private val chatClient: ChatClient,
+    private val objectMapper: ObjectMapper,
 ) {
 
     fun chat(question: String): String {
@@ -19,59 +23,41 @@ class ChatbotService(
             ?: throw IllegalStateException("Chat response content is null for question: $question")
     }
 
-    fun chatWeatherPrompt(question: String): String {
-        val formatInstruction = """
-            Return a JSON array named "forecast". Each object must have these fields: \
-            "date" (YYYY-MM-DD), "temp_max_c", "temp_min_c", "precip_mm", \
-            "rain_chance_pct", "description". Do not include any markdown syntax \
-            (#, *, -, etc.) or other special characters—only output plain JSON.
-        """.trimIndent()
-
-        return chatClient.prompt()
-            .system(formatInstruction)
-            .user(question)
-            .call()
-            .content()
-            ?: throw IllegalStateException("ChatWeather response content is null for question: $question")
-    }
-
-    fun weatherRecommendation(request: WeatherRequest): String {
+    fun weatherRecommendation(request: WeatherRequest): List<WeatherResponse> {
         val prompt = """
-YOU MUST CALL THE TOOL to get the weather data.
-Do NOT generate, guess, or hallucinate weather data yourself.
+You MUST call the TOOL to get the weather data.
+DO NOT generate, guess, or hallucinate weather data yourself.
 ALWAYS use the TOOL OUTPUT ONLY to create your answer.
 
-Today's date is the current date in KOREAN STANDARD TIME (KST).
-You are REQUIRED to use weather data from the tool for up to 3 days starting from today (in KST).
-ONLY provide recommendations for those dates.
+Return your answer ONLY as a JSON array (do not wrap in markdown or add any extra explanation).
+The JSON array must follow this structure:
 
-The tool returns grouped, consecutive periods of rain, snow, or mixed (rain & snow) within work hours (07:00~20:00).
-
-Example TOOL OUTPUT (dates and times are just samples, do not use them literally):
 [
   {
-    "date": "nnnn-nn-nn",
-    "rainSnowInfos": [
-      { "type": "RAIN" },
-      { "type": "SNOW" },
-      { "type": "RAIN_AND_SNOW" }
-    ]
-  }
+    "localDate": "YYYY-MM-DD",
+    "recommendContent": "string"
+  },
+  ...
 ]
 
-- "type": "RAIN" (rain), "SNOW" (snow), "RAIN_AND_SNOW" (mixed), "POSSIBLE_RAIN" (possible rain, 60%+ chance)
+Rules:
+- For each date, generate one "recommendContent" (Korean, very friendly and natural).
+- "recommendContent" MUST clearly mention the weather situation (e.g., rain, snow, or mixed), AND be polite, soft, and friendly (not formal or stiff).
+- "recommendContent" MUST be within 15 Korean characters. If it's longer, shorten it, but always include the weather info first.
+- Use warm, casual, and kind expressions (e.g., "오후에 비가 온대요, 연차 어때요?", "눈 온다니 연차 써볼래요?", "종일 비예요, 오늘은 쉬어요!") 
+- Do NOT use phrases like "권장합니다", "추천합니다".
+- Each object must have "localDate" (YYYY-MM-DD) and "recommendContent" (max 15 Korean chars, weather included).
+- ONLY output the JSON array, with no other explanations, markdown, or extra text.
 
-Based STRICTLY on the provided periods for each date, generate annual leave or half-day leave recommendations in Korean:
-- If rain/snow is predicted for 1-4 consecutive hours in the morning: "Recommend taking morning half-day leave."
-- If rain/snow is predicted for 1-4 consecutive hours in the afternoon: "Recommend taking afternoon half-day leave."
-- If 4-6 consecutive hours: "Recommend taking a full day off."
-- If 6+ consecutive hours: "Recommend taking a full day off due to all-day precipitation."
-- If any period is "RAIN_AND_SNOW": Always "Recommend taking a full day off."
-- For each day, return a single recommendation sentence in Korean.
+Follow these weather-based rules for "recommendContent":
+- If rain or snow is predicted for 1-4 consecutive hours in the morning: include "오전" and the weather (e.g., "오전에 비가 와요, 연차 어때요?")
+- If 1-4 hours in the afternoon: "오후에 눈 온대요, 연차 어때요?"
+- If 4-6 hours: summarize (e.g., "비 많이 와요, 쉬는 건 어때요?")
+- If 6+ hours or "RAIN_AND_SNOW": "종일 비예요, 오늘은 쉬어요!"
+- Always mention the weather type (rain, snow, or mixed) at the beginning of "recommendContent".
+- If no tool output for a day, SKIP.
 
-IF THERE IS NO TOOL OUTPUT FOR A DAY, SKIP THAT DAY.
-
-DO NOT return anything except the final Korean recommendation sentences for each valid date.
+AGAIN: Respond ONLY with the above JSON array, nothing else.
         """.trimIndent()
 
         val baseDate = LocalDate.now(ZoneId.of("Asia/Seoul")).toString()
@@ -81,11 +67,24 @@ longitude: ${request.longitude}
 baseDate: $baseDate
         """.trimIndent()
 
-        return chatClient.prompt()
-            .system(prompt)
-            .user(userMsg)
-            .call()
-            .content()
-            ?: throw IllegalStateException("Weather recommendation response is null")
+        // 최대 2회까지 재시도
+        repeat(2) { attempt ->
+            val jsonString = chatClient.prompt()
+                .system(prompt)
+                .user(userMsg)
+                .call()
+                .content()
+            try {
+                if (jsonString != null) {
+                    return objectMapper.readValue(jsonString)
+                }
+            } catch (e: Exception) {
+                // 첫 실패면 재시도, 두번째 실패면 아래 throw
+                if (attempt == 1) {
+                    throw IllegalStateException("현재 날씨 정보를 받아올 수 없습니다.")
+                }
+            }
+        }
+        throw IllegalStateException("현재 날씨 정보를 받아올 수 없습니다.")
     }
 }

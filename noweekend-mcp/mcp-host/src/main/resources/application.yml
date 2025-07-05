@@ -14,7 +14,10 @@ spring:
         sse:
           connections:
             author-tool-server:
+              # prod
               url: http://mcp-server:8081
+              # local
+#              url: http://localhost:8081
               enabled: true
         stdio:
           connections:

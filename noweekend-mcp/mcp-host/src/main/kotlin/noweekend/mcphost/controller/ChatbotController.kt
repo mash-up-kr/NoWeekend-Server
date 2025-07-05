@@ -33,10 +33,9 @@ class ChatbotController(
     }
 
     @PostMapping("/getFutureWeather")
-    fun getFutureWeather(@RequestBody request: WeatherRequest): ResponseEntity<ChatResponse> {
-        return ResponseEntity.ok(
-            ChatResponse(chatbotService.weatherRecommendation(request)),
-        )
+    fun getFutureWeather(@RequestBody request: WeatherRequest): ResponseEntity<List<WeatherResponse>> {
+        val result = chatbotService.weatherRecommendation(request)
+        return ResponseEntity.ok(result)
     }
 
     companion object {

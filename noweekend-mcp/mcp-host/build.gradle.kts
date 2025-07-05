@@ -65,6 +65,10 @@ dependencies {
 
     // LangGraph4j core
     implementation("org.bsc.langgraph4j:langgraph4j-core:1.5.12")
+
+    implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
+
+    implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310")
 }
 configurations.all {
     resolutionStrategy {
@@ -75,4 +79,10 @@ configurations.all {
 
 tasks.named<Test>("test") {
     useJUnitPlatform()
+}
+
+tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
+    kotlinOptions {
+        freeCompilerArgs += "-Xjsr305=strict"
+    }
 }

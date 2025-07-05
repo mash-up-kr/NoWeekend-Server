@@ -2,6 +2,7 @@ package noweekend.storage.db.core.user
 
 import noweekend.core.domain.enumerate.ProviderType
 import noweekend.core.domain.enumerate.Role
+import noweekend.core.domain.user.Location
 import noweekend.core.domain.user.User
 import noweekend.core.domain.user.UserRepository
 import org.springframework.stereotype.Repository
@@ -42,5 +43,9 @@ class UserCoreRepository(
         val userEntity = user.toEntity()
         val saveUserEntity = jpaRepository.save(userEntity)
         return saveUserEntity.toUser()
+    }
+
+    override fun findLocationByUserId(userId: String): Location? {
+        return jpaRepository.findLocationByUserId(userId)?.toDomain()
     }
 }
