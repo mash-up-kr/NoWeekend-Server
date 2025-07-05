@@ -11,7 +11,6 @@ import jakarta.persistence.UniqueConstraint
 import noweekend.core.domain.enumerate.Gender
 import noweekend.core.domain.enumerate.ProviderType
 import noweekend.core.domain.enumerate.Role
-import noweekend.core.domain.user.Location
 import noweekend.core.domain.user.User
 import noweekend.storage.db.core.BaseEntity
 import java.time.LocalDate
@@ -60,7 +59,7 @@ class UserEntity(
     val remainingAnnualLeave: Double = 0.0,
 
     @Embedded
-    var location: Location?,
+    var location: LocationEmbeddable?,
 ) : BaseEntity() {
     fun toUser(): User = User(
         id = this.id,
@@ -75,7 +74,7 @@ class UserEntity(
         remainingAnnualLeave = this.remainingAnnualLeave,
         createdAt = this.createdAt,
         updatedAt = this.updatedAt,
-        location = this.location,
+        location = this.location?.toDomain(),
     )
 }
 
@@ -90,5 +89,5 @@ fun User.toEntity(): UserEntity = UserEntity(
     role = this.role,
     remainingAnnualLeave = this.remainingAnnualLeave,
     birthDate = this.birthDate,
-    location = this.location,
+    location = LocationEmbeddable.fromDomain(this.location),
 )

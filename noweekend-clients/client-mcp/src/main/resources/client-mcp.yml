@@ -4,7 +4,12 @@ example:
 
 mcp:
   host:
-    url: http://localhost:8081
+    url: http://mcp-host:8082
+
+# local
+#mcp:
+#  host:
+#    url: http://localhost:8082
 
 spring.cloud.openfeign:
   client:

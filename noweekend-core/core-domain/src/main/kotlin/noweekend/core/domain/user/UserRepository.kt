@@ -10,4 +10,5 @@ interface UserRepository {
     fun modify(id: String, name: String, role: Role): String
     fun register(user: User): User
     fun upsert(user: User): User
+    fun findLocationByUserId(userId: String): Location?
 }

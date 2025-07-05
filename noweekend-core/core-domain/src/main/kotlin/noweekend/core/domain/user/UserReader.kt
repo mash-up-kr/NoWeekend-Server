@@ -16,4 +16,8 @@ class UserReader(
     fun findUserProviderAndProviderId(provider: ProviderType, providerId: String): User? {
         return userRepository.findUserByProviderAndProviderId(provider, providerId)
     }
+
+    fun findLocationByUserId(userId: String): Location? {
+        return userRepository.findLocationByUserId(userId)
+    }
 }

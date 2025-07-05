@@ -7,6 +7,7 @@ import noweekend.mcpserver.domain.KmaForecastItem
 import noweekend.mcpserver.domain.LocationRequest
 import noweekend.mcpserver.domain.PrecipType
 import noweekend.mcpserver.domain.RainSnowPeriod
+import org.slf4j.LoggerFactory
 import org.springframework.ai.tool.annotation.Tool
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
@@ -36,7 +37,11 @@ class FutureWeatherTool(
         val (nx, ny) = convertLatLngToGrid(req.latitude, req.longitude)
         val (baseDate, baseTime) = getLatestBaseDateTime()
         val allItems = fetchForecastItems(nx, ny, baseDate, baseTime)
-        return summarizeByDate(datesToCheck, allItems)
+        val response = summarizeByDate(datesToCheck, allItems)
+        for (dayWeatherSummary in response) {
+            log.info(dayWeatherSummary.toString())
+        }
+        return response
     }
 
     // ToDo 추후에 대한민국 공휴일을 갖고오는 쿼리 작성
@@ -184,6 +189,9 @@ class FutureWeatherTool(
     }
 
     companion object {
+
+        private val log = LoggerFactory.getLogger(FutureWeatherTool::class.java)
+
         private const val WEATHER_TOOL_DESCRIPTION = """
         This tool returns summarized periods of rain/snow/possible rain for each day (up to 3 days) at a given location.
         
