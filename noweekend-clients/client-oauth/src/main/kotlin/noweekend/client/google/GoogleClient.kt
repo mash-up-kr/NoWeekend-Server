@@ -8,6 +8,7 @@ import noweekend.core.domain.enumerate.ProviderType
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
+import java.net.URLEncoder
 
 @Component
 class GoogleClient internal constructor(
@@ -37,13 +38,15 @@ class GoogleClient internal constructor(
             """.trimIndent(),
         )
 
-        return googleTokenApi.getGoogleToken(
-            code = params.getCode(),
-            redirectUri = DEFAULT_REDIRECT_URI,
-            clientId = googleAuthProperties.clientId,
-            clientSecret = googleAuthProperties.clientSecret,
-            grantType = GOOGLE_AUTHORIZATION_TYPE,
-        ).accessToken
+        val body = listOf(
+            "code" to params.getCode(),
+            "client_id" to googleAuthProperties.clientId,
+            "client_secret" to googleAuthProperties.clientSecret,
+            "redirect_uri" to DEFAULT_REDIRECT_URI,
+            "grant_type" to GOOGLE_AUTHORIZATION_TYPE,
+        ).joinToString("&") { "${it.first}=${URLEncoder.encode(it.second, "UTF-8")}" }
+
+        return googleTokenApi.getGoogleToken(body).accessToken
     }
 
     private fun requestAuthInfo(accessToken: String): GoogleOAuthInfo {
