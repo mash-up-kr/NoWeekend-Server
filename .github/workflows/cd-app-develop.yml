@@ -90,3 +90,4 @@ jobs:
             docker load -i mcp-host.tar
             docker load -i mcp-server.tar
             docker compose -f docker-compose.app.yml up -d
+            rm -f core-api.tar mcp-host.tar mcp-server.tar
