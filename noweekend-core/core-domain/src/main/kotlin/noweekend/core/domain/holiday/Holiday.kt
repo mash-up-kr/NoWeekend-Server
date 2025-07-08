@@ -17,7 +17,7 @@ class Holiday(
             month: Int,
             content: String,
             dayOfWeekKor: DayOfWeekKor,
-            updatedAt: LocalDateTime = LocalDateTime.now()
+            updatedAt: LocalDateTime = LocalDateTime.now(),
         ): Holiday {
             return Holiday(
                 id = IdGenerator.generate(),
@@ -25,7 +25,7 @@ class Holiday(
                 month = month,
                 content = content,
                 dayOfWeekKor = dayOfWeekKor,
-                updatedAt = updatedAt
+                updatedAt = updatedAt,
             )
         }
     }
@@ -39,5 +39,4 @@ enum class DayOfWeekKor(val display: String) {
     FRI("금"),
     SAT("토"),
     SUN("일"),
-    ;
 }

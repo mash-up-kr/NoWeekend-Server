@@ -11,7 +11,8 @@ import org.springframework.context.annotation.ComponentScan
     basePackages = [
         "noweekend.core.api",
         "noweekend.core.domain",
-        "noweekend.client",
+        "noweekend.client.mcp",
+        "noweekend.client.oauth",
         "noweekend.storage.db.core",
     ],
 )

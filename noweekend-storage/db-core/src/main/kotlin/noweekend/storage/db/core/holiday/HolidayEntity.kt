@@ -17,9 +17,9 @@ import noweekend.storage.db.core.BaseEntity
     uniqueConstraints = [
         UniqueConstraint(
             name = "uk_holiday_year_month_content_dayofweek",
-            columnNames = ["year", "month", "content", "day_of_week_kor"]
-        )
-    ]
+            columnNames = ["year", "month", "content", "day_of_week_kor"],
+        ),
+    ],
 )
 class HolidayEntity(
     @Id
@@ -38,8 +38,7 @@ class HolidayEntity(
     @Enumerated(value = EnumType.STRING)
     @Column(name = "day_of_week_kor")
     val dayOfWeekKor: DayOfWeekKor,
-): BaseEntity() {
-}
+) : BaseEntity()
 
 fun Holiday.toEntity(): HolidayEntity =
     HolidayEntity(
@@ -47,7 +46,7 @@ fun Holiday.toEntity(): HolidayEntity =
         year = this.year,
         month = this.month,
         content = this.content,
-        dayOfWeekKor = this.dayOfWeekKor
+        dayOfWeekKor = this.dayOfWeekKor,
     )
 
 fun HolidayEntity.toDomain(): Holiday =

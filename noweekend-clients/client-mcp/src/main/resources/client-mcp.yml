@@ -7,8 +7,8 @@ mcp:
     url: http://mcp-host:8082
 
 kma:
-  api:
-    key: ENC(Tc+YYC2ra7u6yRSzxf7g8T+5X60RlwiW+F79TEDF39JI1xB2wSnx/GBVQx0egxehLS/erq3jO6ZPd0jAYyvRD77cRtMECJeyVdOpgfB3TJtIF3f39LTeaYqAn0xWgAit+WcGS/dgmqQ=)
+  key: ENC(ej86Vf+DTOfcqyPNxWypp6v1pNuKU3IYPs85SLewidgtyODMblzFOBz5P7UO5Yz29I76fxNHhTrSuthKwz9sBLwiwyk9uXZzfVy+yg6+ZJ5xS6Q9Nom6YhGAZP4eVDbRgXxHn3ecsMzh9QyHYUPmAw==)
+#    key: asdf
 
 # local
 #mcp:
@@ -31,6 +31,8 @@ spring.cloud.openfeign:
 
 ---
 spring.config.activate.on-profile: local
+kma:
+  key: ENC(ej86Vf+DTOfcqyPNxWypp6v1pNuKU3IYPs85SLewidgtyODMblzFOBz5P7UO5Yz29I76fxNHhTrSuthKwz9sBLwiwyk9uXZzfVy+yg6+ZJ5xS6Q9Nom6YhGAZP4eVDbRgXxHn3ecsMzh9QyHYUPmAw==)
 
 ---
 spring.config.activate.on-profile:
@@ -45,3 +47,8 @@ spring.config.activate.on-profile:
 example:
   api:
     url: https://live.example.example
+
+logging:
+  level:
+    org:
+      springframework: DEBUG
