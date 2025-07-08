@@ -1,5 +1,6 @@
 package noweekend.client.mcp.holiday
 
+import noweekend.client.mcp.config.FeignXmlConfig
 import noweekend.client.mcp.holiday.model.HolidayResponse
 import org.springframework.cloud.openfeign.FeignClient
 import org.springframework.http.MediaType
@@ -9,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestParam
 @FeignClient(
     name = "holidayApi",
     url = "http://apis.data.go.kr/B090041/openapi/service/SpcdeInfoService",
+    configuration = [FeignXmlConfig::class],
 )
 interface HolidayApi {
     @GetMapping(

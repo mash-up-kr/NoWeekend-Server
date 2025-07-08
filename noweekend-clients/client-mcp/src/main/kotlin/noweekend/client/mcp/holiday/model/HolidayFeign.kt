@@ -29,7 +29,6 @@ data class HolidayItemDto(
         val DATE_FORMAT: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyyMMdd")
     }
 
-    // DTO → Domain 변환 메서드
     fun toDomain(requestYear: Int): Holiday {
         val localDate = LocalDate.parse(date, DATE_FORMAT)
         val dowKor = DayOfWeekKor.valueOf(localDate.dayOfWeek.name.take(3))
@@ -47,17 +46,17 @@ data class HolidayItemDto(
 @JacksonXmlRootElement(localName = "response")
 data class HolidayResponse(
     @JacksonXmlProperty(localName = "header")
-    val header: ResponseHeader,
+    val header: ResponseHeader? = null,
 
     @JacksonXmlProperty(localName = "body")
-    val body: ResponseBody,
+    val body: ResponseBody? = null,
 ) {
     data class ResponseHeader(
         @JacksonXmlProperty(localName = "resultCode")
-        val resultCode: String,
+        val resultCode: String? = null,
 
         @JacksonXmlProperty(localName = "resultMsg")
-        val resultMsg: String,
+        val resultMsg: String? = null,
     )
 
     data class ResponseBody(

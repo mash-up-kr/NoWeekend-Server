@@ -11,14 +11,16 @@ class HolidayClient(
     private val kmaApiProperties: KmaApiProperties,
 ) {
     fun getHolidays(request: HolidayRequest): List<HolidayItemDto> {
-        val resp = api.getRestDeInfo(kmaApiProperties.key, request.solYear, request.solMonth)
+        val resp = api.getRestDeInfo(
+            kmaApiProperties.key,
+            request.solYear,
+            request.solMonth,
+        )
 
-        val items = resp.body.items?.item.orEmpty()
-
-        if (resp.header.resultCode != "00") {
+        if (resp.header?.resultCode != "00") {
             return emptyList()
         }
 
-        return items
+        return resp.body?.items?.item.orEmpty()
     }
 }
