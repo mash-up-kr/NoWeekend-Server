@@ -1,3 +1,7 @@
+kma:
+  api:
+    key: ${KMA_API_KEY}
+
 example:
   api:
     url: https://default.example.example
@@ -5,10 +9,6 @@ example:
 mcp:
   host:
     url: http://mcp-host:8082
-
-kma:
-  key: ENC(ej86Vf+DTOfcqyPNxWypp6v1pNuKU3IYPs85SLewidgtyODMblzFOBz5P7UO5Yz29I76fxNHhTrSuthKwz9sBLwiwyk9uXZzfVy+yg6+ZJ5xS6Q9Nom6YhGAZP4eVDbRgXxHn3ecsMzh9QyHYUPmAw==)
-#    key: asdf
 
 # local
 #mcp:
@@ -31,8 +31,6 @@ spring.cloud.openfeign:
 
 ---
 spring.config.activate.on-profile: local
-kma:
-  key: ENC(ej86Vf+DTOfcqyPNxWypp6v1pNuKU3IYPs85SLewidgtyODMblzFOBz5P7UO5Yz29I76fxNHhTrSuthKwz9sBLwiwyk9uXZzfVy+yg6+ZJ5xS6Q9Nom6YhGAZP4eVDbRgXxHn3ecsMzh9QyHYUPmAw==)
 
 ---
 spring.config.activate.on-profile:

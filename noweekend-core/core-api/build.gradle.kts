@@ -18,6 +18,8 @@ dependencies {
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.7.0") {
         exclude(group = "io.swagger.core.v3", module = "swagger-annotations")
     }
+
+    implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
 }
 
 tasks.named<BootJar>("bootJar") {

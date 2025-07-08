@@ -6,6 +6,7 @@ import noweekend.core.domain.holiday.Holiday
 data class HolidayResponse(
     val year: Int,
     val month: Int,
+    val day: Int,
     val content: String,
     val dayOfWeekKor: DayOfWeekKor,
 ) {
@@ -15,6 +16,7 @@ data class HolidayResponse(
                 year = holiday.year,
                 month = holiday.month,
                 content = holiday.content,
+                day = holiday.day,
                 dayOfWeekKor = holiday.dayOfWeekKor,
             )
         }

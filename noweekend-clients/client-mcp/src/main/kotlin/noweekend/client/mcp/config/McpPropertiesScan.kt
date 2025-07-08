@@ -8,4 +8,4 @@ import org.springframework.context.annotation.Configuration
 @EnableConfigurationProperties(
     KmaApiProperties::class,
 )
-class McpConfig
+class McpPropertiesScan

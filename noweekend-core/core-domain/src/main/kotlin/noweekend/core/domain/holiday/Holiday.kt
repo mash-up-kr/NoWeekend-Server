@@ -7,6 +7,7 @@ class Holiday(
     val id: String,
     val year: Int,
     val month: Int,
+    val day: Int,
     val content: String,
     val dayOfWeekKor: DayOfWeekKor,
     val updatedAt: LocalDateTime,
@@ -15,17 +16,18 @@ class Holiday(
         fun register(
             year: Int,
             month: Int,
+            day: Int,
             content: String,
             dayOfWeekKor: DayOfWeekKor,
-            updatedAt: LocalDateTime = LocalDateTime.now(),
         ): Holiday {
             return Holiday(
                 id = IdGenerator.generate(),
                 year = year,
                 month = month,
+                day = day,
                 content = content,
                 dayOfWeekKor = dayOfWeekKor,
-                updatedAt = updatedAt,
+                updatedAt = LocalDateTime.now(),
             )
         }
     }
