@@ -6,7 +6,7 @@ import java.time.LocalDate
 
 @Component
 class HolidayScheduler(
-    private val holidayService: HolidayServiceImpl,
+    private val holidayService: HolidayService,
 ) {
     @Scheduled(cron = "0 0 1 * * *")
     fun syncTodayYearHolidays() {

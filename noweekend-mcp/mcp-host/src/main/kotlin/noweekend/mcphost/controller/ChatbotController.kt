@@ -39,10 +39,6 @@ class ChatbotController(
         return ResponseEntity.ok(result)
     }
 
-    @GetMapping("/getHoliday")
-    fun getHolidays() {
-    }
-
     companion object {
         private val logger = LoggerFactory.getLogger(ChatbotController::class.java)
     }
