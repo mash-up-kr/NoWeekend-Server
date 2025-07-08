@@ -2,9 +2,9 @@ package noweekend.core.api.controller.v1.request
 
 import io.swagger.v3.oas.annotations.media.Schema
 import jakarta.validation.constraints.NotBlank
-import noweekend.client.apple.AppleLoginParams
-import noweekend.client.common.OAuthLoginParams
-import noweekend.client.google.GoogleLoginParams
+import noweekend.client.oauth.apple.AppleLoginParams
+import noweekend.client.oauth.common.OAuthLoginParams
+import noweekend.client.oauth.google.GoogleLoginParams
 import noweekend.core.domain.enumerate.ProviderType
 import noweekend.core.support.error.CoreException
 import noweekend.core.support.error.ErrorType

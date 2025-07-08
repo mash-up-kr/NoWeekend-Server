@@ -1,3 +1,7 @@
+kma:
+  api:
+    key: ${KMA_API_KEY}
+
 example:
   api:
     url: https://default.example.example
@@ -41,3 +45,8 @@ spring.config.activate.on-profile:
 example:
   api:
     url: https://live.example.example
+
+logging:
+  level:
+    org:
+      springframework: DEBUG

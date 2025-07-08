@@ -1,7 +1,7 @@
 package noweekend.core.domain.recommend
 
-import noweekend.client.weather.WeatherRecommendClient
-import noweekend.client.weather.model.WeatherRequest
+import noweekend.client.mcp.weather.WeatherRecommendClient
+import noweekend.client.mcp.weather.model.WeatherRequest
 import noweekend.core.api.controller.v1.response.WeatherApiResponse
 import noweekend.core.domain.user.UserReader
 import noweekend.core.support.error.CoreException
