@@ -37,6 +37,7 @@ class RecommendServiceImpl(
     override fun getTagRecommend(userId: String): TagApiResponses {
         val userTags = tagReader.getUserTags(userId)
         userTagValidation(userTags)
+        // ToDo 오늘 태그를 추천을 받았다면 받았던 걸로 반환하는 로직 추가
 
         val apiRecommendResponse = recommendClient.getRecommend(userTags)
         if (apiRecommendResponse != null) {
