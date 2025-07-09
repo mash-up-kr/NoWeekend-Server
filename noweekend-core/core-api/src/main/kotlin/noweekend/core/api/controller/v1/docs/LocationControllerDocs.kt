@@ -1,4 +1,4 @@
-package noweekend.core.api.controller.v1
+package noweekend.core.api.controller.v1.docs
 
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.Parameter

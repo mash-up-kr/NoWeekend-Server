@@ -1,4 +1,4 @@
-package noweekend.core.api.controller.v1
+package noweekend.core.api.controller.v1.docs
 
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.media.Content
@@ -7,7 +7,6 @@ import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.tags.Tag
 import noweekend.core.api.controller.v1.response.HolidayResponses
 import noweekend.core.support.response.ApiResponse
-import io.swagger.v3.oas.annotations.responses.ApiResponse as SwaggerApiResponse
 
 @Tag(name = "공휴일", description = "공휴일 관련 API")
 interface HolidayControllerDocs {
@@ -18,7 +17,7 @@ interface HolidayControllerDocs {
             "최초 요청 시, 외부 공공데이터 API를 통해 1년치 공휴일 정보를 수집하여 DB에 저장하며, \n" +
             "이후에는 오늘 날짜 기준 최신화된 데이터가 있으면 바로 반환합니다.",
         responses = [
-            SwaggerApiResponse(
+            io.swagger.v3.oas.annotations.responses.ApiResponse(
                 responseCode = "200",
                 description = "공휴일 목록 조회 성공",
                 content = [
@@ -63,7 +62,7 @@ interface HolidayControllerDocs {
                     ),
                 ],
             ),
-            SwaggerApiResponse(
+            io.swagger.v3.oas.annotations.responses.ApiResponse(
                 responseCode = "400",
                 description = "잘못된 요청",
                 content = [
