@@ -1,24 +1,30 @@
 package noweekend.core.domain.recommend
 
-import noweekend.client.mcp.weather.WeatherRecommendClient
-import noweekend.client.mcp.weather.model.WeatherRequest
+import noweekend.client.mcp.recommend.RecommendClient
+import noweekend.client.mcp.recommend.model.TagApiResponses
+import noweekend.client.mcp.recommend.model.TagResponse
+import noweekend.client.mcp.recommend.model.WeatherRequest
 import noweekend.core.api.controller.v1.response.WeatherApiResponse
+import noweekend.core.domain.tag.TagReader
+import noweekend.core.domain.tag.UserTags
 import noweekend.core.domain.user.UserReader
 import noweekend.core.support.error.CoreException
 import noweekend.core.support.error.ErrorType
 import org.springframework.stereotype.Service
+import kotlin.random.Random
 
 @Service
 class RecommendServiceImpl(
-    private val weatherRecommendClient: WeatherRecommendClient,
+    private val recommendClient: RecommendClient,
     private val userReader: UserReader,
+    private val tagReader: TagReader,
 ) : RecommendService {
 
     override fun getWeatherRecommend(userId: String): WeatherApiResponse {
         val location =
             userReader.findLocationByUserId(userId) ?: throw CoreException(ErrorType.USER_LOCATION_NOT_FOUND)
 
-        val recommendWeathers = weatherRecommendClient.getFutureWeather(
+        val recommendWeathers = recommendClient.getFutureWeather(
             WeatherRequest(
                 longitude = location.longitude,
                 latitude = location.latitude,
@@ -26,5 +32,36 @@ class RecommendServiceImpl(
         )
 
         return WeatherApiResponse(recommendWeathers)
+    }
+
+    override fun getTagRecommend(userId: String): TagApiResponses {
+        val userTags = tagReader.getUserTags(userId)
+        userTagValidation(userTags)
+        // ToDo 오늘 태그를 추천을 받았다면 받았던 걸로 반환하는 로직 추가
+
+        val apiRecommendResponse = recommendClient.getRecommend(userTags)
+        if (apiRecommendResponse != null) {
+            return apiRecommendResponse
+        }
+
+        return mcpClientNotResponding(userTags)
+    }
+
+    private fun userTagValidation(userTags: UserTags) {
+        val userFlatMapTags = userTags.selectedBasicTags + userTags.selectedCustomTags
+        if (userFlatMapTags.size < 3) {
+            throw CoreException(ErrorType.USER_TAGS_ERROR)
+        }
+    }
+
+    private fun mcpClientNotResponding(userTags: UserTags): TagApiResponses {
+        val selectedTags = userTags.selectedBasicTags + userTags.selectedCustomTags
+        val shuffled = selectedTags.shuffled(Random(System.currentTimeMillis()))
+
+        return TagApiResponses(
+            firstRecommendTag = TagResponse(shuffled[0].content),
+            secondRecommendTag = TagResponse(shuffled[1].content),
+            thirdRecommendTag = TagResponse(shuffled[2].content),
+        )
     }
 }

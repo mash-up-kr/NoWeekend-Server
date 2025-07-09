@@ -5,7 +5,7 @@ import org.springframework.context.annotation.Configuration
 
 @ComponentScan(
     basePackages = [
-        "noweekend.client.mcp.weather",
+        "noweekend.client.mcp.recommend",
         "noweekend.client.mcp.holiday",
     ],
 )

@@ -1,4 +1,4 @@
-package noweekend.mcphost.controller
+package noweekend.mcphost.controller.response
 
 import java.time.LocalDate
 

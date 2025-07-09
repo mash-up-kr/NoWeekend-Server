@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.media.Content
 import io.swagger.v3.oas.annotations.media.ExampleObject
 import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.tags.Tag
+import noweekend.client.mcp.recommend.model.TagApiResponses
 import noweekend.core.api.controller.v1.response.WeatherApiResponse
 import noweekend.core.api.security.annotations.CurrentUserId
 import noweekend.core.support.response.ApiResponse
@@ -88,4 +89,66 @@ interface RecommendControllerDocs {
     fun getWeatherRecommend(
         @Parameter(hidden = true) @CurrentUserId userId: String,
     ): ApiResponse<WeatherApiResponse>
+
+    @Operation(
+        summary = "유저 태그 기반 추천 태그 3개 반환",
+        description = "유저가 선택한 태그를 기반으로 추천 태그 3개를 반환합니다. (추천 서비스 장애시 랜덤 3개)",
+        responses = [
+            SwaggerApiResponse(
+                responseCode = "200",
+                description = "추천 태그 3개 반환 성공",
+                content = [
+                    Content(
+                        mediaType = "application/json",
+                        schema = Schema(implementation = ApiResponse::class),
+                        examples = [
+                            ExampleObject(
+                                name = "예시 응답",
+                                value = """
+{
+  "result": "SUCCESS",
+  "data": {
+    "firstRecommendTag": { "content": "회의 참석" },
+    "secondRecommendTag": { "content": "점심 식사 약속" },
+    "thirdRecommendTag": { "content": "헬스장 운동" }
+  },
+  "error": null
+}
+""",
+                            ),
+                        ],
+                    ),
+                ],
+            ),
+            SwaggerApiResponse(
+                responseCode = "400",
+                description = "잘못된 요청 (ex. 로그인 정보 누락 등)",
+                content = [
+                    Content(
+                        mediaType = "application/json",
+                        schema = Schema(implementation = ApiResponse::class),
+                        examples = [
+                            ExampleObject(
+                                name = "예시 응답",
+                                value = """
+{
+  "result": "ERROR",
+  "data": null,
+  "error": {
+    "code": "INVALID_PARAMETER",
+    "message": "사용자가 태그를 3개이상 갖고있지 않습니다. 태그를 먼저 선택해주세요.",
+    "data": {}
+  }
+}
+""",
+                            ),
+                        ],
+                    ),
+                ],
+            ),
+        ],
+    )
+    fun getTagRecommend(
+        @Parameter(hidden = true) @CurrentUserId userId: String,
+    ): ApiResponse<TagApiResponses>
 }

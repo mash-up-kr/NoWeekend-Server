@@ -1,10 +1,13 @@
 package noweekend.mcphost.controller
 
+import noweekend.mcphost.controller.request.Tag
+import noweekend.mcphost.controller.request.TagRequest
+import noweekend.mcphost.controller.request.WeatherRequest
+import noweekend.mcphost.controller.response.WeatherResponse
 import noweekend.mcphost.service.ChatbotService
 import noweekend.mcphost.service.GraphChatService
 import org.slf4j.LoggerFactory
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RestController
@@ -16,6 +19,7 @@ class ChatbotController(
     private val chatbotService: ChatbotService,
     private val graphChatService: GraphChatService,
 ) {
+    private val logger = LoggerFactory.getLogger(ChatbotController::class.java)
 
     @PostMapping("/just-chat")
     fun chat(@RequestBody chatRequest: ChatRequest): ResponseEntity<ChatResponse> {
@@ -39,7 +43,9 @@ class ChatbotController(
         return ResponseEntity.ok(result)
     }
 
-    companion object {
-        private val logger = LoggerFactory.getLogger(ChatbotController::class.java)
+    @PostMapping("/getTag")
+    fun getTag(@RequestBody request: TagRequest): ResponseEntity<List<Tag>> {
+        val result = chatbotService.tagRecommendation(request)
+        return ResponseEntity.ok(result)
     }
 }

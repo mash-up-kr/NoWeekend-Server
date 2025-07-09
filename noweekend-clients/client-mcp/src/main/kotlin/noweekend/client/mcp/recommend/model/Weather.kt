@@ -1,4 +1,4 @@
-package noweekend.client.mcp.weather.model
+package noweekend.client.mcp.recommend.model
 
 import java.time.LocalDate
 
