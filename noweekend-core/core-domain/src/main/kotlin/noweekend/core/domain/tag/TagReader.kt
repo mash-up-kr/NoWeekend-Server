@@ -27,12 +27,7 @@ class TagReader(
             if (tag == null) {
                 // 등록된 적이 없는 기본 태그
                 unselectedBasicTags.add(
-                    Tag(
-                        id = "BASIC_TAG",
-                        content = basic.koreanContent,
-                        userId = userId,
-                        selected = false,
-                    ),
+                    Tag.basicUnselected(basic, userId),
                 )
             } else if (!tag.selected) {
                 // 등록됐지만 unselected 상태인 기본 태그

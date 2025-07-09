@@ -17,5 +17,12 @@ data class Tag(
                 selected = true,
             )
         }
+        fun basicUnselected(basic: BasicTag, userId: String): Tag =
+            Tag(
+                id = IdGenerator.generate(),
+                content = basic.koreanContent,
+                userId = userId,
+                selected = false,
+            )
     }
 }
