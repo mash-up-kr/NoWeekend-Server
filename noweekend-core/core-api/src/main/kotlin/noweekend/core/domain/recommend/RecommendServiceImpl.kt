@@ -48,8 +48,7 @@ class RecommendServiceImpl(
     }
 
     private fun userTagValidation(userTags: UserTags) {
-        val userFlatMapTags =
-            userTags.selectedBasicTags + userTags.unselectedBasicTags + userTags.selectedCustomTags + userTags.unselectedCustomTags
+        val userFlatMapTags = userTags.selectedBasicTags + userTags.selectedCustomTags
         if (userFlatMapTags.size < 3) {
             throw CoreException(ErrorType.USER_TAGS_ERROR)
         }
