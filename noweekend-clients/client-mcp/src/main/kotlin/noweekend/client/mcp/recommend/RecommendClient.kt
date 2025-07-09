@@ -56,4 +56,32 @@ class RecommendClient(
             thirdRecommendTag = TagResponse(tagResponse[2].content),
         )
     }
+
+    fun getOnlyNewRecommend(request: UserTags): TagApiResponses? {
+        val response = try {
+            api.getTagOnlyNew(TagRequest(request))
+        } catch (e: FeignException) {
+            log.warn("[getOnlyNewRecommend] FeignException occurred. Returning null. msg=${e.message}")
+            return null
+        } catch (e: Exception) {
+            log.error("[getOnlyNewRecommend] Unexpected exception occurred. Returning null. msg=${e.message}", e)
+            return null
+        }
+
+        val tagResponse = response.body ?: run {
+            log.warn("[getOnlyNewRecommend] Response body is null. Returning null.")
+            return null
+        }
+
+        if (tagResponse.size != 3) {
+            log.warn("[getOnlyNewRecommend] Response size is not 3 (actual: ${tagResponse.size}). Returning null.")
+            return null
+        }
+
+        return TagApiResponses(
+            firstRecommendTag = TagResponse(tagResponse[0].content),
+            secondRecommendTag = TagResponse(tagResponse[1].content),
+            thirdRecommendTag = TagResponse(tagResponse[2].content),
+        )
+    }
 }

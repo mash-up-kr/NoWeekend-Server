@@ -64,4 +64,29 @@ class RecommendServiceImpl(
             thirdRecommendTag = TagResponse(shuffled[2].content),
         )
     }
+
+    override fun getTagRecommendOnlyNew(userId: String): TagApiResponses {
+        val userTags = tagReader.getUserTags(userId)
+        userTagValidation(userTags)
+
+        val apiRecommendResponse = recommendClient.getOnlyNewRecommend(userTags)
+        if (apiRecommendResponse != null) {
+            val allOldTags = (
+                userTags.selectedBasicTags + userTags.unselectedBasicTags +
+                    userTags.selectedCustomTags + userTags.unselectedCustomTags
+                )
+                .map { it.content }
+                .toSet()
+
+            val allNewTags = listOf(
+                apiRecommendResponse.firstRecommendTag.content,
+                apiRecommendResponse.secondRecommendTag.content,
+                apiRecommendResponse.thirdRecommendTag.content,
+            )
+            require(allNewTags.none { it in allOldTags }) { "Returned tag already exists in user tags" }
+            return apiRecommendResponse
+        }
+
+        throw CoreException(ErrorType.SERVER_TAGS_ERROR)
+    }
 }

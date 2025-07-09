@@ -29,4 +29,11 @@ interface RecommendApi {
         method = [RequestMethod.POST],
     )
     fun getTag(@RequestBody request: TagRequest): ResponseEntity<List<TagResponse>>
+
+    @RequestMapping(
+        value = ["/getTagOnlyNew"],
+        consumes = [MediaType.APPLICATION_JSON_VALUE],
+        method = [RequestMethod.POST],
+    )
+    fun getTagOnlyNew(@RequestBody request: TagRequest): ResponseEntity<List<TagResponse>>
 }

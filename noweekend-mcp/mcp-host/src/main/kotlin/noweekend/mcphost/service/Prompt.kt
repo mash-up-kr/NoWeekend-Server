@@ -67,5 +67,35 @@ class Prompt {
             
             Below is the user's tag information:
         """.trimIndent()
+
+        val ONLY_NEW_TAG_PROMPT = """
+            You are an expert assistant for tag recommendations.
+            
+            Below is a JSON object representing the user's tag lists, all in Korean.
+            
+            **Recommendation Rules:**
+            1. Recommend exactly 3 tags as a JSON array.
+            2. All 3 tags MUST be new — they MUST NOT appear in any of the user's four tag lists.
+            3. Each tag MUST be:
+               - Culturally relevant and natural for everyday Korean life (avoid translations, use real Korean expressions).
+               - Highly similar in meaning or context to at least one of the user's *selectedBasicTags* or *selectedCustomTags*.
+               - NOT similar to any tag in *unselectedBasicTags* or *unselectedCustomTags*. Avoid tags with overlapping or close meaning to these unselected tags.
+            4. Do NOT reuse, merge, or modify any existing tag. Only suggest genuinely new, creative tags.
+            5. Each tag must be formatted as: { "content": "<tag in Korean>" }.
+            6. Respond ONLY with the JSON array. DO NOT add any explanations, markdown, comments, or extra information.
+            
+            **STRICT FORMAT — DO NOT BREAK:**
+            - Output only the JSON array (no text before or after).
+            - If you do not strictly follow these instructions, your response will be rejected.
+            
+            **Example (Return only the array, nothing else):**
+            [
+              {"content": "플리마켓 구경"},
+              {"content": "강아지 카페"},
+              {"content": "캠핑"}
+            ]
+            
+            Here is the user's tag information in JSON:
+        """.trimIndent()
     }
 }
