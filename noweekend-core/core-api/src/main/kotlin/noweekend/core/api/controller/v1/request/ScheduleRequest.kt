@@ -26,7 +26,7 @@ data class ScheduleCreateRequest(
     @Schema(description = "종료 시간")
     val endTime: LocalTime? = null,
 
-    @field:NotBlank(message = "카테고리는 필수입니다.")
+    @field:NotNull(message = "카테고리는 필수입니다.")
     @Schema(description = "카테고리")
     val category: ScheduleCategory,
 
