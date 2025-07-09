@@ -31,7 +31,7 @@ interface RecommendApi {
     fun getTag(@RequestBody request: TagRequest): ResponseEntity<List<TagResponse>>
 
     @RequestMapping(
-        value = ["/getTagOnlyNew"], // 완전히 새로운 태그만 반환하는 엔드포인트
+        value = ["/getTagOnlyNew"],
         consumes = [MediaType.APPLICATION_JSON_VALUE],
         method = [RequestMethod.POST],
     )
