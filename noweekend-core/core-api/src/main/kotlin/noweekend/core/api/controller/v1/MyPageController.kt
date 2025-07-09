@@ -1,5 +1,6 @@
 package noweekend.core.api.controller.v1
 
+import noweekend.core.api.controller.v1.docs.MyPageControllerDocs
 import noweekend.core.api.controller.v1.request.LeaveInputRequest
 import noweekend.core.api.controller.v1.request.ProfileRequest
 import noweekend.core.api.controller.v1.request.TagUpdateRequest

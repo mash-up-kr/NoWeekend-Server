@@ -1,5 +1,6 @@
 package noweekend.core.api.controller.v1
 
+import noweekend.core.api.controller.v1.docs.LocationControllerDocs
 import noweekend.core.api.controller.v1.request.LocationRequest
 import noweekend.core.api.security.annotations.CurrentUserId
 import noweekend.core.domain.user.UserService

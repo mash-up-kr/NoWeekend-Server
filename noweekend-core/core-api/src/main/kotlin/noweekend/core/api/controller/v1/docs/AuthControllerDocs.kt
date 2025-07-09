@@ -1,14 +1,14 @@
-package noweekend.core.api.controller.v1
+package noweekend.core.api.controller.v1.docs
 
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.media.Content
 import io.swagger.v3.oas.annotations.media.ExampleObject
 import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.parameters.RequestBody
+import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.tags.Tag
 import noweekend.core.api.controller.v1.request.LoginRequest
 import noweekend.core.api.controller.v1.response.OAuthLoginResponse
-import noweekend.core.support.response.ApiResponse
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.PathVariable
 
@@ -27,7 +27,7 @@ interface AuthControllerDocs {
             ],
         ),
         responses = [
-            io.swagger.v3.oas.annotations.responses.ApiResponse(
+            ApiResponse(
                 responseCode = "200",
                 description = "로그인 성공",
                 content = [
@@ -37,13 +37,13 @@ interface AuthControllerDocs {
                     ),
                 ],
             ),
-            io.swagger.v3.oas.annotations.responses.ApiResponse(
+            ApiResponse(
                 responseCode = "400",
                 description = "잘못된 요청",
                 content = [
                     Content(
                         mediaType = "application/json",
-                        schema = Schema(implementation = ApiResponse::class),
+                        schema = Schema(implementation = noweekend.core.support.response.ApiResponse::class),
                         examples = [
                             ExampleObject(
                                 name = "예시 응답",
@@ -68,5 +68,5 @@ interface AuthControllerDocs {
     fun loginWithGoogle(
         @PathVariable("providerType") providerType: String,
         @Validated @RequestBody request: LoginRequest,
-    ): ApiResponse<OAuthLoginResponse>
+    ): noweekend.core.support.response.ApiResponse<OAuthLoginResponse>
 }

@@ -1,5 +1,6 @@
 package noweekend.core.api.controller.v1
 
+import noweekend.core.api.controller.v1.docs.RecommendControllerDocs
 import noweekend.core.api.controller.v1.response.WeatherApiResponse
 import noweekend.core.api.security.annotations.CurrentUserId
 import noweekend.core.domain.recommend.RecommendService

@@ -1,5 +1,6 @@
 package noweekend.core.api.controller.v1
 
+import noweekend.core.api.controller.v1.docs.AuthControllerDocs
 import noweekend.core.api.controller.v1.request.LoginRequest
 import noweekend.core.api.controller.v1.request.toOAuthLoginParams
 import noweekend.core.api.controller.v1.response.OAuthLoginResponse

@@ -1,5 +1,6 @@
 package noweekend.core.api.controller.v1
 
+import noweekend.core.api.controller.v1.docs.ScheduleControllerDocs
 import noweekend.core.api.controller.v1.request.ScheduleCreateRequest
 import noweekend.core.api.controller.v1.request.ScheduleUpdateRequest
 import noweekend.core.api.controller.v1.response.DailyScheduleResponse

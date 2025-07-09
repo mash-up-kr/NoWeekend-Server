@@ -1,5 +1,6 @@
 package noweekend.core.api.controller.v1
 
+import noweekend.core.api.controller.v1.docs.HolidayControllerDocs
 import noweekend.core.api.controller.v1.response.HolidayResponses
 import noweekend.core.domain.holiday.HolidayService
 import noweekend.core.support.response.ApiResponse
