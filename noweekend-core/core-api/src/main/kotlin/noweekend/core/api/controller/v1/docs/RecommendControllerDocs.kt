@@ -91,7 +91,7 @@ interface RecommendControllerDocs {
     ): ApiResponse<WeatherApiResponse>
 
     @Operation(
-        summary = "유저 태그 기반 추천 태그 3개 반환",
+        summary = "유저 태그 기반으로 선택했던 것 1개와 새로운 2개의 태그, 총 3개의 태그를 반환 - 일정 추가에서 자동으로 추천",
         description = "유저가 선택한 태그를 기반으로 추천 태그 3개를 반환합니다. (추천 서비스 장애시 랜덤 3개)",
         responses = [
             SwaggerApiResponse(
@@ -148,7 +148,99 @@ interface RecommendControllerDocs {
             ),
         ],
     )
-    fun getTagRecommend(
+    fun getTagRecommendMixed(
+        @Parameter(hidden = true) @CurrentUserId userId: String,
+    ): ApiResponse<TagApiResponses>
+
+    @Operation(
+        summary = "유저 태그 기반 완전히 새로운 추천 태그 3개 반환 - 마이페이지에서 할일 수정시 사용",
+        description = """
+        유저가 선택한 태그(기존 태그)와 중복되지 않는,
+        완전히 새로운 태그 3개를 추천합니다.
+        (추천 서비스 장애 또는 태그 미입력 시 에러 반환)
+    """,
+        responses = [
+            SwaggerApiResponse(
+                responseCode = "200",
+                description = "완전히 새로운 추천 태그 3개 반환 성공",
+                content = [
+                    Content(
+                        mediaType = "application/json",
+                        schema = Schema(implementation = ApiResponse::class),
+                        examples = [
+                            ExampleObject(
+                                name = "예시 응답",
+                                value = """
+{
+  "result": "SUCCESS",
+  "data": {
+    "firstRecommendTag": { "content": "캠핑" },
+    "secondRecommendTag": { "content": "플리마켓 구경" },
+    "thirdRecommendTag": { "content": "카페 투어" }
+  },
+  "error": null
+}
+""",
+                            ),
+                        ],
+                    ),
+                ],
+            ),
+            SwaggerApiResponse(
+                responseCode = "400",
+                description = "잘못된 요청 (ex. 태그 3개 미만 등)",
+                content = [
+                    Content(
+                        mediaType = "application/json",
+                        schema = Schema(implementation = ApiResponse::class),
+                        examples = [
+                            ExampleObject(
+                                name = "태그 미입력 에러 예시",
+                                value = """
+{
+  "result": "ERROR",
+  "data": null,
+  "error": {
+    "code": "INVALID_PARAMETER",
+    "message": "사용자가 태그를 3개이상 갖고있지 않습니다. 태그를 먼저 선택해주세요.",
+    "data": {}
+  }
+}
+""",
+                            ),
+                        ],
+                    ),
+                ],
+            ),
+            SwaggerApiResponse(
+                responseCode = "404",
+                description = "추천 서버 장애로 인한 에러 (MCP 장애)",
+                content = [
+                    Content(
+                        mediaType = "application/json",
+                        schema = Schema(implementation = ApiResponse::class),
+                        examples = [
+                            ExampleObject(
+                                name = "서버 장애 에러 예시",
+                                value = """
+{
+  "result": "ERROR",
+  "data": null,
+  "error": {
+    "code": "SERVER_TAGS_ERROR",
+    "message": "MCP 추천 서버에서 장애가 발생했습니다. 새로운 태그를 추천할 수 없습니다.",
+    "data": {}
+  }
+}
+""",
+                            ),
+                        ],
+                    ),
+                ],
+            ),
+        ],
+    )
+    fun getTagRecommendOnlyNew(
         @Parameter(hidden = true) @CurrentUserId userId: String,
     ): ApiResponse<TagApiResponses>
 }

@@ -8,6 +8,7 @@ import noweekend.mcphost.controller.request.WeatherRequest
 import noweekend.mcphost.controller.response.WeatherResponse
 import noweekend.mcphost.service.Prompt.Companion.TAG_PROMPT
 import noweekend.mcphost.service.Prompt.Companion.WEATHER_PROMPT
+import org.slf4j.LoggerFactory
 import org.springframework.ai.chat.client.ChatClient
 import org.springframework.stereotype.Service
 import java.time.LocalDate
@@ -18,6 +19,8 @@ class ChatbotService(
     private val chatClient: ChatClient,
     private val objectMapper: ObjectMapper,
 ) {
+
+    private val logger = LoggerFactory.getLogger(ChatbotService::class.java)
 
     fun chat(question: String): String {
         return chatClient.prompt()
@@ -35,8 +38,7 @@ class ChatbotService(
             baseDate: $baseDate
         """.trimIndent()
 
-        // 최대 2회까지 재시도
-        repeat(2) { attempt ->
+        repeat(5) { attempt ->
             val jsonString = chatClient.prompt()
                 .system(WEATHER_PROMPT)
                 .user(userMsg)
@@ -62,7 +64,7 @@ class ChatbotService(
                 $tagJson
         """.trimIndent()
 
-        repeat(2) { attempt ->
+        repeat(5) { attempt ->
             val jsonString = chatClient.prompt()
                 .system(TAG_PROMPT)
                 .user(userMsg)
@@ -71,6 +73,38 @@ class ChatbotService(
             try {
                 if (jsonString != null) {
                     return objectMapper.readValue(jsonString)
+                }
+            } catch (e: Exception) {
+                if (attempt == 1) throw IllegalStateException("태그 추천을 받아올 수 없습니다.")
+            }
+        }
+        throw IllegalStateException("태그 추천을 받아올 수 없습니다.")
+    }
+
+    fun tagRecommendationOnlyNew(request: TagRequest): List<Tag> {
+        val tagJson = objectMapper.writeValueAsString(request.userTag)
+        val userMsg = """
+            Here is the user's tag lists in JSON:
+            $tagJson
+        """.trimIndent()
+
+        repeat(5) { attempt ->
+            val jsonString = chatClient.prompt()
+                .system(Prompt.ONLY_NEW_TAG_PROMPT)
+                .user(userMsg)
+                .call()
+                .content()
+            try {
+                logger.info("LLM tagRecommendOnlyNew raw response: $jsonString")
+
+                if (jsonString != null) {
+                    val tags: List<Tag> = objectMapper.readValue(jsonString)
+                    val allOldTags = (
+                        request.userTag.selectedBasicTags + request.userTag.unselectedBasicTags +
+                            request.userTag.selectedCustomTags + request.userTag.unselectedCustomTags
+                        ).map { it.content }.toSet()
+                    require(tags.all { it.content !in allOldTags }) { "추천 결과에 기존 태그가 포함됨" }
+                    return tags
                 }
             } catch (e: Exception) {
                 if (attempt == 1) throw IllegalStateException("태그 추천을 받아올 수 없습니다.")

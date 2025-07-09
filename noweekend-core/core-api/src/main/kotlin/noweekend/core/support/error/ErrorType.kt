@@ -13,4 +13,5 @@ enum class ErrorType(val status: HttpStatus, val code: ErrorCode, val message: S
     USER_LOCATION_NOT_FOUND(HttpStatus.NOT_FOUND, ErrorCode.E404, "사용자의 위치 정보가 존재하지 않습니다. 위치를 생성 후 요청해주세요.", LogLevel.INFO),
     INVALID_PARAMETER(HttpStatus.BAD_REQUEST, ErrorCode.E400, "잘못된 요청입니다.", LogLevel.WARN),
     USER_TAGS_ERROR(HttpStatus.BAD_REQUEST, ErrorCode.E400, "사용자의 태그가 3개 미만입니다. 초기화되지 않았습니다.", LogLevel.ERROR),
+    SERVER_TAGS_ERROR(HttpStatus.NOT_FOUND, ErrorCode.E404, "MCP 추천 서버에서 장애가 발생했습니다. 새로운 태그를 추천할 수 없습니다.", LogLevel.ERROR),
 }

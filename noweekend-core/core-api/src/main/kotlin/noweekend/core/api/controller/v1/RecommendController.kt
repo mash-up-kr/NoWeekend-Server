@@ -23,12 +23,21 @@ class RecommendController(
         return ApiResponse.success(recommendService.getWeatherRecommend(userId))
     }
 
-    @GetMapping("/todo")
-    override fun getTagRecommend(
+    @GetMapping("/todo/mixed")
+    override fun getTagRecommendMixed(
         @CurrentUserId userId: String,
     ): ApiResponse<TagApiResponses> {
         return ApiResponse.success(
             recommendService.getTagRecommend(userId),
+        )
+    }
+
+    @GetMapping("/todo/new-only")
+    override fun getTagRecommendOnlyNew(
+        @CurrentUserId userId: String,
+    ): ApiResponse<TagApiResponses> {
+        return ApiResponse.success(
+            recommendService.getTagRecommendOnlyNew(userId),
         )
     }
 }

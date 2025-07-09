@@ -48,4 +48,10 @@ class ChatbotController(
         val result = chatbotService.tagRecommendation(request)
         return ResponseEntity.ok(result)
     }
+
+    @PostMapping("/getTagOnlyNew")
+    fun getTagOnlyNew(@RequestBody request: TagRequest): ResponseEntity<List<Tag>> {
+        val result = chatbotService.tagRecommendationOnlyNew(request)
+        return ResponseEntity.ok(result)
+    }
 }
