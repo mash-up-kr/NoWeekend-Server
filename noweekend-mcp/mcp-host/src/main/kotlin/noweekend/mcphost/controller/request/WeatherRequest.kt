@@ -1,4 +1,4 @@
-package noweekend.mcphost.controller
+package noweekend.mcphost.controller.request
 
 data class WeatherRequest(
     val latitude: Double,
