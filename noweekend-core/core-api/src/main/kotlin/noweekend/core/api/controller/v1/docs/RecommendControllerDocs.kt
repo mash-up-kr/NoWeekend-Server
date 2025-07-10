@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.media.Content
 import io.swagger.v3.oas.annotations.media.ExampleObject
 import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.tags.Tag
+import noweekend.client.mcp.recommend.model.SandwichResponses
 import noweekend.client.mcp.recommend.model.TagApiResponses
 import noweekend.core.api.controller.v1.response.WeatherApiResponse
 import noweekend.core.api.security.annotations.CurrentUserId
@@ -243,4 +244,6 @@ interface RecommendControllerDocs {
     fun getTagRecommendOnlyNew(
         @Parameter(hidden = true) @CurrentUserId userId: String,
     ): ApiResponse<TagApiResponses>
+
+    fun getSandwich(userId: String): ApiResponse<SandwichResponses>
 }

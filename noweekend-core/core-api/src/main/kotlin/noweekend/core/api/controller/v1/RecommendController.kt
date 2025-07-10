@@ -1,5 +1,6 @@
 package noweekend.core.api.controller.v1
 
+import noweekend.client.mcp.recommend.model.SandwichResponses
 import noweekend.client.mcp.recommend.model.TagApiResponses
 import noweekend.core.api.controller.v1.docs.RecommendControllerDocs
 import noweekend.core.api.controller.v1.response.WeatherApiResponse
@@ -38,6 +39,15 @@ class RecommendController(
     ): ApiResponse<TagApiResponses> {
         return ApiResponse.success(
             recommendService.getTagRecommendOnlyNew(userId),
+        )
+    }
+
+    @GetMapping("/sandwich")
+    override fun getSandwich(
+        @CurrentUserId userId: String,
+    ): ApiResponse<SandwichResponses> {
+        return ApiResponse.success(
+            recommendService.getSandwich(userId),
         )
     }
 }

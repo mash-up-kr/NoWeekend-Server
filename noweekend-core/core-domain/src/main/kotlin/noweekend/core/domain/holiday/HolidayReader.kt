@@ -1,7 +1,9 @@
 package noweekend.core.domain.holiday
 
+import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
 
+@Component
 @Transactional(readOnly = true)
 class HolidayReader(
     private val holidayRepository: HolidayRepository,

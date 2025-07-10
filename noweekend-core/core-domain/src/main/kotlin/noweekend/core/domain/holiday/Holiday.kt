@@ -1,6 +1,7 @@
 package noweekend.core.domain.holiday
 
 import noweekend.core.domain.util.IdGenerator
+import java.time.LocalDate
 import java.time.LocalDateTime
 
 class Holiday(
@@ -12,6 +13,9 @@ class Holiday(
     val dayOfWeekKor: DayOfWeekKor,
     val updatedAt: LocalDateTime,
 ) {
+    val date: LocalDate
+        get() = LocalDate.of(year, month, day)
+
     companion object {
         fun register(
             year: Int,
