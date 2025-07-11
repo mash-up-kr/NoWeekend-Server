@@ -5,7 +5,10 @@ import noweekend.core.api.controller.v1.request.LocationRequest
 import noweekend.core.api.controller.v1.request.ProfileRequest
 import noweekend.core.api.controller.v1.request.TagUpdateRequest
 import noweekend.core.api.controller.v1.response.UserInformationResponse
+import noweekend.core.domain.enumerate.ScheduleCategory
 import noweekend.core.domain.tag.BasicTag
+import noweekend.core.domain.tag.Schedule
+import noweekend.core.domain.tag.ScheduleReader
 import noweekend.core.domain.tag.TagReader
 import noweekend.core.domain.tag.TagWriter
 import noweekend.core.domain.tag.UserTags
@@ -13,6 +16,7 @@ import noweekend.core.support.error.CoreException
 import noweekend.core.support.error.ErrorType
 import org.springframework.stereotype.Service
 import java.time.LocalDate
+import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
 @Service
@@ -21,6 +25,7 @@ class UserServiceImpl(
     private val tagWriter: TagWriter,
     private val userWriter: UserWriter,
     private val userReader: UserReader,
+    private val scheduleReader: ScheduleReader
 ) : UserService {
 
     override fun getDefaultTag(): List<String> {
@@ -84,8 +89,37 @@ class UserServiceImpl(
 
     override fun getUserInformationById(userId: String): UserInformationResponse {
         val user = userReader.findUserById(userId) ?: throw CoreException(ErrorType.USER_NOT_FOUND_INTERNAL)
-        val mockTemperature = 36.5
-        return UserInformationResponse.of(user, mockTemperature)
+
+        val endDate = LocalDateTime.now()
+        val startDate = endDate.minusDays(30)
+
+        val schedules = scheduleReader.findSchedulesByUserIdAndDateRange(userId, startDate, endDate)
+
+        val temperatureByDay = schedules.groupBy { it.startTime.toLocalDate() }
+
+        val dailyTemperatures = temperatureByDay.map { (_, daySchedules) ->
+            if (daySchedules.any { it.category == ScheduleCategory.LEAVE }) {
+                0.0
+            } else {
+                val validTemperatures = daySchedules
+                    .filter { it.completed }
+                    .map { it.temperature }
+
+                if (validTemperatures.isNotEmpty()) {
+                    validTemperatures.average()
+                } else {
+                    null
+                }
+            }
+        }.filterNotNull()
+
+        val averageTemperature = if (dailyTemperatures.isNotEmpty()) {
+            dailyTemperatures.average()
+        } else {
+            0.0
+        }
+
+        return UserInformationResponse.of(user, averageTemperature)
     }
 
     override fun deleteUser(userId: String) {
