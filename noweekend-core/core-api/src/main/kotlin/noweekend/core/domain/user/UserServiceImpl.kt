@@ -4,6 +4,7 @@ import noweekend.core.api.controller.v1.request.LeaveInputRequest
 import noweekend.core.api.controller.v1.request.LocationRequest
 import noweekend.core.api.controller.v1.request.ProfileRequest
 import noweekend.core.api.controller.v1.request.TagUpdateRequest
+import noweekend.core.api.controller.v1.response.UserInformationResponse
 import noweekend.core.domain.tag.BasicTag
 import noweekend.core.domain.tag.TagReader
 import noweekend.core.domain.tag.TagWriter
@@ -79,5 +80,11 @@ class UserServiceImpl(
             ),
         )
         userWriter.upsert(updateUser)
+    }
+
+    override fun getUserInformationById(userId: String): UserInformationResponse {
+        val user = userReader.findUserById(userId) ?: throw CoreException(ErrorType.USER_NOT_FOUND_INTERNAL)
+        val mockTemperature = 36.5
+        return UserInformationResponse.of(user, mockTemperature)
     }
 }

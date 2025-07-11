@@ -4,6 +4,7 @@ import noweekend.core.api.controller.v1.docs.MyPageControllerDocs
 import noweekend.core.api.controller.v1.request.LeaveInputRequest
 import noweekend.core.api.controller.v1.request.ProfileRequest
 import noweekend.core.api.controller.v1.request.TagUpdateRequest
+import noweekend.core.api.controller.v1.response.UserInformationResponse
 import noweekend.core.api.security.annotations.CurrentUserId
 import noweekend.core.domain.tag.UserTags
 import noweekend.core.domain.user.UserService
@@ -59,6 +60,15 @@ class MyPageController(
         userService.updateTag(request, userId)
         return ApiResponse.success(
             "태그들이 성공적으로 변경되었습니다.",
+        )
+    }
+
+    @GetMapping
+    override fun getMyInformation(
+        @CurrentUserId userId: String,
+    ): ApiResponse<UserInformationResponse> {
+        return ApiResponse.success(
+            userService.getUserInformationById(userId),
         )
     }
 }
