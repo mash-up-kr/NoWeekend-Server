@@ -361,7 +361,7 @@ interface MyPageControllerDocs {
 
     @Operation(
         summary = "마이페이지: 내 정보 조회",
-        description = "로그인된 사용자의 프로필, 생일, 남은 연차, 위치 등 모든 회원 정보를 반환합니다.",
+        description = "로그인된 사용자의 프로필, 생일, 남은 연차, 위치, 평균 체온 등 모든 회원 정보를 반환합니다.",
         responses = [
             SwaggerApiResponse(
                 responseCode = "200",
@@ -392,7 +392,8 @@ interface MyPageControllerDocs {
     "location": {
       "latitude": 37.5665,
       "longitude": 126.9780
-    }
+    },
+    "averageTemperature": 36.5
   },
   "error": null
 }

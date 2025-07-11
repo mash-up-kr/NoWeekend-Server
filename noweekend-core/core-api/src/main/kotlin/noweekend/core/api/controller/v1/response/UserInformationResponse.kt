@@ -23,10 +23,11 @@ data class UserInformationResponse(
     val remainingAnnualLeave: Double,
     val createdAt: LocalDateTime,
     val updatedAt: LocalDateTime?,
-    var location: Location,
+    var location: Location?,
+    val averageTemperature: Double,
 ) {
     companion object {
-        fun from(user: User): UserInformationResponse {
+        fun of(user: User, averageTemperature: Double): UserInformationResponse {
             return UserInformationResponse(
                 id = user.id,
                 email = user.email,
@@ -40,7 +41,8 @@ data class UserInformationResponse(
                 remainingAnnualLeave = user.remainingAnnualLeave,
                 createdAt = user.createdAt ?: throw CoreException(ErrorType.USER_NOT_FOUND_INTERNAL),
                 updatedAt = user.updatedAt,
-                location = user.location ?: throw CoreException(ErrorType.USER_LOCATION_NOT_FOUND),
+                location = user.location,
+                averageTemperature = averageTemperature,
             )
         }
     }

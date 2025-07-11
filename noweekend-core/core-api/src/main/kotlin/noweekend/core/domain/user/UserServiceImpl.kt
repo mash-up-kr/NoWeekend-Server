@@ -84,6 +84,7 @@ class UserServiceImpl(
 
     override fun getUserInformationById(userId: String): UserInformationResponse {
         val user = userReader.findUserById(userId) ?: throw CoreException(ErrorType.USER_NOT_FOUND_INTERNAL)
-        return UserInformationResponse.from(user)
+        val mockTemperature = 36.5
+        return UserInformationResponse.of(user, mockTemperature)
     }
 }
