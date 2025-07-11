@@ -12,7 +12,7 @@ class UserCoreRepository(
     private val queryDslRepository: UserQueryDslRepository,
 ) : UserRepository {
     override fun findUserById(id: String): User? {
-        return jpaRepository.findByIdAndDeletedFalse(id).toUser()
+        return jpaRepository.findByIdAndDeletedFalse(id)?.toUser()
     }
 
     override fun findUserByProviderAndProviderId(

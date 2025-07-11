@@ -91,4 +91,6 @@ fun User.toEntity(): UserEntity = UserEntity(
     remainingAnnualLeave = this.remainingAnnualLeave,
     birthDate = this.birthDate,
     location = LocationEmbeddable.fromDomain(this.location),
-)
+).apply {
+    this.deleted = this@toEntity.deleted
+}

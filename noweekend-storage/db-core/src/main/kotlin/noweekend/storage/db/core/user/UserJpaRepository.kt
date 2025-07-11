@@ -8,5 +8,5 @@ interface UserJpaRepository : JpaRepository<UserEntity, String> {
     @Query("SELECT u.location FROM UserEntity u WHERE u.id = :userId AND u.deleted = false")
     fun findLocationByUserId(@Param("userId") userId: String): LocationEmbeddable?
 
-    fun findByIdAndDeletedFalse(id: String): UserEntity
+    fun findByIdAndDeletedFalse(id: String): UserEntity?
 }
