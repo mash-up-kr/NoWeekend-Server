@@ -1,16 +1,20 @@
 package noweekend.core.domain.recommend
 
 import noweekend.client.mcp.recommend.RecommendClient
+import noweekend.client.mcp.recommend.model.SandwichRequest
+import noweekend.client.mcp.recommend.model.SandwichResponse
 import noweekend.client.mcp.recommend.model.TagApiResponses
 import noweekend.client.mcp.recommend.model.TagResponse
 import noweekend.client.mcp.recommend.model.WeatherRequest
 import noweekend.core.api.controller.v1.response.WeatherApiResponse
+import noweekend.core.domain.holiday.HolidayReader
 import noweekend.core.domain.tag.TagReader
 import noweekend.core.domain.tag.UserTags
 import noweekend.core.domain.user.UserReader
 import noweekend.core.support.error.CoreException
 import noweekend.core.support.error.ErrorType
 import org.springframework.stereotype.Service
+import java.time.LocalDate
 import kotlin.random.Random
 
 @Service
@@ -18,6 +22,7 @@ class RecommendServiceImpl(
     private val recommendClient: RecommendClient,
     private val userReader: UserReader,
     private val tagReader: TagReader,
+    private val holidayReader: HolidayReader,
 ) : RecommendService {
 
     override fun getWeatherRecommend(userId: String): WeatherApiResponse {
@@ -87,6 +92,18 @@ class RecommendServiceImpl(
             return apiRecommendResponse
         }
 
-        throw CoreException(ErrorType.SERVER_TAGS_ERROR)
+        throw CoreException(ErrorType.MCP_SERVER_TAGS_ERROR)
+    }
+
+    override fun getSandwich(userId: String): SandwichResponse {
+        val findUser = userReader.findUserById(userId) ?: throw CoreException(ErrorType.USER_NOT_FOUND_INTERNAL)
+        val birthDate = findUser.birthDate ?: throw CoreException(ErrorType.USER_BIRTH_DAY_NOT_FOUND)
+        val holidays: List<LocalDate> = holidayReader
+            .findAllByYear(LocalDate.now().year)
+            .map { it.date }
+
+        return recommendClient.getSandwich(
+            SandwichRequest(birthDay = birthDate, holidays = holidays),
+        ) ?: throw CoreException(ErrorType.MCP_SERVER_SANDWICH_ERROR)
     }
 }

@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.media.Content
 import io.swagger.v3.oas.annotations.media.ExampleObject
 import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.tags.Tag
+import noweekend.client.mcp.recommend.model.SandwichResponse
 import noweekend.client.mcp.recommend.model.TagApiResponses
 import noweekend.core.api.controller.v1.response.WeatherApiResponse
 import noweekend.core.api.security.annotations.CurrentUserId
@@ -227,7 +228,7 @@ interface RecommendControllerDocs {
   "result": "ERROR",
   "data": null,
   "error": {
-    "code": "SERVER_TAGS_ERROR",
+    "code": "MCP_SERVER_TAGS_ERROR",
     "message": "MCP 추천 서버에서 장애가 발생했습니다. 새로운 태그를 추천할 수 없습니다.",
     "data": {}
   }
@@ -243,4 +244,120 @@ interface RecommendControllerDocs {
     fun getTagRecommendOnlyNew(
         @Parameter(hidden = true) @CurrentUserId userId: String,
     ): ApiResponse<TagApiResponses>
+
+    @Operation(
+        summary = "샌드위치 연휴 추천",
+        description = """
+        사용자 생일 및 공휴일 정보를 기반으로  
+        샌드위치 연차(연휴 시작일·종료일) 기간을 추천합니다.
+    """,
+        responses = [
+            SwaggerApiResponse(
+                responseCode = "200",
+                description = "샌드위치 연차 기간 반환 성공",
+                content = [
+                    Content(
+                        mediaType = "application/json",
+                        schema = Schema(implementation = ApiResponse::class),
+                        examples = [
+                            ExampleObject(
+                                name = "예시 응답",
+                                value = """
+{
+  "result": "SUCCESS",
+  "data": {
+    "startDate": "2025-07-14",
+    "endDate": "2025-07-16"
+  },
+  "error": null
+}
+""",
+                            ),
+                        ],
+                    ),
+                ],
+            ),
+            SwaggerApiResponse(
+                responseCode = "400",
+                description = "잘못된 요청 (ex. 로그인 정보 누락 등)",
+                content = [
+                    Content(
+                        mediaType = "application/json",
+                        schema = Schema(implementation = ApiResponse::class),
+                        examples = [
+                            ExampleObject(
+                                name = "잘못된 요청 예시",
+                                value = """
+{
+  "result": "ERROR",
+  "data": null,
+  "error": {
+    "code": "INVALID_PARAMETER",
+    "message": "잘못된 요청입니다.",
+    "data": {}
+  }
+}
+""",
+                            ),
+                        ],
+                    ),
+                ],
+            ),
+            SwaggerApiResponse(
+                responseCode = "400",
+                description = "생일 정보 없음",
+                content = [
+                    Content(
+                        mediaType = "application/json",
+                        schema = Schema(implementation = ApiResponse::class),
+                        examples = [
+                            ExampleObject(
+                                name = "생일 정보 없음 에러 예시",
+                                value = """
+{
+  "result": "ERROR",
+  "data": null,
+  "error": {
+    "code": "USER_BIRTH_DAY_NOT_FOUND",
+    "message": "사용자가 생일을 갖고있지 않습니다. 생일 먼저 추가해주세요.",
+    "data": {}
+  }
+}
+""",
+                            ),
+                        ],
+                    ),
+                ],
+            ),
+            SwaggerApiResponse(
+                responseCode = "504",
+                description = "MCP 추천 서버 무응답",
+                content = [
+                    Content(
+                        mediaType = "application/json",
+                        schema = Schema(implementation = ApiResponse::class),
+                        examples = [
+                            ExampleObject(
+                                name = "MCP 서버 타임아웃 에러 예시",
+                                value = """
+{
+  "result": "ERROR",
+  "data": null,
+  "error": {
+    "code": "MCP_SERVER_SANDWICH_ERROR",
+    "message": "MCP 추천 서버의 응답이 없습니다. 잠시 후 다시 시도해주세요.",
+    "data": {}
+  }
+}
+""",
+                            ),
+                        ],
+                    ),
+                ],
+            ),
+        ],
+    )
+    fun getSandwich(
+        @Parameter(hidden = true) @CurrentUserId userId: String,
+    ): ApiResponse<SandwichResponse>
 }
