@@ -89,6 +89,10 @@ class UserServiceImpl(
     }
 
     override fun deleteUser(userId: String) {
-        userWriter.delete(userId)
+        try {
+            userWriter.delete(userId)
+        } catch (_: NoSuchElementException) {
+            throw CoreException(ErrorType.USER_NOT_FOUND_INTERNAL)
+        }
     }
 }
