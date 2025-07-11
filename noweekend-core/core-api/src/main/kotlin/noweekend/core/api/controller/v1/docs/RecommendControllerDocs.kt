@@ -15,7 +15,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse as SwaggerApiResponse
 
 @Tag(
     name = "추천",
-    description = "반차/연차 추천 API (향후 3일간 7~20시 눈·비 예보 기반)",
+    description = "MCP AI를 활용하여 다양한 정보를 추천합니다.",
 )
 interface RecommendControllerDocs {
 
