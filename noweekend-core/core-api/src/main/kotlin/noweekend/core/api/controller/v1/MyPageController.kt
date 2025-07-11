@@ -10,6 +10,7 @@ import noweekend.core.domain.tag.UserTags
 import noweekend.core.domain.user.UserService
 import noweekend.core.support.response.ApiResponse
 import org.springframework.validation.annotation.Validated
+import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PatchMapping
 import org.springframework.web.bind.annotation.RequestBody
@@ -69,6 +70,16 @@ class MyPageController(
     ): ApiResponse<UserInformationResponse> {
         return ApiResponse.success(
             userService.getUserInformationById(userId),
+        )
+    }
+
+    @DeleteMapping
+    override fun deleteUser(
+        @CurrentUserId userId: String,
+    ): ApiResponse<String> {
+        userService.deleteUser(userId)
+        return ApiResponse.success(
+            "회원 탈퇴가 완료되었습니다.",
         )
     }
 }

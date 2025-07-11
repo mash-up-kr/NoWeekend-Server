@@ -13,9 +13,13 @@ class TagHistoryCoreRepository(
     }
 
     override fun findAllByUserId(userId: String): List<Tag> {
-        return tagJpaRepository.findAllByUserId(userId).map {
+        return tagJpaRepository.findAllByUserIdAndDeletedFalse(userId).map {
                 tagHistoryEntity ->
             tagHistoryEntity.toDomain()
         }
+    }
+
+    override fun markDeletedByUserId(userId: String) {
+        tagJpaRepository.markDeletedByUserId(userId)
     }
 }

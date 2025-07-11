@@ -460,4 +460,88 @@ interface MyPageControllerDocs {
     fun getMyInformation(
         @Parameter(hidden = true) @CurrentUserId userId: String,
     ): ApiResponse<UserInformationResponse>
+
+    @Operation(
+        summary = "마이페이지: 회원 탈퇴",
+        description = "로그인된 사용자의 계정을 소프트 삭제 처리하고, 이후 로그인할 수 없도록 합니다.",
+        responses = [
+            SwaggerApiResponse(
+                responseCode = "200",
+                description = "회원 탈퇴 성공",
+                content = [
+                    Content(
+                        mediaType = "application/json",
+                        schema = Schema(implementation = ApiResponse::class),
+                        examples = [
+                            ExampleObject(
+                                name = "성공 응답",
+                                value = """
+{
+  "result": "SUCCESS",
+  "data": "회원 탈퇴가 완료되었습니다.",
+  "error": null
+}
+""",
+                            ),
+                        ],
+                    ),
+                ],
+            ),
+            SwaggerApiResponse(
+                responseCode = "400",
+                description = "잘못된 요청 (로그인 정보 누락 등)",
+                content = [
+                    Content(
+                        mediaType = "application/json",
+                        schema = Schema(implementation = ApiResponse::class),
+                        examples = [
+                            ExampleObject(
+                                name = "잘못된 요청 예시",
+                                value = """
+{
+  "result": "ERROR",
+  "data": null,
+  "error": {
+    "code": "INVALID_PARAMETER",
+    "message": "로그인 정보가 필요합니다.",
+    "data": {}
+  }
+}
+""",
+                            ),
+                        ],
+                    ),
+                ],
+            ),
+            SwaggerApiResponse(
+                responseCode = "500",
+                description = "서버 내부 오류 (사용자 조회 불가 등)",
+                content = [
+                    Content(
+                        mediaType = "application/json",
+                        schema = Schema(implementation = ApiResponse::class),
+                        examples = [
+                            ExampleObject(
+                                name = "서버 오류 예시",
+                                value = """
+{
+  "result": "ERROR",
+  "data": null,
+  "error": {
+    "code": "USER_NOT_FOUND_INTERNAL",
+    "message": "사용자를 찾을 수 없습니다. - 서버 오류",
+    "data": {}
+  }
+}
+""",
+                            ),
+                        ],
+                    ),
+                ],
+            ),
+        ],
+    )
+    fun deleteUser(
+        @Parameter(hidden = true) @CurrentUserId userId: String,
+    ): ApiResponse<String>
 }

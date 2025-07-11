@@ -8,4 +8,5 @@ interface ScheduleRepository {
     fun save(schedule: Schedule): Schedule
     fun update(schedule: Schedule): Schedule
     fun deleteById(id: String)
+    fun markDeletedByUserId(userId: String)
 }

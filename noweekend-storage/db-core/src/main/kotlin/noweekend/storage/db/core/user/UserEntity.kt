@@ -74,6 +74,7 @@ class UserEntity(
         remainingAnnualLeave = this.remainingAnnualLeave,
         createdAt = this.createdAt,
         updatedAt = this.updatedAt,
+        deleted = this.deleted,
         location = this.location?.toDomain(),
     )
 }

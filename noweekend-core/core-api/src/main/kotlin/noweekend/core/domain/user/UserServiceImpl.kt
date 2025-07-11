@@ -87,4 +87,8 @@ class UserServiceImpl(
         val mockTemperature = 36.5
         return UserInformationResponse.of(user, mockTemperature)
     }
+
+    override fun deleteUser(userId: String) {
+        userWriter.delete(userId)
+    }
 }

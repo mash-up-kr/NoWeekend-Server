@@ -11,9 +11,9 @@ class ScheduleCoreRepository(
     private val queryDslRepository: ScheduleQueryDslRepository,
 ) : ScheduleRepository {
     override fun findScheduleById(id: String): Schedule? {
-        return jpaRepository.findById(id)
-            .map { it.toSchedule() }
-            .orElse(null)
+        return jpaRepository
+            .findByIdAndDeletedFalse(id)
+            ?.toSchedule()
     }
 
     override fun findSchedulesByUserIdAndDateRange(
@@ -39,5 +39,9 @@ class ScheduleCoreRepository(
 
     override fun deleteById(id: String) {
         jpaRepository.deleteById(id)
+    }
+
+    override fun markDeletedByUserId(userId: String) {
+        jpaRepository.markDeletedByUserId(userId)
     }
 }
