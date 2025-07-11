@@ -16,6 +16,7 @@ import org.springframework.core.io.FileSystemResource
 import org.springframework.stereotype.Component
 import java.io.FileReader
 import java.math.BigInteger
+import java.net.URLEncoder
 import java.security.KeyFactory
 import java.security.PrivateKey
 import java.security.spec.PKCS8EncodedKeySpec
@@ -50,7 +51,13 @@ class AppleClient internal constructor(
             clientId = clientId,
             secretKeyFilePath = appleOAuthProperties.secretKeyFilePath,
         )
-        return appleApi.revokeToken(clientId, clientSecret, token).statusCode.is2xxSuccessful
+        val body = listOf(
+            "client_id" to clientId,
+            "client_secret" to clientSecret,
+            "token" to token,
+        ).joinToString("&") { "${it.first}=${URLEncoder.encode(it.second, "UTF-8")}" }
+
+        return appleApi.revokeToken(body).statusCode.is2xxSuccessful
     }
 
     private fun requestAccessToken(params: OAuthLoginParams): AppleTokens? {
@@ -61,8 +68,14 @@ class AppleClient internal constructor(
             clientId = clientId,
             secretKeyFilePath = appleOAuthProperties.secretKeyFilePath,
         )
+        val body = listOf(
+            "code" to params.getCode(),
+            "client_id" to clientId,
+            "client_secret" to clientSecret,
+            "grant_type" to AUTHORIZATION_CODE,
+        ).joinToString("&") { "${it.first}=${URLEncoder.encode(it.second, "UTF-8")}" }
 
-        return appleApi.getAccessToken(params.getCode(), clientId, clientSecret, AUTHORIZATION_CODE)
+        return appleApi.getAccessToken(body)
     }
 
     private fun makeClientSecret(keyId: String, teamId: String, clientId: String, secretKeyFilePath: String): String {
