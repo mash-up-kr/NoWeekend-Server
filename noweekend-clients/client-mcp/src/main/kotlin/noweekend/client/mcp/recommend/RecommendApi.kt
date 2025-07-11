@@ -1,7 +1,7 @@
 package noweekend.client.mcp.recommend
 
 import noweekend.client.mcp.recommend.model.SandwichRequest
-import noweekend.client.mcp.recommend.model.SandwichResponses
+import noweekend.client.mcp.recommend.model.SandwichResponse
 import noweekend.client.mcp.recommend.model.TagRequest
 import noweekend.client.mcp.recommend.model.TagResponse
 import noweekend.client.mcp.recommend.model.WeatherRequest
@@ -44,5 +44,5 @@ interface RecommendApi {
         consumes = [MediaType.APPLICATION_JSON_VALUE],
         method = [RequestMethod.POST],
     )
-    fun getSandwich(@RequestBody request: SandwichRequest): ResponseEntity<SandwichResponses>
+    fun getSandwich(@RequestBody request: SandwichRequest): ResponseEntity<SandwichResponse>
 }

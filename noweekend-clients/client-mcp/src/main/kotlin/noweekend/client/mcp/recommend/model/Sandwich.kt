@@ -8,9 +8,6 @@ data class SandwichRequest(
 )
 
 data class SandwichResponse(
-    val content: String,
-)
-
-data class SandwichResponses(
-    val contents: List<SandwichResponse>,
+    val startDate: LocalDate,
+    val endDate: LocalDate,
 )

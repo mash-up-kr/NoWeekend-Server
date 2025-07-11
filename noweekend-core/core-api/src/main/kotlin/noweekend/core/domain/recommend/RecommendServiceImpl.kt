@@ -2,7 +2,7 @@ package noweekend.core.domain.recommend
 
 import noweekend.client.mcp.recommend.RecommendClient
 import noweekend.client.mcp.recommend.model.SandwichRequest
-import noweekend.client.mcp.recommend.model.SandwichResponses
+import noweekend.client.mcp.recommend.model.SandwichResponse
 import noweekend.client.mcp.recommend.model.TagApiResponses
 import noweekend.client.mcp.recommend.model.TagResponse
 import noweekend.client.mcp.recommend.model.WeatherRequest
@@ -92,10 +92,10 @@ class RecommendServiceImpl(
             return apiRecommendResponse
         }
 
-        throw CoreException(ErrorType.SERVER_TAGS_ERROR)
+        throw CoreException(ErrorType.MCP_SERVER_TAGS_ERROR)
     }
 
-    override fun getSandwich(userId: String): SandwichResponses {
+    override fun getSandwich(userId: String): SandwichResponse {
         val findUser = userReader.findUserById(userId) ?: throw CoreException(ErrorType.USER_NOT_FOUND_INTERNAL)
         val birthDate = findUser.birthDate ?: throw CoreException(ErrorType.USER_BIRTH_DAY_NOT_FOUND)
         val holidays: List<LocalDate> = holidayReader
@@ -104,6 +104,6 @@ class RecommendServiceImpl(
 
         return recommendClient.getSandwich(
             SandwichRequest(birthDay = birthDate, holidays = holidays),
-        )
+        ) ?: throw CoreException(ErrorType.MCP_SERVER_SANDWICH_ERROR)
     }
 }

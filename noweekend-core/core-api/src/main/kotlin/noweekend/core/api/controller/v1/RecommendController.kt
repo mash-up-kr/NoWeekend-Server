@@ -1,6 +1,6 @@
 package noweekend.core.api.controller.v1
 
-import noweekend.client.mcp.recommend.model.SandwichResponses
+import noweekend.client.mcp.recommend.model.SandwichResponse
 import noweekend.client.mcp.recommend.model.TagApiResponses
 import noweekend.core.api.controller.v1.docs.RecommendControllerDocs
 import noweekend.core.api.controller.v1.response.WeatherApiResponse
@@ -10,6 +10,7 @@ import noweekend.core.support.response.ApiResponse
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
+import java.time.LocalDate
 
 @RestController
 @RequestMapping("/api/v1/recommend")
@@ -45,9 +46,12 @@ class RecommendController(
     @GetMapping("/sandwich")
     override fun getSandwich(
         @CurrentUserId userId: String,
-    ): ApiResponse<SandwichResponses> {
-        return ApiResponse.success(
-            recommendService.getSandwich(userId),
+    ): ApiResponse<SandwichResponse> {
+        val mockData = SandwichResponse(
+            startDate = LocalDate.now(),
+            endDate = LocalDate.now().plusDays(3),
         )
+        return ApiResponse.success(mockData)
+//        return ApiResponse.success(recommendService.getSandwich(userId))
     }
 }

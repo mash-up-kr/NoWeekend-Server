@@ -2,7 +2,7 @@ package noweekend.client.mcp.recommend
 
 import feign.FeignException
 import noweekend.client.mcp.recommend.model.SandwichRequest
-import noweekend.client.mcp.recommend.model.SandwichResponses
+import noweekend.client.mcp.recommend.model.SandwichResponse
 import noweekend.client.mcp.recommend.model.TagApiResponses
 import noweekend.client.mcp.recommend.model.TagRequest
 import noweekend.client.mcp.recommend.model.TagResponse
@@ -87,17 +87,16 @@ class RecommendClient(
         )
     }
 
-    fun getSandwich(request: SandwichRequest): SandwichResponses {
+    fun getSandwich(request: SandwichRequest): SandwichResponse? {
         return try {
             api.getSandwich(request)
                 .body
-                ?: SandwichResponses(emptyList())
         } catch (e: FeignException) {
             log.warn("[getSandwich] FeignException, empty 반환. msg=${e.message}")
-            SandwichResponses(emptyList())
+            return null
         } catch (e: Exception) {
             log.error("[getSandwich] 예기치 못한 예외, empty 반환.", e)
-            SandwichResponses(emptyList())
+            return null
         }
     }
 }

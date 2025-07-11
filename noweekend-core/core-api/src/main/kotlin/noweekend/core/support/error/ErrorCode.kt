@@ -6,4 +6,5 @@ enum class ErrorCode {
     E403,
     E404,
     E500,
+    E504,
 }
