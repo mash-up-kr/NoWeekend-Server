@@ -3,22 +3,31 @@ services:
   mysql:
     image: mysql:8.0
     environment:
-      MYSQL_ROOT_PASSWORD: mash-up-noweekend
-      MYSQL_USER: mash-up-noweekend
-      MYSQL_PASSWORD: mash-up-noweekend
+      - TZ=Asia/Seoul
+      - MYSQL_ROOT_PASSWORD=mash-up-noweekend
+      - MYSQL_USER=mash-up-noweekend
+      - MYSQL_PASSWORD=mash-up-noweekend
     ports:
       - "3306:3306"
     volumes:
       - mysql-data:/var/lib/mysql
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
     networks:
       - mashupnet
 
   redis:
     image: redis:7.2
+    environment:
+      - TZ=Asia/Seoul
     ports:
       - "6379:6379"
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
     networks:
       - mashupnet
+
 volumes:
   mysql-data:
 
