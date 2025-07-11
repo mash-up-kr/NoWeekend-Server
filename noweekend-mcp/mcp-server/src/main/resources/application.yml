@@ -1,4 +1,8 @@
 spring:
+  jackson:
+    time-zone: Asia/Seoul
+  mvc:
+    timezone: Asia/Seoul
   ai:
     mcp:
       server:
