@@ -2,7 +2,7 @@ spring:
   jackson:
     time-zone: Asia/Seoul
   mvc:
-    timezone: Asia/Seoul
+    time-zone: Asia/Seoul
   ai:
     anthropic:
       api-key: ENC(DSDMqqudORinUFWutrGj/hFq31Rcp+1B5SqZmhQUZKe5g5G01KIcngKwmep3K0aDGrqMIGsxlAxj9Bx9fe2MwHnpQ+pZYCT/vYAp/6hKIiuSQULyrMWgkTxd08+RWnzP9DNZb7BpX1NYuZ3dsIqPo0qVCVsyLLjc)
