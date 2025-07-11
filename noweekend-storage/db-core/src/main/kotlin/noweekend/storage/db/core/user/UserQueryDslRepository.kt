@@ -13,7 +13,11 @@ class UserQueryDslRepository(
         val userEntity = QUserEntity.userEntity
         return jpaQueryFactory
             .selectFrom(userEntity)
-            .where(userEntity.providerId.eq(providerId), userEntity.providerType.eq(providerType))
+            .where(
+                userEntity.providerId.eq(providerId),
+                userEntity.providerType.eq(providerType),
+                userEntity.deleted.isFalse,
+            )
             .fetchOne()
     }
 }

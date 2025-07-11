@@ -20,6 +20,7 @@ data class User(
     val remainingAnnualLeave: Double = 0.0,
     val createdAt: LocalDateTime?,
     val updatedAt: LocalDateTime?,
+    var deleted: Boolean,
     var location: Location?,
 ) {
     companion object {
@@ -42,6 +43,7 @@ data class User(
                 birthDate = null,
                 createdAt = null,
                 updatedAt = null,
+                deleted = false,
                 location = null,
             )
         }

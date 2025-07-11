@@ -87,4 +87,12 @@ class UserServiceImpl(
         val mockTemperature = 36.5
         return UserInformationResponse.of(user, mockTemperature)
     }
+
+    override fun deleteUser(userId: String) {
+        try {
+            userWriter.delete(userId)
+        } catch (_: NoSuchElementException) {
+            throw CoreException(ErrorType.USER_NOT_FOUND_INTERNAL)
+        }
+    }
 }

@@ -21,5 +21,6 @@ abstract class BaseEntity {
     var updatedAt: LocalDateTime = LocalDateTime.now()
         protected set
 
-    val isDeleted: Boolean = false
+    @Column(name = "is_deleted", nullable = false)
+    var deleted: Boolean = false
 }
