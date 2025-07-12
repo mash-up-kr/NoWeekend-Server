@@ -8,13 +8,22 @@ import org.springframework.transaction.annotation.Transactional
 class TagWriter(
     private val tagRepository: TagRepository,
 ) {
-    fun registerSelectedBasicTag(tags: List<BasicTag>, userId: String) {
-        tags.stream().forEach {
-                tag ->
-            tagRepository.register(
-                Tag.register(tag.koreanContent, userId),
-            )
-        }
+    fun registerSelectedBasicTag(basicTags: List<BasicTag>, userId: String) {
+        val existingContents: Set<String> =
+            tagRepository.findAllByUserId(userId)
+                .map { it.content }
+                .toSet()
+
+        // 파라미터로 받은 기본 태그 중에서, DB에 없는 것만 INSERT
+        basicTags
+            .asSequence()
+            .map { it.koreanContent }
+            .filter { content -> content !in existingContents }
+            .forEach { newContent ->
+                tagRepository.register(
+                    Tag.register(content = newContent, userId = userId),
+                )
+            }
     }
 
     fun upsertTags(
