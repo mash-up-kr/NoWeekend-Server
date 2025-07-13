@@ -13,10 +13,17 @@ class HolidayServiceImpl(
     private val holidayRepository: HolidayRepository,
 ) : HolidayService {
 
-    override fun getThisYearHolidays(): List<HolidayResponse> {
-        val year = LocalDate.now().year
-        val holidays = syncHolidays(year)
-        return holidays.map { HolidayResponse.from(it) }
+    override fun getThisMonthHolidays(): List<HolidayResponse> {
+        val now = LocalDate.now()
+        val year = now.year
+        val month = now.monthValue
+
+        return holidayRepository.findAllByYear(year)
+            .asSequence()
+            .filter { it.month == month }
+            .sortedBy { it.day }
+            .map { HolidayResponse.from(it) }
+            .toList()
     }
 
     override fun updateHolidays(year: Int) {
