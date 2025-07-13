@@ -9,4 +9,5 @@ interface UserRepository {
     fun upsert(user: User): User
     fun findLocationByUserId(userId: String): Location?
     fun delete(user: User)
+    fun findUserByEmail(email: String): User?
 }

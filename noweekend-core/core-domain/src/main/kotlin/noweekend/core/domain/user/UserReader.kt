@@ -20,4 +20,8 @@ class UserReader(
     fun findLocationByUserId(userId: String): Location? {
         return userRepository.findLocationByUserId(userId)
     }
+
+    fun findUserByEmail(email: String): User? {
+        return userRepository.findUserByEmail(email)
+    }
 }

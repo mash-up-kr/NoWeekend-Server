@@ -14,4 +14,5 @@ data class GoogleOAuthInfo(
     override fun getProviderId(): String = id
     override fun getProviderRevocableToken(): String? = null
     override fun getProviderType(): ProviderType = ProviderType.GOOGLE
+    override fun getEmail() = email
 }

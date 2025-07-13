@@ -41,4 +41,8 @@ class UserCoreRepository(
     override fun delete(user: User) {
         jpaRepository.save(user.toEntity())
     }
+
+    override fun findUserByEmail(email: String): User? {
+        return queryDslRepository.findUserByEmail(email)?.toUser()
+    }
 }

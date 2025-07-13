@@ -6,4 +6,5 @@ interface OAuthInfo {
     fun getProviderType(): ProviderType
     fun getProviderId(): String
     fun getProviderRevocableToken(): String?
+    fun getEmail(): String?
 }

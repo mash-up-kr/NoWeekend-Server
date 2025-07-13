@@ -15,9 +15,11 @@ class AuthApplicationServiceImpl(
         val oauthClient = oauthClients.firstOrNull { client -> client.supports(params.getProviderType()) }
             ?: throw IllegalStateException("provider type: ${params.getProviderType()} is not supported.")
         val authInfo = oauthClient.requestOAuthInfo(params)
+
         val authResult = authService.socialLogin(
             providerType = authInfo.getProviderType(),
             providerId = authInfo.getProviderId(),
+            email = authInfo.getEmail(),
             name = name,
             revocableToken = authInfo.getProviderRevocableToken(),
         )

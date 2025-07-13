@@ -1,5 +1,6 @@
 package noweekend.core.domain.user
 
+import noweekend.core.domain.enumerate.ProviderType
 import noweekend.core.domain.tag.ScheduleRepository
 import noweekend.core.domain.tag.TagRepository
 import org.springframework.stereotype.Component
@@ -28,5 +29,23 @@ class UserWriter(
 
         scheduleRepository.markDeletedByUserId(userId)
         tagHistoryRepository.markDeletedByUserId(userId)
+    }
+
+    fun linkProvider(
+        id: String,
+        providerType: ProviderType,
+        providerId: String,
+        revocableToken: String?,
+    ) {
+        val user = userRepository.findUserById(id)
+            ?: throw NoSuchElementException("User not found: $id")
+
+        val updated = user.copy(
+            providerType = providerType,
+            providerId = providerId,
+            revocableToken = revocableToken,
+        )
+
+        userRepository.upsert(updated)
     }
 }

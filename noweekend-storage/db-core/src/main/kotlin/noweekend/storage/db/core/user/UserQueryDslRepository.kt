@@ -20,4 +20,14 @@ class UserQueryDslRepository(
             )
             .fetchOne()
     }
+
+    fun findUserByEmail(email: String): UserEntity? {
+        val userEntity = QUserEntity.userEntity
+        return jpaQueryFactory.selectFrom(userEntity)
+            .where(
+                userEntity.email.eq(email),
+                userEntity.deleted.isFalse,
+            )
+            .fetchOne()
+    }
 }
