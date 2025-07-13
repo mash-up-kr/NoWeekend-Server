@@ -22,4 +22,11 @@ class HolidayController(
             ),
         )
     }
+
+    @GetMapping("/remaining")
+    override fun getRemainingHolidays(): ApiResponse<HolidayResponses> {
+        return ApiResponse.success(
+            HolidayResponses(holidayService.getRemainingHolidays()),
+        )
+    }
 }
