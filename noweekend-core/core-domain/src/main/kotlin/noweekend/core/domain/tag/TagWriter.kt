@@ -9,21 +9,27 @@ class TagWriter(
     private val tagRepository: TagRepository,
 ) {
     fun registerSelectedBasicTag(basicTags: List<BasicTag>, userId: String) {
-        val existingContents: Set<String> =
-            tagRepository.findAllByUserId(userId)
-                .map { it.content }
-                .toSet()
+        val existingTags: List<Tag> = tagRepository.findAllByUserId(userId)
+        basicTags.forEach { basicTag ->
+            val content = basicTag.koreanContent
+            val existTag = existingTags.firstOrNull { it.content == content }
 
-        // 파라미터로 받은 기본 태그 중에서, DB에 없는 것만 INSERT
-        basicTags
-            .asSequence()
-            .map { it.koreanContent }
-            .filter { content -> content !in existingContents }
-            .forEach { newContent ->
-                tagRepository.register(
-                    Tag.register(content = newContent, userId = userId),
-                )
+            when {
+                // a) 없으면 INSERT
+                existTag == null -> {
+                    tagRepository.register(
+                        Tag.register(content = content, userId = userId),
+                    )
+                }
+                // b) 있는데 selected == false 면 SELECTED=true 로 UPDATE
+                !existTag.selected -> {
+                    tagRepository.register(existTag.copy(selected = true))
+                }
+                else -> {
+                    // nothing
+                }
             }
+        }
     }
 
     fun upsertTags(

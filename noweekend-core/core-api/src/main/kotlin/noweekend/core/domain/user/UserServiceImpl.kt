@@ -7,7 +7,6 @@ import noweekend.core.api.controller.v1.request.TagUpdateRequest
 import noweekend.core.api.controller.v1.response.UserInformationResponse
 import noweekend.core.domain.enumerate.ScheduleCategory
 import noweekend.core.domain.tag.BasicTag
-import noweekend.core.domain.tag.Schedule
 import noweekend.core.domain.tag.ScheduleReader
 import noweekend.core.domain.tag.TagReader
 import noweekend.core.domain.tag.TagWriter
@@ -25,7 +24,7 @@ class UserServiceImpl(
     private val tagWriter: TagWriter,
     private val userWriter: UserWriter,
     private val userReader: UserReader,
-    private val scheduleReader: ScheduleReader
+    private val scheduleReader: ScheduleReader,
 ) : UserService {
 
     override fun getDefaultTag(): List<String> {
