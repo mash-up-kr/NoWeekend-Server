@@ -78,4 +78,51 @@ API 호출 시점에는 네트워크 호출이 발생하지 않습니다.
         ],
     )
     fun getHolidays(): ApiResponse<HolidayResponses>
+
+    @Operation(
+        summary = "올해 남은 공휴일 조회",
+        description = """
+오늘(예: 2025-07-13) 이후(혹은 오늘 포함)의 공휴일을 모두 반환합니다.  
+DB에서 미리 동기화된 데이터를 사용하며, 네트워크 호출은 없습니다.
+""",
+        responses = [
+            io.swagger.v3.oas.annotations.responses.ApiResponse(
+                responseCode = "200",
+                description = "남은 공휴일 목록 조회 성공",
+                content = [
+                    Content(
+                        mediaType = "application/json",
+                        schema = Schema(implementation = ApiResponse::class),
+                        examples = [
+                            ExampleObject(
+                                name = "예시 응답",
+                                value = """
+{
+  "result": "SUCCESS",
+  "data": {
+    "holidays": [
+      {
+        "date": "2025-07-17",
+        "content": "제헌절",
+        "dayOfWeekKor": "목"
+      },
+      {
+        "date": "2025-08-15",
+        "content": "광복절",
+        "dayOfWeekKor": "금"
+      },
+      …
+    ]
+  },
+  "error": null
+}
+""",
+                            ),
+                        ],
+                    ),
+                ],
+            ),
+        ],
+    )
+    fun getRemainingHolidays(): ApiResponse<HolidayResponses>
 }

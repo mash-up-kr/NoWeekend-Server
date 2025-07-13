@@ -26,6 +26,19 @@ class HolidayServiceImpl(
             .toList()
     }
 
+    override fun getRemainingHolidays(): List<HolidayResponse> {
+        val today = LocalDate.now()
+        val year = today.year
+
+        return holidayRepository.findAllByYear(year)
+            .asSequence()
+            .map { it to LocalDate.of(it.year, it.month, it.day) }
+            .filter { (_, date) -> date.isAfter(today) || date.isEqual(today) }
+            .sortedBy { (_, date) -> date }
+            .map { (entity, _) -> HolidayResponse.from(entity) }
+            .toList()
+    }
+
     override fun updateHolidays(year: Int) {
         syncHolidays(year)
         log.info("[HolidayService] ${year}년도 공휴일을 오늘자로 동기화 완료")
