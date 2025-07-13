@@ -9,10 +9,10 @@ data class GoogleOAuthInfo(
     val id: String,
 
     @JsonProperty("email")
-    val email: String?,
+    private val emailAddress: String?,
 ) : OAuthInfo {
     override fun getProviderId(): String = id
     override fun getProviderRevocableToken(): String? = null
     override fun getProviderType(): ProviderType = ProviderType.GOOGLE
-    override fun getEmail() = email
+    override fun getEmail() = emailAddress
 }

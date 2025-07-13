@@ -5,6 +5,7 @@ import noweekend.core.domain.enumerate.ProviderType
 
 class AppleOAuthInfo(
     private val id: String,
+    private val email: String?,
     private val revocableToken: String,
 ) : OAuthInfo {
     override fun getProviderType(): ProviderType = ProviderType.APPLE
@@ -12,4 +13,5 @@ class AppleOAuthInfo(
     override fun getProviderId(): String = id
 
     override fun getProviderRevocableToken(): String = revocableToken
+    override fun getEmail(): String? = email
 }
