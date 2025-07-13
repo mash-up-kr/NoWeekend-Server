@@ -18,7 +18,7 @@ class HolidayController(
     override fun getHolidays(): ApiResponse<HolidayResponses> {
         return ApiResponse.success(
             HolidayResponses(
-                holidayService.getThisYearHolidays(),
+                holidayService.getThisMonthHolidays(),
             ),
         )
     }
