@@ -18,10 +18,8 @@ class UserCoreRepository(
     override fun findUserByProviderAndProviderId(
         providerType: ProviderType,
         providerId: String,
-    ): User {
-        val userEntity = queryDslRepository.findUserByProviderAndProviderId(providerType, providerId)
-            ?: throw NoSuchElementException("User not found: $providerType, $providerId")
-        return userEntity.toUser()
+    ): User? {
+        return queryDslRepository.findUserByProviderAndProviderId(providerType, providerId)?.toUser()
     }
 
     override fun upsert(user: User): User {
