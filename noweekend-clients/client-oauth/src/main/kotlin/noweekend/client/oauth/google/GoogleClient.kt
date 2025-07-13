@@ -23,7 +23,7 @@ class GoogleClient internal constructor(
 
     override fun requestOAuthInfo(params: OAuthLoginParams): OAuthInfo {
         val accessToken = requestAccessToken(params)
-        return requestAuthInfo(accessToken)
+        return requestAuthInfo("Bearer $accessToken")
     }
 
     private fun requestAccessToken(params: OAuthLoginParams): String {
