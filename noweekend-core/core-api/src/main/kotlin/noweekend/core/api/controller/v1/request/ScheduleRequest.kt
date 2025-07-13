@@ -59,7 +59,7 @@ data class ScheduleUpdateRequest(
     @Schema(description = "종료 시간")
     val endTime: LocalTime,
 
-    @field:NotBlank(message = "카테고리는 필수입니다.")
+    @field:NotNull(message = "카테고리는 필수입니다.")
     @Schema(description = "카테고리")
     val category: ScheduleCategory,
 
