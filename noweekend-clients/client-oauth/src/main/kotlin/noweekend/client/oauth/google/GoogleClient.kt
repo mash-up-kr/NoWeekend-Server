@@ -56,6 +56,6 @@ class GoogleClient internal constructor(
     companion object {
         private val log: Logger = LoggerFactory.getLogger(GoogleClient::class.java)
         private const val GOOGLE_AUTHORIZATION_TYPE = "authorization_code"
-        private const val DEFAULT_REDIRECT_URI = "postmessage"
+        private const val DEFAULT_REDIRECT_URI = "https://noweekend.com/oauth2/code/google"
     }
 }
