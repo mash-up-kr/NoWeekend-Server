@@ -40,7 +40,9 @@ class AppleClient internal constructor(
         val appleTokens = requestAccessToken(params)
         if (appleTokens?.idToken == null) throw IllegalStateException("cannot find idToken from apple")
         val claims = getClaims(appleTokens.idToken)
-        return AppleOAuthInfo(claims.subject, "dummy@apple.test", appleTokens.refreshToken)
+        val email = claims.get("email", String::class.java)
+
+        return AppleOAuthInfo(claims.subject, email, appleTokens.refreshToken)
     }
 
     override fun revokeToken(token: String): Boolean {
