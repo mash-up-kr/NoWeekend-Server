@@ -5,7 +5,7 @@ oauth:
     token-base-url: https://oauth2.googleapis.com
     resource-base-url: https://www.googleapis.com
   apple:
-    app-id: com.noweekend.app
+    app-id: com.noweekend.service
     key-id: 3KH8VX9ZH5
     team-id: SQ5T25W9V5
     api-url: https://appleid.apple.com
