@@ -11,13 +11,13 @@ import java.time.LocalDate
 class HolidayServiceImpl(
     private val holidayClient: HolidayClient,
     private val holidayRepository: HolidayRepository,
+    private val holidayWriter: HolidayWriter,
 ) : HolidayService {
 
-    override fun getThisMonthHolidays(): List<HolidayResponse> {
-        val now = LocalDate.now()
-        val year = now.year
-        val month = now.monthValue
-
+    override fun getMonthHolidays(
+        year: Int,
+        month: Int,
+    ): List<HolidayResponse> {
         return holidayRepository.findAllByYear(year)
             .asSequence()
             .filter { it.month == month }
@@ -64,7 +64,9 @@ class HolidayServiceImpl(
         val toSave = fetched.filter { h ->
             Pair(Triple(h.month, h.day, h.content), h.dayOfWeekKor) !in existing
         }
-        toSave.forEach { holidayRepository.save(it) }
+        toSave.forEach {
+            holidayWriter.register(it)
+        }
 
         return (saved + toSave)
             .distinctBy { Triple(it.month, it.day, it.content) }

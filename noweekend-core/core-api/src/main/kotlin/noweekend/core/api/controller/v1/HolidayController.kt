@@ -6,6 +6,7 @@ import noweekend.core.domain.holiday.HolidayService
 import noweekend.core.support.response.ApiResponse
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
@@ -15,10 +16,10 @@ class HolidayController(
 ) : HolidayControllerDocs {
 
     @GetMapping
-    override fun getHolidays(): ApiResponse<HolidayResponses> {
+    override fun getHolidays(@RequestParam year: Int, @RequestParam month: Int): ApiResponse<HolidayResponses> {
         return ApiResponse.success(
             HolidayResponses(
-                holidayService.getThisMonthHolidays(),
+                holidayService.getMonthHolidays(year, month),
             ),
         )
     }
