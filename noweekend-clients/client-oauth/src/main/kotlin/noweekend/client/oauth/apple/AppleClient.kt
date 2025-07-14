@@ -12,6 +12,7 @@ import noweekend.client.oauth.common.Revocable
 import noweekend.client.oauth.properties.AppleAuthProperties
 import noweekend.core.domain.enumerate.ProviderType
 import org.bouncycastle.util.io.pem.PemReader
+import org.slf4j.LoggerFactory
 import org.springframework.core.io.FileSystemResource
 import org.springframework.stereotype.Component
 import java.io.FileReader
@@ -32,6 +33,9 @@ class AppleClient internal constructor(
     private val appleOAuthProperties: AppleAuthProperties,
     private val objectMapper: ObjectMapper,
 ) : OAuthClient, Revocable {
+
+    private val log = LoggerFactory.getLogger(javaClass)
+
     override fun supports(providerType: ProviderType): Boolean {
         return providerType == ProviderType.APPLE
     }
@@ -74,9 +78,10 @@ class AppleClient internal constructor(
             "code" to params.getCode(),
             "client_id" to clientId,
             "client_secret" to clientSecret,
-            "redirect_uri" to DEFAULT_REDIRECT_URI,
             "grant_type" to AUTHORIZATION_CODE,
         ).joinToString("&") { "${it.first}=${URLEncoder.encode(it.second, "UTF-8")}" }
+
+        log.info("request apple access token for $clientId and $clientSecret, body: $body")
 
         return appleApi.getAccessToken(body)
     }
@@ -136,6 +141,6 @@ class AppleClient internal constructor(
 
         private const val AUTHORIZATION_CODE = "authorization_code"
         private const val APPLE_AUDIENCE = "https://appleid.apple.com"
-        private const val DEFAULT_REDIRECT_URI = "https://noweekend.com/oauth2/code/apple"
+//        private const val DEFAULT_REDIRECT_URI = "https://noweekend.com/oauth2/code/apple"
     }
 }
