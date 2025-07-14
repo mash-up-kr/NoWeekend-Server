@@ -74,6 +74,7 @@ class AppleClient internal constructor(
             "code" to params.getCode(),
             "client_id" to clientId,
             "client_secret" to clientSecret,
+            "redirect_uri" to DEFAULT_REDIRECT_URI,
             "grant_type" to AUTHORIZATION_CODE,
         ).joinToString("&") { "${it.first}=${URLEncoder.encode(it.second, "UTF-8")}" }
 
@@ -135,5 +136,6 @@ class AppleClient internal constructor(
 
         private const val AUTHORIZATION_CODE = "authorization_code"
         private const val APPLE_AUDIENCE = "https://appleid.apple.com"
+        private const val DEFAULT_REDIRECT_URI = "https://noweekend.com/oauth2/code/apple"
     }
 }
