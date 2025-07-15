@@ -304,7 +304,11 @@ interface ScheduleControllerDocs {
             ),
         ],
     )
-    fun updateScheduleState(userId: String, id: String, isComplete: Boolean): ApiResponse<ScheduleResponse>
+    fun updateScheduleState(
+        @Schema(hidden = true) userId: String,
+        id: String,
+        isComplete: Boolean,
+    ): ApiResponse<ScheduleResponse>
 
     @Operation(
         summary = "캘린더: 일정 삭제",
