@@ -3,6 +3,7 @@ package noweekend.core.api.controller.v1
 import noweekend.client.mcp.recommend.model.SandwichResponse
 import noweekend.client.mcp.recommend.model.TagApiResponses
 import noweekend.core.api.controller.v1.docs.RecommendControllerDocs
+import noweekend.core.api.controller.v1.request.GenerateVacationRequest
 import noweekend.core.api.controller.v1.response.AiGenerateVacationApiResponse
 import noweekend.core.api.controller.v1.response.WeatherResponse
 import noweekend.core.api.security.annotations.CurrentUserId
@@ -10,6 +11,8 @@ import noweekend.core.domain.IconStyle
 import noweekend.core.domain.recommend.RecommendService
 import noweekend.core.support.response.ApiResponse
 import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import java.time.LocalDate
@@ -57,9 +60,10 @@ class RecommendController(
 //        return ApiResponse.success(recommendService.getSandwich(userId))
     }
 
-    @GetMapping("/generateVacation")
+    @PostMapping("/generate-vacation")
     override fun generateVacation(
         @CurrentUserId userId: String,
+        @RequestBody request: GenerateVacationRequest,
     ): ApiResponse<AiGenerateVacationApiResponse> {
         return ApiResponse.success(
             AiGenerateVacationApiResponse(

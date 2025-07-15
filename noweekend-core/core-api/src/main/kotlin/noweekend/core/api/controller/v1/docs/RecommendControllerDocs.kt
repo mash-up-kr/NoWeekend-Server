@@ -8,10 +8,12 @@ import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.tags.Tag
 import noweekend.client.mcp.recommend.model.SandwichResponse
 import noweekend.client.mcp.recommend.model.TagApiResponses
+import noweekend.core.api.controller.v1.request.GenerateVacationRequest
 import noweekend.core.api.controller.v1.response.AiGenerateVacationApiResponse
 import noweekend.core.api.controller.v1.response.WeatherResponse
 import noweekend.core.api.security.annotations.CurrentUserId
 import noweekend.core.support.response.ApiResponse
+import org.springframework.web.bind.annotation.RequestBody
 import io.swagger.v3.oas.annotations.responses.ApiResponse as SwaggerApiResponse
 
 @Tag(
@@ -395,5 +397,6 @@ interface RecommendControllerDocs {
     )
     fun generateVacation(
         @Parameter(hidden = true) @CurrentUserId userId: String,
+        @RequestBody request: GenerateVacationRequest,
     ): ApiResponse<AiGenerateVacationApiResponse>
 }
