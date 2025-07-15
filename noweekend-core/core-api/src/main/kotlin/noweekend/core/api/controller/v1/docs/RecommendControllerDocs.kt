@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.tags.Tag
 import noweekend.client.mcp.recommend.model.SandwichResponse
 import noweekend.client.mcp.recommend.model.TagApiResponses
+import noweekend.core.api.controller.v1.response.AiGenerateVacationApiResponse
 import noweekend.core.api.controller.v1.response.WeatherResponse
 import noweekend.core.api.security.annotations.CurrentUserId
 import noweekend.core.support.response.ApiResponse
@@ -360,4 +361,39 @@ interface RecommendControllerDocs {
     fun getSandwich(
         @Parameter(hidden = true) @CurrentUserId userId: String,
     ): ApiResponse<SandwichResponse>
+
+    @Operation(
+        summary = "AI 기반 여행 일정 생성",
+        description = "샌드위치 날짜를 계산 후, chunk 단위로 AI 호출하여 여행 일정을 생성합니다.",
+        responses = [
+            SwaggerApiResponse(
+                responseCode = "200",
+                description = "일정 생성 성공",
+                content = [
+                    Content(
+                        mediaType = "application/json",
+                        schema = Schema(implementation = AiGenerateVacationApiResponse::class),
+                        examples = [
+                            ExampleObject(
+                                name = "생일 정보 없음 에러 예시",
+                                value = """
+{
+  "result": "SUCCESS",
+  "data": {
+    "title": "바다산책 여행",
+    "content": "• Day 1 ...\n• Day 2 ...\n"
+  },
+  "error": null
+}
+""",
+                            ),
+                        ],
+                    ),
+                ],
+            ),
+        ],
+    )
+    fun generateVacation(
+        @Parameter(hidden = true) @CurrentUserId userId: String,
+    ): ApiResponse<AiGenerateVacationApiResponse>
 }
