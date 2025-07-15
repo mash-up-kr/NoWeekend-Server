@@ -26,6 +26,6 @@ class LocationController(
             request = request,
             userId = userId,
         )
-        return ApiResponse.success("위치 저장됨: ${request.latitude}, ${request.longitude}")
+        return ApiResponse.success("소숫점 둘째자리에서 반올림하여 위치 저장됨: ${request.latitude}, ${request.longitude}")
     }
 }

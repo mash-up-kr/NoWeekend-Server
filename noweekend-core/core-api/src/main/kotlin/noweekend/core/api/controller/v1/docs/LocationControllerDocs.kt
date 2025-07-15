@@ -52,7 +52,7 @@ interface LocationControllerDocs {
                                 value = """
 {
   "result": "SUCCESS",
-  "data": "위치 저장됨: 37.5665, 126.9780",
+  "data": ""소숫점 둘째자리에서 반올림하여 위치 저장됨: 37.57, 126.98",
   "error": null
 }
                                 """,

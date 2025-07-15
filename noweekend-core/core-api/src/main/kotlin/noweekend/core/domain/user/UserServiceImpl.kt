@@ -77,11 +77,10 @@ class UserServiceImpl(
 
     override fun updateLocation(request: LocationRequest, userId: String) {
         val user = userReader.findUserById(userId) ?: throw CoreException(ErrorType.USER_NOT_FOUND_INTERNAL)
+        val roundedLocation = Location.rounded(request.latitude, request.longitude)
+
         val updateUser = user.copy(
-            location = Location(
-                latitude = request.latitude,
-                longitude = request.longitude,
-            ),
+            location = roundedLocation,
         )
         userWriter.upsert(updateUser)
     }
