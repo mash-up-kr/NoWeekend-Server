@@ -20,15 +20,13 @@ class RecommendClient(
 
     fun getFutureWeather(request: WeatherRequest): List<WeatherRecommendation> {
         try {
-            val response = api.getFutureWeather(request)
-            log.info("response = $response")
-            return response
+            return api.getFutureWeather(request)
         } catch (e: FeignException) {
-            log.warn("[getFutureWeather] FeignException occurred. Returning empty list. msg=${e.message}")
-            return emptyList()
+            log.error("[getFutureWeather] FeignException occurred. status=${e.status()}, msg=${e.message}", e)
+            throw e
         } catch (e: Exception) {
-            log.error("[getFutureWeather] Unexpected exception occurred. Returning empty list. msg=${e.message}", e)
-            return emptyList()
+            log.error("[getFutureWeather] Unexpected exception. msg=${e.message}", e)
+            throw e
         }
     }
 

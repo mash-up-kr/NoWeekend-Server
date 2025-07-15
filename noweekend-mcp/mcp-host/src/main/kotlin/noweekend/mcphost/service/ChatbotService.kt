@@ -38,10 +38,11 @@ class ChatbotService(
         baseDate: $baseDate
         """.trimIndent()
 
-        val backoff = listOf(1000L, 2000L, 4000L, 8000L, 16000L) // 1, 2, 4, 8, 16초 대기
+        val maxRetries = 5
+        val backoff = listOf(1000L, 2000L, 4000L, 8000L, 16000L) // 1,2,4,8,16초 대기
         var lastException: Exception? = null
 
-        for (attempt in backoff.indices) {
+        for (attempt in 0 until maxRetries) {
             try {
                 val jsonString = chatClient.prompt()
                     .system(WEATHER_PROMPT)
@@ -56,8 +57,8 @@ class ChatbotService(
                 if (!e.message.orEmpty().contains("Overloaded", ignoreCase = true)) {
                     throw IllegalStateException("현재 날씨 정보를 받아올 수 없습니다: ${e.message}", e)
                 }
-                if (attempt < backoff.lastIndex) {
-                    Thread.sleep(backoff[attempt])
+                if (attempt < maxRetries - 1) {
+                    Thread.sleep(backoff.getOrElse(attempt) { backoff.last() })
                 }
             }
         }
