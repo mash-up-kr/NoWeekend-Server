@@ -27,8 +27,8 @@ class UserApplicationServiceImpl(
                 oauthClient.revokeToken(user.revocableToken!!)
             }
             userWriter.delete(userId)
-        } catch (_: NoSuchElementException) {
-            throw CoreException(ErrorType.USER_NOT_FOUND_INTERNAL)
+        } catch (_: Exception) {
+            throw CoreException(ErrorType.DEFAULT_ERROR)
         }
     }
 }
