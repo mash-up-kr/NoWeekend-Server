@@ -119,12 +119,4 @@ class UserServiceImpl(
 
         return UserInformationResponse.of(user, averageTemperature)
     }
-
-    override fun deleteUser(userId: String) {
-        try {
-            userWriter.delete(userId)
-        } catch (_: NoSuchElementException) {
-            throw CoreException(ErrorType.USER_NOT_FOUND_INTERNAL)
-        }
-    }
 }

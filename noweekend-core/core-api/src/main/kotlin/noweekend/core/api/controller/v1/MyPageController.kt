@@ -6,6 +6,7 @@ import noweekend.core.api.controller.v1.request.ProfileRequest
 import noweekend.core.api.controller.v1.request.TagUpdateRequest
 import noweekend.core.api.controller.v1.response.UserInformationResponse
 import noweekend.core.api.security.annotations.CurrentUserId
+import noweekend.core.api.service.user.UserApplicationService
 import noweekend.core.domain.tag.UserTags
 import noweekend.core.domain.user.UserService
 import noweekend.core.support.response.ApiResponse
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController
 @RequestMapping("/api/v1/user")
 class MyPageController(
     private val userService: UserService,
+    private val userApplicationService: UserApplicationService,
 ) : MyPageControllerDocs {
     @PatchMapping("/profile")
     override fun updateProfile(
@@ -77,7 +79,7 @@ class MyPageController(
     override fun deleteUser(
         @CurrentUserId userId: String,
     ): ApiResponse<String> {
-        userService.deleteUser(userId)
+        userApplicationService.deleteUser(userId)
         return ApiResponse.success(
             "회원 탈퇴가 완료되었습니다.",
         )
