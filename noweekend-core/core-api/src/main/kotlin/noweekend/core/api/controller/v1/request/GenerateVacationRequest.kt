@@ -1,6 +1,5 @@
 package noweekend.core.api.controller.v1.request
 
-import com.fasterxml.jackson.annotation.JsonFormat
 import io.swagger.v3.oas.annotations.media.Schema
 import jakarta.validation.constraints.Max
 import jakarta.validation.constraints.Min
@@ -9,7 +8,6 @@ import noweekend.core.domain.ActivityType
 import noweekend.core.domain.LeisurePreference
 import noweekend.core.domain.RestPreference
 import noweekend.core.domain.TravelStyle
-import java.time.YearMonth
 
 @Schema(description = "휴가 추천을 위한 사용자 입력 정보")
 data class GenerateVacationRequest(
@@ -35,8 +33,4 @@ data class GenerateVacationRequest(
     @Schema(description = "관심사")
     val leisurePreference: LeisurePreference,
 
-    @field:NotNull(message = "확인할 연월을 선택해주세요.")
-    @Schema(description = "확인할 연월 (yyyy-MM)")
-    @JsonFormat(pattern = "yyyy-MM")
-    val targetMonth: YearMonth,
 )
