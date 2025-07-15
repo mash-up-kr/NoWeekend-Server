@@ -3,7 +3,7 @@ package noweekend.core.api.controller.v1
 import noweekend.client.mcp.recommend.model.SandwichResponse
 import noweekend.client.mcp.recommend.model.TagApiResponses
 import noweekend.core.api.controller.v1.docs.RecommendControllerDocs
-import noweekend.core.api.controller.v1.response.WeatherApiResponse
+import noweekend.core.api.controller.v1.response.WeatherResponse
 import noweekend.core.api.security.annotations.CurrentUserId
 import noweekend.core.domain.recommend.RecommendService
 import noweekend.core.support.response.ApiResponse
@@ -21,7 +21,7 @@ class RecommendController(
     @GetMapping("/weather")
     override fun getWeatherRecommend(
         @CurrentUserId userId: String,
-    ): ApiResponse<WeatherApiResponse> {
+    ): ApiResponse<WeatherResponse> {
         return ApiResponse.success(recommendService.getWeatherRecommend(userId))
     }
 

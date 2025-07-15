@@ -3,39 +3,50 @@ package noweekend.mcphost.service
 class Prompt {
     companion object {
         val WEATHER_PROMPT = """
-            You MUST call the TOOL to get the weather data.
-            DO NOT generate, guess, or hallucinate weather data yourself.
-            ALWAYS use the TOOL OUTPUT ONLY to create your answer.
-            
-            Return your answer ONLY as a JSON array (do not wrap in markdown or add any extra explanation).
-            The JSON array must follow this structure:
-            
-            [
-              {
-                "localDate": "YYYY-MM-DD",
-                "recommendContent": "string"
-              },
-              ...
-            ]
-            
-            Rules:
-            - For each date, generate one "recommendContent" (Korean, very friendly and natural).
-            - "recommendContent" MUST clearly mention the weather situation (e.g., rain, snow, or mixed), AND be polite, soft, and friendly (not formal or stiff).
-            - "recommendContent" MUST be within 15 Korean characters. If it's longer, shorten it, but always include the weather info first.
-            - Use warm, casual, and kind expressions (e.g., "오후에 비가 온대요, 연차 어때요?", "눈 온다니 연차 써볼래요?", "종일 비예요, 오늘은 쉬어요!") 
-            - Do NOT use phrases like "권장합니다", "추천합니다".
-            - Each object must have "localDate" (YYYY-MM-DD) and "recommendContent" (max 15 Korean chars, weather included).
-            - ONLY output the JSON array, with no other explanations, markdown, or extra text.
-            
-            Follow these weather-based rules for "recommendContent":
-            - If rain or snow is predicted for 1-4 consecutive hours in the morning: include "오전" and the weather (e.g., "오전에 비가 와요, 연차 어때요?")
-            - If 1-4 hours in the afternoon: "오후에 눈 온대요, 연차 어때요?"
-            - If 4-6 hours: summarize (e.g., "비 많이 와요, 쉬는 건 어때요?")
-            - If 6+ hours or "RAIN_AND_SNOW": "종일 비예요, 오늘은 쉬어요!"
-            - Always mention the weather type (rain, snow, or mixed) at the beginning of "recommendContent".
-            - If no tool output for a day, SKIP.
-            
-            AGAIN: Respond ONLY with the above JSON array, nothing else.
+You MUST call the TOOL to get the weather data.
+DO NOT generate, guess, or hallucinate weather data yourself.
+ALWAYS use the TOOL OUTPUT ONLY to create your answer.
+
+Return your answer ONLY as a JSON array (do not wrap in markdown or add any extra explanation).
+The JSON array must follow this structure:
+
+[
+  {
+    "localDate": "YYYY-MM-DD",
+    "recommendContent": "string"
+  },
+  ...
+]
+
+Rules (STRICT. DO NOT BREAK!):
+
+1. For each date:
+   - Only consider the period **from 7am (07시) to 8pm (20시)**.
+   - Calculate the **total hours** when rain, snow, or both will occur within this time window.
+   - If the **total precipitation hours are less than 2**, DO NOT include this date in the array.
+   - If precipitation occurs for **2-3 hours** (inclusive), write a recommendation for **반차**.
+   - If precipitation occurs for **4 hours or more**, write a recommendation for **연차**.
+   - The "recommendContent" MUST clearly state the time range(s), total precipitation amount, precipitation type (비, 눈, 비와 눈), and finish with the vacation suggestion ("연차" or "반차").
+
+2. NEVER include sentences like "연차 쓰지 마세요" or "휴가를 추천하지 않습니다".  
+   If there is no recommendation, **just omit that date**.
+
+3. All sentences in "recommendContent" must be in warm, natural Korean, following the above logic.
+
+4. For multiple separate rain/snow intervals in a day, sum all precipitation hours within 07시~20시.
+
+5. Examples:
+
+[
+  { "localDate": "2025-07-15", "recommendContent": "10시부터 13시까지 총 20ml 비가 와요. 반차 어때요?" },
+  { "localDate": "2025-07-16", "recommendContent": "종일 총 25ml 눈이 와요. 연차 쓰실래요?" },
+  { "localDate": "2025-07-17", "recommendContent": "08시부터 18시까지 총 30ml 비와 눈이 와요. 연차 어때요?" }
+]
+
+AGAIN:  
+- Only output dates where you can recommend "연차" or "반차" according to the rules above.
+- Never output a recommendation like "연차 쓰지 마세요" or "휴가를 추천하지 않습니다".
+
         """.trimIndent()
 
         val TAG_PROMPT = """

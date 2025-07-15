@@ -6,11 +6,16 @@ import noweekend.client.mcp.recommend.model.SandwichResponse
 import noweekend.client.mcp.recommend.model.TagApiResponses
 import noweekend.client.mcp.recommend.model.TagResponse
 import noweekend.client.mcp.recommend.model.WeatherRequest
-import noweekend.core.api.controller.v1.response.WeatherApiResponse
+import noweekend.core.api.controller.v1.response.WeatherResponse
 import noweekend.core.domain.holiday.HolidayReader
 import noweekend.core.domain.tag.TagReader
 import noweekend.core.domain.tag.UserTags
+import noweekend.core.domain.user.Location
 import noweekend.core.domain.user.UserReader
+import noweekend.core.domain.weather.WeatherReader
+import noweekend.core.domain.weather.WeatherRecommendCache
+import noweekend.core.domain.weather.WeatherRecommendation
+import noweekend.core.domain.weather.WeatherWriter
 import noweekend.core.support.error.CoreException
 import noweekend.core.support.error.ErrorType
 import org.springframework.stereotype.Service
@@ -23,20 +28,51 @@ class RecommendServiceImpl(
     private val userReader: UserReader,
     private val tagReader: TagReader,
     private val holidayReader: HolidayReader,
+    private val weatherReader: WeatherReader,
+    private val weatherWriter: WeatherWriter,
 ) : RecommendService {
 
-    override fun getWeatherRecommend(userId: String): WeatherApiResponse {
-        val location =
-            userReader.findLocationByUserId(userId) ?: throw CoreException(ErrorType.USER_LOCATION_NOT_FOUND)
+    override fun getWeatherRecommend(userId: String): WeatherResponse {
+        val location = getUserLocation(userId)
+        val today = LocalDate.now()
+        val cached = getCachedWeather(location, today)
+        if (cached != null) {
+            return WeatherResponse(cached.weatherResponses)
+        }
+        val apiResponse = fetchWeatherFromApi(location)
+        saveWeatherCache(location, today, apiResponse)
+        return WeatherResponse(apiResponse)
+    }
 
-        val recommendWeathers = recommendClient.getFutureWeather(
-            WeatherRequest(
-                longitude = location.longitude,
-                latitude = location.latitude,
-            ),
+    private fun getUserLocation(userId: String): Location = (
+        userReader.findLocationByUserId(userId)
+            ?: throw CoreException(ErrorType.USER_LOCATION_NOT_FOUND)
         )
 
-        return WeatherApiResponse(recommendWeathers)
+    private fun getCachedWeather(location: Location, today: LocalDate): WeatherRecommendCache? {
+        return weatherReader.findCacheByLocationAndDate(
+            latitude = location.latitude,
+            longitude = location.longitude,
+            searchDate = today,
+        )
+    }
+
+    private fun fetchWeatherFromApi(location: Location): List<WeatherRecommendation> {
+        return recommendClient.getFutureWeather(WeatherRequest(location.longitude, location.latitude))
+    }
+
+    private fun saveWeatherCache(
+        location: Location,
+        today: LocalDate,
+        apiResponse: List<WeatherRecommendation>,
+    ) {
+        val cacheObj = WeatherRecommendCache.register(
+            latitude = location.latitude,
+            longitude = location.longitude,
+            searchDate = today,
+            weatherResponses = apiResponse,
+        )
+        weatherWriter.register(cacheObj)
     }
 
     override fun getTagRecommend(userId: String): TagApiResponses {

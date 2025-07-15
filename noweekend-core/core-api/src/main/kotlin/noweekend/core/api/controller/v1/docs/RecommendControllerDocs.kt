@@ -8,7 +8,7 @@ import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.tags.Tag
 import noweekend.client.mcp.recommend.model.SandwichResponse
 import noweekend.client.mcp.recommend.model.TagApiResponses
-import noweekend.core.api.controller.v1.response.WeatherApiResponse
+import noweekend.core.api.controller.v1.response.WeatherResponse
 import noweekend.core.api.security.annotations.CurrentUserId
 import noweekend.core.support.response.ApiResponse
 import io.swagger.v3.oas.annotations.responses.ApiResponse as SwaggerApiResponse
@@ -40,16 +40,16 @@ interface RecommendControllerDocs {
 {
   "result": "SUCCESS",
   "data": {
-    "weatherResponses": [
-      {
-        "localDate": "2025-07-04",
-        "recommendContent": "오후에 비 와요, 연차 어때요?"
-      },
-      {
-        "localDate": "2025-07-06",
-        "recommendContent": "오전 눈 예보, 반차 추천!"
-      }
-    ]
+     "weatherResponses": [
+            {
+                "localDate": "2025-07-16",
+                "recommendContent": "08시~09시, 11시~12시, 그리고 18시~20시까지 총 4시간 동안 비가 와요. 연차 어떠세요?"
+            },
+            {
+                "localDate": "2025-07-17",
+                "recommendContent": "07시~08시, 10시~17시까지 총 8시간 동안 비가 와요. 연차 추천드려요!"
+            }
+        ]
   },
   "error": null
 }
@@ -89,7 +89,7 @@ interface RecommendControllerDocs {
     )
     fun getWeatherRecommend(
         @Parameter(hidden = true) @CurrentUserId userId: String,
-    ): ApiResponse<WeatherApiResponse>
+    ): ApiResponse<WeatherResponse>
 
     @Operation(
         summary = "유저 태그 기반으로 선택했던 것 1개와 새로운 2개의 태그, 총 3개의 태그를 반환 - 일정 추가에서 자동으로 추천",

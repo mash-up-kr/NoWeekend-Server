@@ -7,6 +7,7 @@ import noweekend.mcphost.controller.response.WeatherResponse
 import noweekend.mcphost.service.ChatbotService
 import noweekend.mcphost.service.GraphChatService
 import org.slf4j.LoggerFactory
+import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
@@ -37,10 +38,12 @@ class ChatbotController(
             .map { ChatResponse(it) }
     }
 
-    @PostMapping("/getFutureWeather")
-    fun getFutureWeather(@RequestBody request: WeatherRequest): ResponseEntity<List<WeatherResponse>> {
-        val result = chatbotService.weatherRecommendation(request)
-        return ResponseEntity.ok(result)
+    @PostMapping(
+        "/getFutureWeather",
+        produces = [MediaType.APPLICATION_JSON_VALUE],
+    )
+    fun getFutureWeather(@RequestBody request: WeatherRequest): List<WeatherResponse> {
+        return chatbotService.weatherRecommendation(request)
     }
 
     @PostMapping("/getTag")
