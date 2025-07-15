@@ -1,6 +1,5 @@
 package noweekend.core.domain.recommend
 
-import feign.FeignException
 import noweekend.client.mcp.recommend.RecommendClient
 import noweekend.client.mcp.recommend.model.SandwichRequest
 import noweekend.client.mcp.recommend.model.SandwichResponse
@@ -44,7 +43,7 @@ class RecommendServiceImpl(
             val apiResponse = fetchWeatherFromApi(location)
             saveWeatherCache(location, today, apiResponse)
             return WeatherResponse(apiResponse)
-        } catch (e: CoreException) {
+        } catch (e: Exception) {
             throw CoreException(ErrorType.MCP_SERVER_WEATHER_ERROR)
         }
     }
@@ -63,19 +62,16 @@ class RecommendServiceImpl(
     }
 
     private fun fetchWeatherFromApi(location: Location): List<WeatherRecommendation> {
+        val withinKorea = isWithinKorea(location.latitude, location.longitude)
+        if (!withinKorea) {
+            throw CoreException(ErrorType.INVALID_LOCATION)
+        }
+
         val request = WeatherRequest(location.longitude, location.latitude)
         try {
             return recommendClient.getFutureWeather(request)
-        } catch (e: FeignException) {
-            when (e.status()) {
-                502, 503, 504 -> throw CoreException(ErrorType.MCP_SERVER_WEATHER_ERROR, "MCP 서버 장애: ${e.message}")
-                else -> throw CoreException(ErrorType.MCP_SERVER_INTERNAL_ERROR)
-            }
         } catch (e: Exception) {
-            throw CoreException(
-                ErrorType.MCP_SERVER_WEATHER_ERROR,
-                "MCP 서버 장애: ${e.message}",
-            )
+            throw CoreException(ErrorType.MCP_SERVER_WEATHER_ERROR)
         }
     }
 
