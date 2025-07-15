@@ -20,37 +20,32 @@ The JSON array must follow this structure:
 
 Rules (STRICT. DO NOT BREAK!):
 
-1. For each date, "recommendContent" MUST meet ALL of the following:
-   - **ABSOLUTELY NEVER** use a single time (like "14시에").  
-     You MUST use a **time range** (e.g., "13시부터 17시까지") or "종일" (all day).
-   - If the precipitation is within a certain period, SPECIFY CLEARLY:  
-     "**몇시부터 몇시까지** 총 XXml 비(또는 눈/비와 눈)이 와요."
-     (e.g., "10시부터 17시까지 총 30ml 비가 와요.")
-   - If rain/snow occurs at multiple distinct times throughout the day, treat as **"종일"** (all day),  
-     and write: "**종일 총 XXml 비(또는 눈/비와 눈)이 와요."**
-   - The precipitation amount ("총 XXml") must refer to the **entire time range or the whole day**.
+1. For each date:
+   - Only consider the period **from 7am (07시) to 8pm (20시)**.
+   - Calculate the **total hours** when rain, snow, or both will occur within this time window.
+   - If the **total precipitation hours are less than 2**, DO NOT include this date in the array.
+   - If precipitation occurs for **2-3 hours** (inclusive), write a recommendation for **반차**.
+   - If precipitation occurs for **4 hours or more**, write a recommendation for **연차**.
+   - The "recommendContent" MUST clearly state the time range(s), total precipitation amount, precipitation type (비, 눈, 비와 눈), and finish with the vacation suggestion ("연차" or "반차").
 
-2. ALWAYS explicitly mention the precipitation type (비, 눈, 비와 눈) and always end with a vacation suggestion ("연차" or "반차").
+2. NEVER include sentences like "연차 쓰지 마세요" or "휴가를 추천하지 않습니다".  
+   If there is no recommendation, **just omit that date**.
 
-3. EXAMPLES (you MUST follow this format):
+3. All sentences in "recommendContent" must be in warm, natural Korean, following the above logic.
+
+4. For multiple separate rain/snow intervals in a day, sum all precipitation hours within 07시~20시.
+
+5. Examples:
+
 [
-  { "localDate": "2025-07-15", "recommendContent": "10시부터 17시까지 총 30ml 비가 와요. 연차 어때요?" },
+  { "localDate": "2025-07-15", "recommendContent": "10시부터 13시까지 총 20ml 비가 와요. 반차 어때요?" },
   { "localDate": "2025-07-16", "recommendContent": "종일 총 25ml 눈이 와요. 연차 쓰실래요?" },
-  { "localDate": "2025-07-17", "recommendContent": "11시부터 15시까지 총 15ml 비와 눈이 와요. 반차 어때요?" }
+  { "localDate": "2025-07-17", "recommendContent": "08시부터 18시까지 총 30ml 비와 눈이 와요. 연차 어때요?" }
 ]
 
-4. NEVER use just "14시에" or any single time. If you have only a single hour, treat it as a time **range** (e.g., "14시부터 15시까지"). **You MUST include both start and end time.**
-
-5. The answer MUST be only a JSON array as above. NO explanations, NO markdown, NO extra text.
-
-6. "recommendContent" must always be a warm, natural, and friendly sentence in Korean, and MUST have vacation suggestion ("연차" or "반차").
-
 AGAIN:  
-**ALWAYS** specify "몇시부터 몇시까지" (start time to end time), or "종일" for all-day.  
-**NEVER** use only a single time point (like "14시에"). If precipitation is for only one hour, write it as "14시부터 15시까지".
-
-Example for 1-hour rain:
-{ "localDate": "2025-07-18", "recommendContent": "14시부터 15시까지 총 10ml 비가 와요. 반차 어때요?" }
+- Only output dates where you can recommend "연차" or "반차" according to the rules above.
+- Never output a recommendation like "연차 쓰지 마세요" or "휴가를 추천하지 않습니다".
 
         """.trimIndent()
 
