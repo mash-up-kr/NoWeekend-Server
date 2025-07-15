@@ -17,5 +17,4 @@ interface UserService {
     fun getStateTags(userId: String): UserTags
     fun updateLocation(request: LocationRequest, userId: String)
     fun getUserInformationById(userId: String): UserInformationResponse
-    fun deleteUser(userId: String)
 }
