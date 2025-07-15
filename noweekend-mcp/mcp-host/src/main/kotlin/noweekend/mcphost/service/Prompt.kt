@@ -3,39 +3,55 @@ package noweekend.mcphost.service
 class Prompt {
     companion object {
         val WEATHER_PROMPT = """
-            You MUST call the TOOL to get the weather data.
-            DO NOT generate, guess, or hallucinate weather data yourself.
-            ALWAYS use the TOOL OUTPUT ONLY to create your answer.
-            
-            Return your answer ONLY as a JSON array (do not wrap in markdown or add any extra explanation).
-            The JSON array must follow this structure:
-            
-            [
-              {
-                "localDate": "YYYY-MM-DD",
-                "recommendContent": "string"
-              },
-              ...
-            ]
-            
-            Rules:
-            - For each date, generate one "recommendContent" (Korean, very friendly and natural).
-            - "recommendContent" MUST clearly mention the weather situation (e.g., rain, snow, or mixed), AND be polite, soft, and friendly (not formal or stiff).
-            - "recommendContent" MUST be within 15 Korean characters. If it's longer, shorten it, but always include the weather info first.
-            - Use warm, casual, and kind expressions (e.g., "오후에 비가 온대요, 연차 어때요?", "눈 온다니 연차 써볼래요?", "종일 비예요, 오늘은 쉬어요!") 
-            - Do NOT use phrases like "권장합니다", "추천합니다".
-            - Each object must have "localDate" (YYYY-MM-DD) and "recommendContent" (max 15 Korean chars, weather included).
-            - ONLY output the JSON array, with no other explanations, markdown, or extra text.
-            
-            Follow these weather-based rules for "recommendContent":
-            - If rain or snow is predicted for 1-4 consecutive hours in the morning: include "오전" and the weather (e.g., "오전에 비가 와요, 연차 어때요?")
-            - If 1-4 hours in the afternoon: "오후에 눈 온대요, 연차 어때요?"
-            - If 4-6 hours: summarize (e.g., "비 많이 와요, 쉬는 건 어때요?")
-            - If 6+ hours or "RAIN_AND_SNOW": "종일 비예요, 오늘은 쉬어요!"
-            - Always mention the weather type (rain, snow, or mixed) at the beginning of "recommendContent".
-            - If no tool output for a day, SKIP.
-            
-            AGAIN: Respond ONLY with the above JSON array, nothing else.
+You MUST call the TOOL to get the weather data.
+DO NOT generate, guess, or hallucinate weather data yourself.
+ALWAYS use the TOOL OUTPUT ONLY to create your answer.
+
+Return your answer ONLY as a JSON array (do not wrap in markdown or add any extra explanation).
+The JSON array must follow this structure:
+
+[
+  {
+    "localDate": "YYYY-MM-DD",
+    "recommendContent": "string"
+  },
+  ...
+]
+
+Rules (STRICT. DO NOT BREAK!):
+
+1. For each date, "recommendContent" MUST meet ALL of the following:
+   - **ABSOLUTELY NEVER** use a single time (like "14시에").  
+     You MUST use a **time range** (e.g., "13시부터 17시까지") or "종일" (all day).
+   - If the precipitation is within a certain period, SPECIFY CLEARLY:  
+     "**몇시부터 몇시까지** 총 XXml 비(또는 눈/비와 눈)이 와요."
+     (e.g., "10시부터 17시까지 총 30ml 비가 와요.")
+   - If rain/snow occurs at multiple distinct times throughout the day, treat as **"종일"** (all day),  
+     and write: "**종일 총 XXml 비(또는 눈/비와 눈)이 와요."**
+   - The precipitation amount ("총 XXml") must refer to the **entire time range or the whole day**.
+
+2. ALWAYS explicitly mention the precipitation type (비, 눈, 비와 눈) and always end with a vacation suggestion ("연차" or "반차").
+
+3. EXAMPLES (you MUST follow this format):
+[
+  { "localDate": "2025-07-15", "recommendContent": "10시부터 17시까지 총 30ml 비가 와요. 연차 어때요?" },
+  { "localDate": "2025-07-16", "recommendContent": "종일 총 25ml 눈이 와요. 연차 쓰실래요?" },
+  { "localDate": "2025-07-17", "recommendContent": "11시부터 15시까지 총 15ml 비와 눈이 와요. 반차 어때요?" }
+]
+
+4. NEVER use just "14시에" or any single time. If you have only a single hour, treat it as a time **range** (e.g., "14시부터 15시까지"). **You MUST include both start and end time.**
+
+5. The answer MUST be only a JSON array as above. NO explanations, NO markdown, NO extra text.
+
+6. "recommendContent" must always be a warm, natural, and friendly sentence in Korean, and MUST have vacation suggestion ("연차" or "반차").
+
+AGAIN:  
+**ALWAYS** specify "몇시부터 몇시까지" (start time to end time), or "종일" for all-day.  
+**NEVER** use only a single time point (like "14시에"). If precipitation is for only one hour, write it as "14시부터 15시까지".
+
+Example for 1-hour rain:
+{ "localDate": "2025-07-18", "recommendContent": "14시부터 15시까지 총 10ml 비가 와요. 반차 어때요?" }
+
         """.trimIndent()
 
         val TAG_PROMPT = """

@@ -23,7 +23,7 @@ interface RecommendApi {
         consumes = [MediaType.APPLICATION_JSON_VALUE],
         method = [RequestMethod.POST],
     )
-    fun getFutureWeather(@RequestBody req: WeatherRequest): ResponseEntity<List<WeatherResponse>>
+    fun getFutureWeather(@RequestBody req: WeatherRequest): List<WeatherResponse>
 
     @RequestMapping(
         value = ["/getTag"],

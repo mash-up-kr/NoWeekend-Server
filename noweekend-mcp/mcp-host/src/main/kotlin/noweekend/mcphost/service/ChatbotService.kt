@@ -33,28 +33,35 @@ class ChatbotService(
     fun weatherRecommendation(request: WeatherRequest): List<WeatherResponse> {
         val baseDate = LocalDate.now(ZoneId.of("Asia/Seoul")).toString()
         val userMsg = """
-            latitude: ${request.latitude}
-            longitude: ${request.longitude}
-            baseDate: $baseDate
+        latitude: ${request.latitude}
+        longitude: ${request.longitude}
+        baseDate: $baseDate
         """.trimIndent()
 
-        repeat(5) { attempt ->
-            val jsonString = chatClient.prompt()
-                .system(WEATHER_PROMPT)
-                .user(userMsg)
-                .call()
-                .content()
+        val backoff = listOf(1000L, 2000L, 4000L, 8000L, 16000L) // 1, 2, 4, 8, 16초 대기
+        var lastException: Exception? = null
+
+        for (attempt in backoff.indices) {
             try {
+                val jsonString = chatClient.prompt()
+                    .system(WEATHER_PROMPT)
+                    .user(userMsg)
+                    .call()
+                    .content()
                 if (jsonString != null) {
                     return objectMapper.readValue(jsonString)
                 }
             } catch (e: Exception) {
-                if (attempt == 1) {
-                    throw IllegalStateException("현재 날씨 정보를 받아올 수 없습니다.")
+                lastException = e
+                if (!e.message.orEmpty().contains("Overloaded", ignoreCase = true)) {
+                    throw IllegalStateException("현재 날씨 정보를 받아올 수 없습니다: ${e.message}", e)
+                }
+                if (attempt < backoff.lastIndex) {
+                    Thread.sleep(backoff[attempt])
                 }
             }
         }
-        throw IllegalStateException("현재 날씨 정보를 받아올 수 없습니다.")
+        throw IllegalStateException("현재 날씨 정보를 받아올 수 없습니다: ${lastException?.message}", lastException)
     }
 
     fun tagRecommendation(request: TagRequest): List<Tag> {

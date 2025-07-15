@@ -20,7 +20,7 @@ spring.cloud.openfeign:
     config:
       example-api:
         connectTimeout: 2100
-        readTimeout: 5000
+        readTimeout: 120000
         loggerLevel: full
   compression:
     response:
