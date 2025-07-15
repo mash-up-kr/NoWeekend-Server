@@ -58,7 +58,17 @@ class RecommendServiceImpl(
     }
 
     private fun fetchWeatherFromApi(location: Location): List<WeatherRecommendation> {
-        return recommendClient.getFutureWeather(WeatherRequest(location.longitude, location.latitude))
+        val (lat, lon) = location
+        if (!isWithinKorea(lat, lon)) {
+            throw CoreException(ErrorType.INVALID_LOCATION)
+        }
+        return recommendClient.getFutureWeather(
+            WeatherRequest(longitude = lon, latitude = lat),
+        )
+    }
+
+    private fun isWithinKorea(lat: Double, lon: Double): Boolean {
+        return lat in 33.1..38.6 && lon in 124.65..130.93
     }
 
     private fun saveWeatherCache(
