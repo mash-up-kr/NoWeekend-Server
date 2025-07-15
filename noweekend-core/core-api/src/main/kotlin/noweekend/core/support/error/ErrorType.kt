@@ -18,4 +18,5 @@ enum class ErrorType(val status: HttpStatus, val code: ErrorCode, val message: S
     MCP_SERVER_SANDWICH_ERROR(HttpStatus.GATEWAY_TIMEOUT, ErrorCode.E504, "MCP 추천 서버의 응답이 없습니다. 잠시 후 다시 시도해주세요.", LogLevel.ERROR),
     MCP_SERVER_VACATION_ERROR(HttpStatus.GATEWAY_TIMEOUT, ErrorCode.E504, "MCP 추천 서버의 응답이 없습니다. 잠시 후 다시 시도해주세요.", LogLevel.ERROR),
     LINK_PROVIDER_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, ErrorCode.E500, "소셜 프로바이더 연동에 실패했습니다.", LogLevel.ERROR),
+    INVALID_LOCATION(HttpStatus.BAD_REQUEST, ErrorCode.E400, "사용자가 한국 위치가 아니기 때문에 날씨를 추천할 수 없습니다.", LogLevel.OFF),
 }
