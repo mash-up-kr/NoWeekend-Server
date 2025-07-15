@@ -41,20 +41,15 @@ class RecommendClient(
             return null
         }
 
-        val tagResponse = response.body ?: run {
-            log.warn("[getRecommend] Response body is null. Returning null.")
-            return null
-        }
-
-        if (tagResponse.size != 3) {
-            log.warn("[getRecommend] Response size is not 3 (actual: ${tagResponse.size}). Returning null.")
+        if (response.size != 3) {
+            log.warn("[getRecommend] Response size is not 3 (actual: ${response.size}). Returning null.")
             return null
         }
 
         return TagApiResponses(
-            firstRecommendTag = TagResponse(tagResponse[0].content),
-            secondRecommendTag = TagResponse(tagResponse[1].content),
-            thirdRecommendTag = TagResponse(tagResponse[2].content),
+            firstRecommendTag = TagResponse(response[0].content),
+            secondRecommendTag = TagResponse(response[1].content),
+            thirdRecommendTag = TagResponse(response[2].content),
         )
     }
 
@@ -69,27 +64,21 @@ class RecommendClient(
             return null
         }
 
-        val tagResponse = response.body ?: run {
-            log.warn("[getOnlyNewRecommend] Response body is null. Returning null.")
-            return null
-        }
-
-        if (tagResponse.size != 3) {
-            log.warn("[getOnlyNewRecommend] Response size is not 3 (actual: ${tagResponse.size}). Returning null.")
+        if (response.size != 3) {
+            log.warn("[getOnlyNewRecommend] Response size is not 3 (actual: ${response.size}). Returning null.")
             return null
         }
 
         return TagApiResponses(
-            firstRecommendTag = TagResponse(tagResponse[0].content),
-            secondRecommendTag = TagResponse(tagResponse[1].content),
-            thirdRecommendTag = TagResponse(tagResponse[2].content),
+            firstRecommendTag = TagResponse(response[0].content),
+            secondRecommendTag = TagResponse(response[1].content),
+            thirdRecommendTag = TagResponse(response[2].content),
         )
     }
 
     fun getSandwich(request: SandwichRequest): SandwichResponse? {
         return try {
             api.getSandwich(request)
-                .body
         } catch (e: FeignException) {
             log.warn("[getSandwich] FeignException, empty 반환. msg=${e.message}")
             return null

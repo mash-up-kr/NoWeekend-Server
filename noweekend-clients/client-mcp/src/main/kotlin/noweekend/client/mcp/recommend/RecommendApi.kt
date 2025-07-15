@@ -8,7 +8,6 @@ import noweekend.client.mcp.recommend.model.WeatherRequest
 import noweekend.core.domain.weather.WeatherRecommendation
 import org.springframework.cloud.openfeign.FeignClient
 import org.springframework.http.MediaType
-import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestMethod
@@ -30,19 +29,19 @@ interface RecommendApi {
         consumes = [MediaType.APPLICATION_JSON_VALUE],
         method = [RequestMethod.POST],
     )
-    fun getTag(@RequestBody request: TagRequest): ResponseEntity<List<TagResponse>>
+    fun getTag(@RequestBody request: TagRequest): List<TagResponse>
 
     @RequestMapping(
         value = ["/getTagOnlyNew"],
         consumes = [MediaType.APPLICATION_JSON_VALUE],
         method = [RequestMethod.POST],
     )
-    fun getTagOnlyNew(@RequestBody request: TagRequest): ResponseEntity<List<TagResponse>>
+    fun getTagOnlyNew(@RequestBody request: TagRequest): List<TagResponse>
 
     @RequestMapping(
         value = ["/getSandwich"],
         consumes = [MediaType.APPLICATION_JSON_VALUE],
         method = [RequestMethod.POST],
     )
-    fun getSandwich(@RequestBody request: SandwichRequest): ResponseEntity<SandwichResponse>
+    fun getSandwich(@RequestBody request: SandwichRequest): SandwichResponse
 }
