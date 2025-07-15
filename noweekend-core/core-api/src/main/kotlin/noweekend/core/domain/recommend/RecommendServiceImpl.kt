@@ -11,8 +11,12 @@ import noweekend.core.domain.holiday.HolidayReader
 import noweekend.core.domain.tag.TagReader
 import noweekend.core.domain.tag.UserTags
 import noweekend.core.domain.user.UserReader
+import noweekend.core.domain.weather.WeatherReader
+import noweekend.core.domain.weather.WeatherRecommendCache
+import noweekend.core.domain.weather.WeatherWriter
 import noweekend.core.support.error.CoreException
 import noweekend.core.support.error.ErrorType
+import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import java.time.LocalDate
 import kotlin.random.Random
@@ -23,20 +27,48 @@ class RecommendServiceImpl(
     private val userReader: UserReader,
     private val tagReader: TagReader,
     private val holidayReader: HolidayReader,
+    private val weatherReader: WeatherReader,
+    private val weatherWriter: WeatherWriter,
 ) : RecommendService {
 
-    override fun getWeatherRecommend(userId: String): WeatherApiResponse {
-        val location =
-            userReader.findLocationByUserId(userId) ?: throw CoreException(ErrorType.USER_LOCATION_NOT_FOUND)
+    private val log = LoggerFactory.getLogger(this::class.java)
 
-        val recommendWeathers = recommendClient.getFutureWeather(
+    override fun getWeatherRecommend(userId: String): WeatherApiResponse {
+        val location = userReader.findLocationByUserId(userId)
+            ?: throw CoreException(ErrorType.USER_LOCATION_NOT_FOUND)
+
+        val today = LocalDate.now()
+        // 1. 캐시에서 먼저 조회
+        val cached = weatherReader.findCacheByLocationAndDate(
+            latitude = location.latitude,
+            longitude = location.longitude,
+            searchDate = today,
+        )
+        if (cached != null) {
+            return WeatherApiResponse(cached.weatherResponses)
+        }
+
+        val apiResponse = recommendClient.getFutureWeather(
             WeatherRequest(
                 longitude = location.longitude,
                 latitude = location.latitude,
             ),
         )
 
-        return WeatherApiResponse(recommendWeathers)
+        log.info("======================================== spi 호출 시작")
+        log.info("apiResponse = ${apiResponse.size}\n")
+        apiResponse.forEach { response -> log.info(response.toString() + "\n") }
+        log.info("======================================== spi 호출 종료")
+
+        val cacheObj = WeatherRecommendCache.register(
+            latitude = location.latitude,
+            longitude = location.longitude,
+            searchDate = today,
+            weatherResponses = apiResponse,
+        )
+        weatherWriter.register(cacheObj)
+
+        return WeatherApiResponse(apiResponse)
     }
 
     override fun getTagRecommend(userId: String): TagApiResponses {

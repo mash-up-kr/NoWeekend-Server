@@ -5,7 +5,7 @@ import noweekend.client.mcp.recommend.model.SandwichResponse
 import noweekend.client.mcp.recommend.model.TagRequest
 import noweekend.client.mcp.recommend.model.TagResponse
 import noweekend.client.mcp.recommend.model.WeatherRequest
-import noweekend.client.mcp.recommend.model.WeatherResponse
+import noweekend.core.domain.weather.WeatherRecommendation
 import org.springframework.cloud.openfeign.FeignClient
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
@@ -23,7 +23,7 @@ interface RecommendApi {
         consumes = [MediaType.APPLICATION_JSON_VALUE],
         method = [RequestMethod.POST],
     )
-    fun getFutureWeather(@RequestBody req: WeatherRequest): List<WeatherResponse>
+    fun getFutureWeather(@RequestBody req: WeatherRequest): List<WeatherRecommendation>
 
     @RequestMapping(
         value = ["/getTag"],

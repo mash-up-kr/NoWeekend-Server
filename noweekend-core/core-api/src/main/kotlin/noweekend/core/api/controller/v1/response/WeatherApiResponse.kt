@@ -1,7 +1,7 @@
 package noweekend.core.api.controller.v1.response
 
-import noweekend.client.mcp.recommend.model.WeatherResponse
+import noweekend.core.domain.weather.WeatherRecommendation
 
 data class WeatherApiResponse(
-    val weatherResponses: List<WeatherResponse>,
+    val weatherRespons: List<WeatherRecommendation>,
 )

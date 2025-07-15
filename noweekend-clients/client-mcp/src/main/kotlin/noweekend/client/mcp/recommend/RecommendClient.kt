@@ -7,8 +7,8 @@ import noweekend.client.mcp.recommend.model.TagApiResponses
 import noweekend.client.mcp.recommend.model.TagRequest
 import noweekend.client.mcp.recommend.model.TagResponse
 import noweekend.client.mcp.recommend.model.WeatherRequest
-import noweekend.client.mcp.recommend.model.WeatherResponse
 import noweekend.core.domain.tag.UserTags
+import noweekend.core.domain.weather.WeatherRecommendation
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 
@@ -18,7 +18,7 @@ class RecommendClient(
 ) {
     private val log = LoggerFactory.getLogger(this::class.java)
 
-    fun getFutureWeather(request: WeatherRequest): List<WeatherResponse> {
+    fun getFutureWeather(request: WeatherRequest): List<WeatherRecommendation> {
         try {
             val response = api.getFutureWeather(request)
             log.info("response = $response")
