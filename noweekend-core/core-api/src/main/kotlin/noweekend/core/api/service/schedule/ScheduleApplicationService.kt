@@ -31,6 +31,12 @@ interface ScheduleApplicationService {
         request: ScheduleUpdateRequest,
     ): ScheduleResponse
 
+    fun updateScheduleState(
+        userId: String,
+        scheduleId: String,
+        isComplete: Boolean,
+    ): ScheduleResponse
+
     fun deleteSchedule(userId: String, scheduleId: String)
 }
 
@@ -137,6 +143,27 @@ class ScheduleApplicationServiceImpl(
             alarmOption = request.alarmOption,
         )
 
+        val savedSchedule = scheduleWriter.update(updatedSchedule)
+        return savedSchedule.toResponse()
+    }
+
+    override fun updateScheduleState(
+        userId: String,
+        scheduleId: String,
+        isComplete: Boolean,
+    ): ScheduleResponse {
+        val existingSchedule = scheduleReader.findScheduleById(scheduleId)
+            ?: throw CoreException(ErrorType.NOT_FOUND_ERROR, "Schedule not found: $scheduleId")
+
+        if (existingSchedule.userId != userId) {
+            throw CoreException(ErrorType.FORBIDDEN_ERROR, "You don't have permission to update this schedule")
+        }
+
+        if (existingSchedule.completed == isComplete) {
+            return existingSchedule.toResponse()
+        }
+
+        val updatedSchedule = existingSchedule.copy(completed = isComplete)
         val savedSchedule = scheduleWriter.update(updatedSchedule)
         return savedSchedule.toResponse()
     }

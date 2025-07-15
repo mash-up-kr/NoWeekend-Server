@@ -267,6 +267,46 @@ interface ScheduleControllerDocs {
     ): ApiResponse<ScheduleResponse>
 
     @Operation(
+        summary = "캘린더: 일정 완료 여부 수정",
+        description = "일정의 상태를 변경합니다.",
+        responses = [
+            SwaggerApiResponse(
+                responseCode = "200",
+                description = "일정 수정 성공",
+                content = [
+                    Content(
+                        mediaType = "application/json",
+                        schema = Schema(implementation = ApiResponse::class),
+                        examples = [
+                            ExampleObject(
+                                name = "예시 응답",
+                                value = """
+{
+  "result": "SUCCESS",
+  "data": {
+    "id": "abc123",
+    "title": "회의",
+    "startTime": "2025-05-01T10:00:00",
+    "endTime": "2025-05-01T11:00:00",
+    "category": "COMPANY",
+    "temperature": 3,
+    "allDay": false,
+    "alarmOption": "FIFTEEN_MINUTES_BEFORE",
+    "completed": true
+  },
+  "error": null
+}
+""",
+                            ),
+                        ],
+                    ),
+                ],
+            ),
+        ],
+    )
+    fun updateScheduleState(userId: String, id: String, isComplete: Boolean): ApiResponse<ScheduleResponse>
+
+    @Operation(
         summary = "캘린더: 일정 삭제",
         description = "일정을 삭제합니다.",
         responses = [

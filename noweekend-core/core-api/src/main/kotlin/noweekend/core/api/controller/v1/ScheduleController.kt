@@ -55,6 +55,15 @@ class ScheduleController(
         return ApiResponse.success(schedule)
     }
 
+    @PutMapping("/{id}/state")
+    override fun updateScheduleState(
+        @CurrentUserId userId: String,
+        @PathVariable id: String,
+        @RequestParam(name = "is_complete", required = true) isComplete: Boolean,
+    ): ApiResponse<ScheduleResponse> {
+        return ApiResponse.success(scheduleApplicationService.updateScheduleState(userId, id, isComplete))
+    }
+
     @DeleteMapping("/{id}")
     override fun deleteSchedule(@CurrentUserId userId: String, @PathVariable id: String): ApiResponse<String> {
         scheduleApplicationService.deleteSchedule(userId, id)
