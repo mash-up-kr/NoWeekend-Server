@@ -24,15 +24,15 @@ spring:
               # local
 #              url: http://localhost:8081
               enabled: true
-        stdio:
-          connections:
-            brave-search:
-              command: npx.cmd
-              args:
-                - "-y"
-                - "@modelcontextprotocol/server-brave-search"
-              env:
-                BRAVE_API_KEY: ENC(tOf1NF3MQ4QX7ou+iVM6BoOB5NrW2B9KkZVC3jn72puMsagRysNFGA==)
+#        stdio:
+#          connections:
+#            brave-search:
+#              command: npx
+#              args:
+#                - "-y"
+#                - "@modelcontextprotocol/server-brave-search"
+#              env:
+#                BRAVE_API_KEY: ENC(tOf1NF3MQ4QX7ou+iVM6BoOB5NrW2B9KkZVC3jn72puMsagRysNFGA==)
         type: SYNC
         request-timeout: 60s
 
