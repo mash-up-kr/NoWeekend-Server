@@ -1,6 +1,5 @@
 package noweekend.core.domain.recommend
 
-import com.fasterxml.jackson.databind.ObjectMapper
 import noweekend.client.mcp.recommend.RecommendClient
 import noweekend.client.mcp.recommend.model.SandwichRequest
 import noweekend.client.mcp.recommend.model.SandwichResponse
@@ -37,7 +36,6 @@ class RecommendServiceImpl(
     private val weatherWriter: WeatherWriter,
     private val tagRecommendCacheReader: TagRecommendCacheReader,
     private val tagRecommendCacheWriter: TagRecommendCacheWriter,
-    private val objectMapper: ObjectMapper,
 ) : RecommendService {
 
     override fun getWeatherRecommend(userId: String): WeatherResponse {
@@ -104,7 +102,7 @@ class RecommendServiceImpl(
     override fun getTagRecommend(userId: String): TagRecommendations {
         val userTags = tagReader.getUserTags(userId)
         userTagValidation(userTags)
-        val cached = getTagRecommendCaching(RecommendType.MIXED, userTags)
+        val cached = getTagRecommendCaching(RecommendType.MIXED, userId)
 
         if (cached != null) {
             return cached.recommend
@@ -131,12 +129,10 @@ class RecommendServiceImpl(
         }
     }
 
-    private fun getTagRecommendCaching(tagRecommendType: RecommendType, userTags: UserTags): TagRecommendCache? {
-        val tagsJson = objectMapper.writeValueAsString(userTags)
+    private fun getTagRecommendCaching(tagRecommendType: RecommendType, userId: String): TagRecommendCache? {
         return tagRecommendCacheReader.findTodayCache(
             recommendType = tagRecommendType,
-            tagsJson = tagsJson,
-            searchDate = LocalDate.now(),
+            userId = userId,
         )
     }
 
@@ -171,7 +167,7 @@ class RecommendServiceImpl(
         val userTags = tagReader.getUserTags(userId)
         userTagValidation(userTags)
 
-        val cached = getTagRecommendCaching(RecommendType.ONLY_NEW, userTags)
+        val cached = getTagRecommendCaching(RecommendType.ONLY_NEW, userId)
         if (cached != null) {
             return cached.recommend
         }

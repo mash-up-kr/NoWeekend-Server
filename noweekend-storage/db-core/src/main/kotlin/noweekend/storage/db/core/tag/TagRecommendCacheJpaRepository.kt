@@ -5,9 +5,9 @@ import org.springframework.data.jpa.repository.JpaRepository
 import java.time.LocalDate
 
 interface TagRecommendCacheJpaRepository : JpaRepository<TagRecommendCacheEntity, String> {
-    fun findByRecommendTypeAndSearchDateAndTagsJson(
-        recommendType: RecommendType,
+    fun findByUserIdAndSearchDateAndRecommendType(
+        userId: String,
         searchDate: LocalDate,
-        tagsJson: String,
+        recommendType: RecommendType,
     ): TagRecommendCacheEntity?
 }

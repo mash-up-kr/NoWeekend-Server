@@ -11,9 +11,8 @@ class TagRecommendCacheReader(
 ) {
     fun findTodayCache(
         recommendType: RecommendType,
-        tagsJson: String,
-        searchDate: LocalDate = LocalDate.now(),
+        userId: String,
     ): TagRecommendCache? {
-        return repository.findTodayCache(recommendType, tagsJson, searchDate)
+        return repository.findTodayCache(recommendType, LocalDate.now(), userId)
     }
 }
