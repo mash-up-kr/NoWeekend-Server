@@ -1,4 +1,4 @@
-package noweekend.storage.db.core.cache
+package noweekend.storage.db.core.tag
 
 import jakarta.persistence.Column
 import jakarta.persistence.Entity

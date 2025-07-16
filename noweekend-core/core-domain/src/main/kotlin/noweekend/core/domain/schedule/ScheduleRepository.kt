@@ -1,4 +1,4 @@
-package noweekend.core.domain.tag
+package noweekend.core.domain.schedule
 
 import java.time.LocalDateTime
 

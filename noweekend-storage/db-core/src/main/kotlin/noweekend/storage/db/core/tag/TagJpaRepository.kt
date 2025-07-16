@@ -1,4 +1,4 @@
-package noweekend.storage.db.core.schedule
+package noweekend.storage.db.core.tag
 
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Modifying

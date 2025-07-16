@@ -1,4 +1,4 @@
-package noweekend.storage.db.core.cache
+package noweekend.storage.db.core.tag
 
 import noweekend.core.domain.tag.RecommendType
 import noweekend.core.domain.tag.TagRecommendCache

@@ -1,7 +1,7 @@
 package noweekend.core.domain.user
 
 import noweekend.core.domain.enumerate.ProviderType
-import noweekend.core.domain.tag.ScheduleRepository
+import noweekend.core.domain.schedule.ScheduleRepository
 import noweekend.core.domain.tag.TagRepository
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional

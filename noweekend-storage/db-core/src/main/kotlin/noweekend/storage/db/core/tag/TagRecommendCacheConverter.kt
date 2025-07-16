@@ -1,4 +1,4 @@
-package noweekend.storage.db.core.cache
+package noweekend.storage.db.core.tag
 
 import com.fasterxml.jackson.core.type.TypeReference
 import com.fasterxml.jackson.databind.ObjectMapper
