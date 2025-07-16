@@ -1,4 +1,4 @@
-package noweekend.storage.db.core.schedule
+package noweekend.storage.db.core.tag
 
 import noweekend.core.domain.tag.Tag
 import noweekend.core.domain.tag.TagRepository

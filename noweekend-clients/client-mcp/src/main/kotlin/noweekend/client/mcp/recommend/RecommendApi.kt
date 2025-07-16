@@ -3,8 +3,8 @@ package noweekend.client.mcp.recommend
 import noweekend.client.mcp.recommend.model.SandwichRequest
 import noweekend.client.mcp.recommend.model.SandwichResponse
 import noweekend.client.mcp.recommend.model.TagRequest
-import noweekend.client.mcp.recommend.model.TagResponse
 import noweekend.client.mcp.recommend.model.WeatherRequest
+import noweekend.core.domain.tag.TagRecommendation
 import noweekend.core.domain.weather.WeatherRecommendation
 import org.springframework.cloud.openfeign.FeignClient
 import org.springframework.http.MediaType
@@ -29,14 +29,14 @@ interface RecommendApi {
         consumes = [MediaType.APPLICATION_JSON_VALUE],
         method = [RequestMethod.POST],
     )
-    fun getTag(@RequestBody request: TagRequest): List<TagResponse>
+    fun getTag(@RequestBody request: TagRequest): List<TagRecommendation>
 
     @RequestMapping(
         value = ["/getTagOnlyNew"],
         consumes = [MediaType.APPLICATION_JSON_VALUE],
         method = [RequestMethod.POST],
     )
-    fun getTagOnlyNew(@RequestBody request: TagRequest): List<TagResponse>
+    fun getTagOnlyNew(@RequestBody request: TagRequest): List<TagRecommendation>
 
     @RequestMapping(
         value = ["/getSandwich"],

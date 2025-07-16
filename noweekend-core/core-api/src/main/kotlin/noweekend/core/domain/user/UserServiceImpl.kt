@@ -6,8 +6,8 @@ import noweekend.core.api.controller.v1.request.ProfileRequest
 import noweekend.core.api.controller.v1.request.TagUpdateRequest
 import noweekend.core.api.controller.v1.response.UserInformationResponse
 import noweekend.core.domain.enumerate.ScheduleCategory
+import noweekend.core.domain.schedule.ScheduleReader
 import noweekend.core.domain.tag.BasicTag
-import noweekend.core.domain.tag.ScheduleReader
 import noweekend.core.domain.tag.TagReader
 import noweekend.core.domain.tag.TagWriter
 import noweekend.core.domain.tag.UserTags

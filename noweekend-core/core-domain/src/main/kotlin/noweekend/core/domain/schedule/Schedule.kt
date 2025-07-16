@@ -1,4 +1,4 @@
-package noweekend.core.domain.tag
+package noweekend.core.domain.schedule
 
 import noweekend.core.domain.enumerate.AlarmOption
 import noweekend.core.domain.enumerate.ScheduleCategory
