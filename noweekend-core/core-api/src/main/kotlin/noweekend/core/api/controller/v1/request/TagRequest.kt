@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.media.Schema
 import noweekend.core.domain.tag.BasicTag
 import noweekend.core.support.error.CoreException
 import noweekend.core.support.error.ErrorType
+import org.slf4j.LoggerFactory
 
 @Schema(description = "자주하는 일정 DTO")
 data class TagRequest(
@@ -13,6 +14,8 @@ data class TagRequest(
     )
     val scheduleTags: List<String>,
 ) {
+    private val log = LoggerFactory.getLogger(this::class.java)
+
     fun validatedScheduleTags(): List<BasicTag> {
         val result = mutableListOf<BasicTag>()
         val invalid = mutableListOf<String>()
@@ -22,6 +25,9 @@ data class TagRequest(
                 result.add(BasicTag.fromKorean(it.trim()))
             } catch (e: NoSuchElementException) {
                 invalid.add(it)
+            } catch (e: Exception) {
+                log.error(e.printStackTrace().toString())
+                throw CoreException(ErrorType.DEFAULT_ERROR)
             }
         }
         if (invalid.isNotEmpty()) throw CoreException(ErrorType.INVALID_SCHEDULE_TAG)
