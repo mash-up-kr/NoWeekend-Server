@@ -16,8 +16,8 @@ import java.time.LocalDate
     name = "tag_recommend_metadata",
     uniqueConstraints = [
         UniqueConstraint(
-            name = "uk_user_tags_type_date",
-            columnNames = ["recommend_type", "search_date", "tags_json"],
+            name = "uk_search_date_type",
+            columnNames = ["search_date", "recommend_type"],
         ),
     ],
 )
