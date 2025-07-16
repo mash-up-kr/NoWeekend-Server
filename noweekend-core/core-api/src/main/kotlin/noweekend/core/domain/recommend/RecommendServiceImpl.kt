@@ -116,6 +116,7 @@ class RecommendServiceImpl(
                 type = RecommendType.MIXED,
                 userTags = userTags,
                 apiResponse = apiRecommendResponse,
+                userId = userId,
             )
             return apiRecommendResponse
         }
@@ -143,12 +144,14 @@ class RecommendServiceImpl(
         type: RecommendType,
         userTags: UserTags,
         apiResponse: TagRecommendations,
+        userId: String,
     ) {
         val cache = TagRecommendCache.register(
             recommendType = type,
             searchDate = LocalDate.now(),
             tags = userTags,
             recommend = apiResponse,
+            userId = userId,
         )
         tagRecommendCacheWriter.register(cache)
     }
@@ -188,7 +191,7 @@ class RecommendServiceImpl(
                 apiRecommendResponse.thirdRecommendTag.content,
             )
             require(allNewTags.none { it in allOldTags }) { "Returned tag already exists in user tags" }
-            registerTagRecommendCache(RecommendType.ONLY_NEW, userTags, apiRecommendResponse)
+            registerTagRecommendCache(RecommendType.ONLY_NEW, userTags, apiRecommendResponse, userId)
             return apiRecommendResponse
         }
 
