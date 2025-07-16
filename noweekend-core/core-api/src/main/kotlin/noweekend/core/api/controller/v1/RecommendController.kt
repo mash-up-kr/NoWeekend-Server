@@ -1,6 +1,5 @@
 package noweekend.core.api.controller.v1
 
-import noweekend.client.mcp.recommend.model.SandwichResponse
 import noweekend.core.api.controller.v1.docs.RecommendControllerDocs
 import noweekend.core.api.controller.v1.request.GenerateVacationRequest
 import noweekend.core.api.controller.v1.response.AiGenerateVacationApiResponse
@@ -15,7 +14,6 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
-import java.time.LocalDate
 
 @RestController
 @RequestMapping("/api/v1/recommend")
@@ -51,13 +49,15 @@ class RecommendController(
     @GetMapping("/sandwich")
     override fun getSandwich(
         @CurrentUserId userId: String,
-    ): ApiResponse<SandwichResponse> {
-        val mockData = SandwichResponse(
-            startDate = LocalDate.now(),
-            endDate = LocalDate.now().plusDays(3),
-        )
-        return ApiResponse.success(mockData)
-//        return ApiResponse.success(recommendService.getSandwich(userId))
+    ) {
+//        val mockData = SandwichResponse(
+//            startDate = LocalDate.now(),
+//            endDate = LocalDate.now().plusDays(3),
+//            totalDays = 1,
+//
+//        )
+        recommendService.getSandwich(userId)
+//        return ApiResponse.success(mockData)
     }
 
     @PostMapping("/generate-vacation")

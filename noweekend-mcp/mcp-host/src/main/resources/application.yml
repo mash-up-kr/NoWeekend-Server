@@ -4,6 +4,15 @@ spring:
   mvc:
     time-zone: Asia/Seoul
   ai:
+    retry:
+      max-attempts: 5
+      backoff:
+        initial-interval: 10s
+        multiplier: 2
+        max-interval: 3m
+      on-client-errors: true
+      on-http-codes: 429
+
     anthropic:
       api-key: ENC(DSDMqqudORinUFWutrGj/hFq31Rcp+1B5SqZmhQUZKe5g5G01KIcngKwmep3K0aDGrqMIGsxlAxj9Bx9fe2MwHnpQ+pZYCT/vYAp/6hKIiuSQULyrMWgkTxd08+RWnzP9DNZb7BpX1NYuZ3dsIqPo0qVCVsyLLjc)
 #      api-key: ENC(q6WkPzavRozxQbgOktG6eCgCIMtfAlLQuakXP4sBXPDS+Ij8dvo9p0GJyE0+FJgEOkhys5DM50qsMOedjdZS5ewcc1ACvpRw6TcHWi7Mu158YCQUC5M4A5RGqC5ACDNnbrjrA1dmmJtEi8dNHCPlYLXRKK2m/t5Z)
@@ -20,12 +29,12 @@ spring:
           connections:
             author-tool-server:
               # prod
-              url: http://mcp-server:8081
+#              url: http://mcp-server:8081
               # local
-#              url: http://localhost:8081
+              url: http://localhost:8081
               enabled: true
-#        stdio:
-#          connections:
+        stdio:
+          connections:
 #            brave-search:
 #              command: npx
 #              args:
@@ -33,6 +42,13 @@ spring:
 #                - "@modelcontextprotocol/server-brave-search"
 #              env:
 #                BRAVE_API_KEY: ENC(tOf1NF3MQ4QX7ou+iVM6BoOB5NrW2B9KkZVC3jn72puMsagRysNFGA==)
+            perplexity-ask:
+              command: npx
+              args:
+                - "-y"
+                - "server-perplexity-ask"
+              env:
+                PERPLEXITY_API_KEY: example
         type: SYNC
         request-timeout: 60s
 

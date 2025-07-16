@@ -1,7 +1,9 @@
 package noweekend.client.mcp.recommend
 
+import noweekend.client.mcp.recommend.model.AiGenerateVacationRequest
+import noweekend.client.mcp.recommend.model.AiGenerateVacationResponse
 import noweekend.client.mcp.recommend.model.SandwichRequest
-import noweekend.client.mcp.recommend.model.SandwichResponse
+import noweekend.client.mcp.recommend.model.SandwichResult
 import noweekend.client.mcp.recommend.model.TagRequest
 import noweekend.client.mcp.recommend.model.WeatherRequest
 import noweekend.core.domain.tag.TagRecommendation
@@ -43,5 +45,12 @@ interface RecommendApi {
         consumes = [MediaType.APPLICATION_JSON_VALUE],
         method = [RequestMethod.POST],
     )
-    fun getSandwich(@RequestBody request: SandwichRequest): SandwichResponse
+    fun getSandwich(@RequestBody request: SandwichRequest): SandwichResult
+
+    @RequestMapping(
+        value = ["/generate-vacation"],
+        consumes = [MediaType.APPLICATION_JSON_VALUE],
+        method = [RequestMethod.POST],
+    )
+    fun generateVacation(@RequestBody request: AiGenerateVacationRequest): AiGenerateVacationResponse
 }

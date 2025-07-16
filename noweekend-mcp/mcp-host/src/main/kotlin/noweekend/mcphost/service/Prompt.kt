@@ -1,8 +1,17 @@
 package noweekend.mcphost.service
 
-class Prompt {
-    companion object {
-        val WEATHER_PROMPT = """
+import com.fasterxml.jackson.databind.ObjectMapper
+import noweekend.mcphost.controller.request.AiGenerateVacationRequest
+import org.springframework.stereotype.Component
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
+import java.util.Locale
+
+@Component
+class Prompt(
+    private val objectMapper: ObjectMapper,
+) {
+    val WEATHER_PROMPT = """
 You MUST call the TOOL to get the weather data.
 DO NOT generate, guess, or hallucinate weather data yourself.
 ALWAYS use the TOOL OUTPUT ONLY to create your answer.
@@ -79,7 +88,7 @@ Output example:
 Return ONLY this JSON array. Never add any other text, explanation, or formatting.
         """.trimIndent()
 
-        val ONLY_NEW_TAG_PROMPT = """
+    val ONLY_NEW_TAG_PROMPT = """
             You are an expert assistant for tag recommendations.
             
             Below is a JSON object representing the user's tag lists, all in Korean.
@@ -108,5 +117,105 @@ Return ONLY this JSON array. Never add any other text, explanation, or formattin
             
             Here is the user's tag information in JSON:
         """.trimIndent()
+
+    /**
+     * 1단계: 생일·공휴일·주말·연차를 조합해 최대 연속 휴가 날짜(dates)를 계산
+     */
+    fun sandwichDatePrompt(req: AiGenerateVacationRequest): String {
+        return """
+You are a Vacation Date Optimizer.
+
+INPUT (exactly one JSON):
+{"days": number, "birthDate": "YYYY-MM-DD" or null, "upcomingHolidays": ["YYYY-MM-DD", ...]}
+
+INSTRUCTIONS:
+- Treat weekends (Sat, Sun) and upcomingHolidays as automatic non-working days.
+- Use available vacation days ("days") on weekdays only to form the **longest continuous break** within targetMonth.
+- If birthDate is a weekday in targetMonth, you may include it as a vacation day.
+- **Output EXACTLY one valid JSON object** with key "dates", containing a sorted list of "YYYY-MM-DD".
+- **Do NOT include any extra text, explanation, or debugging information.**
+- If no valid continuous block exists, output: {"dates":[]}
+
+RULES:
+- Only count weekdays toward "days".
+- Continuous block may span weekends/holidays, but vacation days apply only to weekdays.
+- Do not reference events outside targetMonth.
+
+OUTPUT:
+{"dates":["YYYY-MM-DD", ...]}
+""".trimIndent()
+    }
+
+    fun detailedPlanPrompt(
+        req: AiGenerateVacationRequest,
+        dates: List<String>,
+        offset: Int,
+        totalDays: Int,
+        prevUsed: List<String>
+    ): String {
+        val headers = dates.mapIndexed { i, d ->
+            val num = offset + i + 1
+            val label = LocalDate.parse(d)
+                .format(DateTimeFormatter.ofPattern("MM/dd E", Locale.KOREAN))
+            "• Day $num ($label)"
+        }.joinToString("\n")
+
+        val usedClause = if (prevUsed.isNotEmpty())
+            "Recently used items: ${prevUsed.joinToString(", ")}.\nDo NOT reuse in this block.\n\n"
+        else ""
+
+        // profile JSON with Korean tags
+        val profileJson = objectMapper.writeValueAsString(
+            mapOf(
+                "travelStyle" to req.chosenTravelStyleLabel,
+                "activityType" to req.chosenActivityTypeLabel,
+                "restPreference" to req.chosenRestPreferenceLabel,
+                "leisurePreference" to req.chosenLeisurePreferenceLabel,
+                "preferredTags" to req.selectedTags,
+                "excludedTags" to req.unselectedTags
+            )
+        )
+
+        return """
+You are a Vacation Planning Expert. Use Perplexity to fetch real-time facts.
+
+$usedClause
+INPUT (JSON):
+{"dates":[${dates.joinToString(","){ "\"$it\"" }}],"profile":$profileJson,"totalDays":$totalDays}
+
+TASK:
+Create a personalized itinerary over ${dates.size} days:
+- If activityType == "집콕", propose home-based plans (e.g. cooking, movies, reading).
+- Else (travel): plan actual trips with real departure→arrival chains.
+  * The origin of Day N must match the destination of Day N-1.
+  * The final day must include return to home.
+
+STYLE:
+- travelStyle == "계획형": use precise times, transport modes, and locations.
+- travelStyle == "즉흥 자유형": allow flexible timing, optional excursions.
+- Honor restPreference and leisurePreference from profile.
+- Include preferredTags, avoid excludedTags.
+- Prevent reuse of activities/restaurants/accommodations used within the last 2 days.
+- Mention "Day X of Y" to orient days within totalDays.
+
+FORMAT:
+For each day, produce exactly 6 Korean bullet points:
+1. Morning: 출발지→도착지, 교통수단, 출발시간  
+2. Morning activity: 장소 및 내용, 이동 방식·소요시간  
+3. Lunch: 식당명(추천메뉴), 지역  
+4. Afternoon activity: 장소 및 내용, 이동 방식·소요시간  
+5. Dinner: 식당명(추천메뉴), 지역  
+6. Night: 숙소명 (or '집'), 교통수단, 체크인 or evening time
+
+REQUIREMENTS:
+- Use Perplexity to verify opening hours or popularity info.
+- Do not include JSON, code fences, or extra commentary.
+- End output right after the last bullet.
+
+HEADERS:
+$headers
+
+Now generate the itinerary.
+""".trimIndent()
     }
 }

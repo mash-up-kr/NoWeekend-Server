@@ -1,8 +1,10 @@
 package noweekend.client.mcp.recommend
 
 import feign.FeignException
+import noweekend.client.mcp.recommend.model.AiGenerateVacationRequest
+import noweekend.client.mcp.recommend.model.AiGenerateVacationResponse
 import noweekend.client.mcp.recommend.model.SandwichRequest
-import noweekend.client.mcp.recommend.model.SandwichResponse
+import noweekend.client.mcp.recommend.model.SandwichResult
 import noweekend.client.mcp.recommend.model.TagRequest
 import noweekend.client.mcp.recommend.model.WeatherRequest
 import noweekend.client.mcp.recommend.model.toRequestType
@@ -79,11 +81,23 @@ class RecommendClient(
         )
     }
 
-    fun getSandwich(request: SandwichRequest): SandwichResponse? {
+    fun getSandwich(request: SandwichRequest): SandwichResult? {
         return try {
             api.getSandwich(request)
         } catch (e: FeignException) {
             log.warn("[getSandwich] FeignException, empty 반환. msg=${e.message}")
+            return null
+        } catch (e: Exception) {
+            log.error("[getSandwich] 예기치 못한 예외, empty 반환.", e)
+            return null
+        }
+    }
+
+    fun generateVacation(request: AiGenerateVacationRequest): AiGenerateVacationResponse? {
+        return try {
+            api.generateVacation(request)
+        } catch (e: FeignException) {
+            log.warn("[generateVacation] FeignException, empty 반환. msg=${e.message}")
             return null
         } catch (e: Exception) {
             log.error("[getSandwich] 예기치 못한 예외, empty 반환.", e)
