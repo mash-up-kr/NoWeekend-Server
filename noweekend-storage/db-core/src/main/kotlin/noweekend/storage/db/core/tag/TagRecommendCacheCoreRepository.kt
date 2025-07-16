@@ -15,16 +15,15 @@ class TagRecommendCacheCoreRepository(
 ) : TagRecommendCacheRepository {
 
     private val log = LoggerFactory.getLogger(this::class.java)
-
     override fun findTodayCache(
         recommendType: RecommendType,
-        tagsJson: String,
         searchDate: LocalDate,
+        userId: String,
     ): TagRecommendCache? {
-        return jpaRepository.findByRecommendTypeAndSearchDateAndTagsJson(
+        return jpaRepository.findByUserIdAndSearchDateAndRecommendType(
             recommendType = recommendType,
             searchDate = searchDate,
-            tagsJson = tagsJson,
+            userId = userId,
         )?.let { converter.entityToDomain(it) }
     }
 
