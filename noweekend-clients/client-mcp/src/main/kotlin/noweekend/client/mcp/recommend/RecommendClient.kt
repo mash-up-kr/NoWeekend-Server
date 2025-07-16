@@ -5,6 +5,7 @@ import noweekend.client.mcp.recommend.model.SandwichRequest
 import noweekend.client.mcp.recommend.model.SandwichResponse
 import noweekend.client.mcp.recommend.model.TagRequest
 import noweekend.client.mcp.recommend.model.WeatherRequest
+import noweekend.client.mcp.recommend.model.toRequestType
 import noweekend.core.domain.tag.TagRecommendation
 import noweekend.core.domain.tag.TagRecommendations
 import noweekend.core.domain.tag.UserTags
@@ -31,8 +32,9 @@ class RecommendClient(
     }
 
     fun getRecommend(request: UserTags): TagRecommendations? {
+        val requestForApi = TagRequest(request.toRequestType())
         val response = try {
-            api.getTag(TagRequest(request))
+            api.getTag(requestForApi)
         } catch (e: FeignException) {
             log.warn("[getRecommend] FeignException occurred. Returning null. msg=${e.message}")
             return null
@@ -54,8 +56,9 @@ class RecommendClient(
     }
 
     fun getOnlyNewRecommend(request: UserTags): TagRecommendations? {
+        val requestForApi = TagRequest(request.toRequestType())
         val response = try {
-            api.getTagOnlyNew(TagRequest(request))
+            api.getTagOnlyNew(requestForApi)
         } catch (e: FeignException) {
             log.warn("[getOnlyNewRecommend] FeignException occurred. Returning null. msg=${e.message}")
             return null
