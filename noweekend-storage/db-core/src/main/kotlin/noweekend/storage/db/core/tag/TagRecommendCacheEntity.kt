@@ -32,9 +32,9 @@ class TagRecommendCacheEntity(
     @Column(nullable = false)
     val searchDate: LocalDate,
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 1024)
     val tagsJson: String,
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 1024)
     val recommendJson: String,
 ) : BaseEntity()

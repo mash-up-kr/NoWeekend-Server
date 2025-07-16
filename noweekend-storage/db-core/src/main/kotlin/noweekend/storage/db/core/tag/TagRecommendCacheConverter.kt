@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import noweekend.core.domain.tag.TagRecommendCache
 import noweekend.core.domain.tag.TagRecommendations
 import noweekend.core.domain.tag.UserTags
+import noweekend.core.domain.tag.toContentOnly
 import org.springframework.stereotype.Component
 
 @Component
@@ -27,7 +28,7 @@ class TagRecommendCacheConverter(
             id = domain.id,
             recommendType = domain.recommendType,
             searchDate = domain.searchDate,
-            tagsJson = objectMapper.writeValueAsString(domain.tags),
+            tagsJson = objectMapper.writeValueAsString(domain.tags.toContentOnly()),
             recommendJson = objectMapper.writeValueAsString(domain.recommend),
         )
 }

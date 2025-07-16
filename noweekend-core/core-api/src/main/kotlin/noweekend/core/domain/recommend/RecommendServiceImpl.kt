@@ -15,6 +15,7 @@ import noweekend.core.domain.tag.TagRecommendCacheWriter
 import noweekend.core.domain.tag.TagRecommendation
 import noweekend.core.domain.tag.TagRecommendations
 import noweekend.core.domain.tag.UserTags
+import noweekend.core.domain.tag.toContentOnly
 import noweekend.core.domain.user.Location
 import noweekend.core.domain.user.UserReader
 import noweekend.core.domain.weather.WeatherReader
@@ -131,7 +132,7 @@ class RecommendServiceImpl(
     }
 
     private fun getTagRecommendCaching(tagRecommendType: RecommendType, userTags: UserTags): TagRecommendCache? {
-        val tagsJson = objectMapper.writeValueAsString(userTags)
+        val tagsJson = objectMapper.writeValueAsString(userTags.toContentOnly())
         return tagRecommendCacheReader.findTodayCache(
             recommendType = tagRecommendType,
             tagsJson = tagsJson,
