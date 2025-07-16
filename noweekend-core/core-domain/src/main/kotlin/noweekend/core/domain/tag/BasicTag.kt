@@ -11,7 +11,7 @@ enum class BasicTag(
     GROCERY_SHOPPING("장 보기 / 마트 가기"),
     FAMILY_GATHERING("가족 모임"),
     HOSPITAL_APPOINTMENT("병원 예약"),
-    CAFE_WORK("카페에서 작업/휴식"),
+    CAFE_WORK("카페에서 작업 / 휴식"),
     FRIEND_MEETING("친구 만남"),
     DRINKING("술자리"),
     STUDY("스터디"),
