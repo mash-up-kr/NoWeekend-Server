@@ -2,6 +2,8 @@ package noweekend.core.api.controller.v1.request
 
 import io.swagger.v3.oas.annotations.media.Schema
 import noweekend.core.domain.tag.BasicTag
+import noweekend.core.support.error.CoreException
+import noweekend.core.support.error.ErrorType
 
 @Schema(description = "자주하는 일정 DTO")
 data class TagRequest(
@@ -22,7 +24,7 @@ data class TagRequest(
                 invalid.add(it)
             }
         }
-        if (invalid.isNotEmpty()) throw IllegalArgumentException("유효하지 않은 태그입니다: $invalid")
+        if (invalid.isNotEmpty()) throw CoreException(ErrorType.INVALID_SCHEDULE_TAG)
         return result
     }
 }
