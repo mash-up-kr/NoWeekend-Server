@@ -3,10 +3,10 @@ package noweekend.client.mcp.recommend
 import feign.FeignException
 import noweekend.client.mcp.recommend.model.SandwichRequest
 import noweekend.client.mcp.recommend.model.SandwichResponse
-import noweekend.client.mcp.recommend.model.TagApiResponses
 import noweekend.client.mcp.recommend.model.TagRequest
-import noweekend.client.mcp.recommend.model.TagResponse
 import noweekend.client.mcp.recommend.model.WeatherRequest
+import noweekend.core.domain.tag.TagRecommendation
+import noweekend.core.domain.tag.TagRecommendations
 import noweekend.core.domain.tag.UserTags
 import noweekend.core.domain.weather.WeatherRecommendation
 import org.slf4j.LoggerFactory
@@ -30,7 +30,7 @@ class RecommendClient(
         }
     }
 
-    fun getRecommend(request: UserTags): TagApiResponses? {
+    fun getRecommend(request: UserTags): TagRecommendations? {
         val response = try {
             api.getTag(TagRequest(request))
         } catch (e: FeignException) {
@@ -46,14 +46,14 @@ class RecommendClient(
             return null
         }
 
-        return TagApiResponses(
-            firstRecommendTag = TagResponse(response[0].content),
-            secondRecommendTag = TagResponse(response[1].content),
-            thirdRecommendTag = TagResponse(response[2].content),
+        return TagRecommendations(
+            firstRecommendTag = TagRecommendation(response[0].content),
+            secondRecommendTag = TagRecommendation(response[1].content),
+            thirdRecommendTag = TagRecommendation(response[2].content),
         )
     }
 
-    fun getOnlyNewRecommend(request: UserTags): TagApiResponses? {
+    fun getOnlyNewRecommend(request: UserTags): TagRecommendations? {
         val response = try {
             api.getTagOnlyNew(TagRequest(request))
         } catch (e: FeignException) {
@@ -69,10 +69,10 @@ class RecommendClient(
             return null
         }
 
-        return TagApiResponses(
-            firstRecommendTag = TagResponse(response[0].content),
-            secondRecommendTag = TagResponse(response[1].content),
-            thirdRecommendTag = TagResponse(response[2].content),
+        return TagRecommendations(
+            firstRecommendTag = TagRecommendation(response[0].content),
+            secondRecommendTag = TagRecommendation(response[1].content),
+            thirdRecommendTag = TagRecommendation(response[2].content),
         )
     }
 
