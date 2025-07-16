@@ -72,12 +72,12 @@ class ChatbotService(
 Here is the user's tag lists in JSON:
 $tagJson
 
-Based on the rules above, provide 3 Korean lifestyle tags in the required JSON format.
+Based on the above rules, return ONLY a valid JSON array of 3 Korean lifestyle activity tags. Do NOT output any other text, explanations, or markdown.
         """.trimIndent()
 
         var lastError: Exception? = null
 
-        repeat(5) { attempt ->
+        repeat(7) { attempt ->
             try {
                 val rawResponse = chatClient.prompt()
                     .system(TAG_SYSTEM_PROMPT)
@@ -95,6 +95,10 @@ Based on the rules above, provide 3 Korean lifestyle tags in the required JSON f
                     .removePrefix("```")
                     .removeSuffix("```")
                     .trim()
+
+                if (cleaned.isBlank() || !cleaned.trim().startsWith("[")) {
+                    throw IllegalStateException("응답이 JSON 배열이 아님: $cleaned")
+                }
 
                 val nodes = objectMapper.readTree(cleaned)
                 if (!nodes.isArray || nodes.size() != 3) {
