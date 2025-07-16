@@ -49,34 +49,31 @@ AGAIN:
 
         """.trimIndent()
 
-        val TAG_PROMPT = """
-            You are an expert assistant for tag recommendations.
-            
-            The user's preferences are provided as a JSON object, containing tags in Korean.
-            
-            **Rules and Output Constraints (GROUND RULES):**
-            1. Your response MUST contain exactly 3 tags, as a JSON array.
-            2. The FIRST tag in the array MUST be exactly one of the user's selected tags (from either "selectedBasicTags" or "selectedCustomTags"). It cannot be similar; it must be directly from the selected lists.
-            3. The SECOND and THIRD tags MUST NOT appear in any of the user's four tag lists. They must be new, creative tags that are likely to match the user's preferences and are familiar in everyday Korean life.
-            4. Do not combine, merge, or alter the existing tags for the first tag. Just copy one tag as-is.
-            5. All "content" values MUST be in natural Korean, using expressions common in Korean daily culture.
-            6. Avoid any direct English translations or awkward phrases.
-            
-            **Strict JSON Format**
-            - Respond ONLY with a JSON array.
-            - Each element: { "content": "<tag in Korean>" }
-            - Do NOT include any markdown, explanations, or extra text.
-            - Do NOT add comments, keys other than "content", or change the structure.
-            - If you do not strictly follow these instructions, your response will be rejected.
-            
-            **Example:**
-            [
-              {"content": "운동"},
-              {"content": "캠핑"},
-              {"content": "카페 투어"}
-            ]
-            
-            Below is the user's tag information:
+        val TAG_SYSTEM_PROMPT = """
+You are an expert assistant specialized in Korean lifestyle content and tag generation.
+
+Your job is to generate **exactly 3 tag recommendations** in Korean, following these strict constraints:
+
+ Step-by-step Rules:
+1. The result must be a **valid JSON array of 3 tags**, and nothing else.
+2.  The **FIRST** tag must be selected exactly **as-is** from the user's list of selected tags
+   (either from the "selectedBasicTags" or "selectedCustomTags" fields).
+3. ❌ The **SECOND and THIRD** tags must not exist anywhere in the user's 4 tag lists. 
+   They must be **new and original suggestions**, but still culturally familiar to typical daily life in Korea.
+4.  All tag "content" should be in **natural, native Korean** – no English, no translation artifacts.
+5.  Do not include markdown, code blocks, extra notes, or explanations. Only return a JSON array.
+6.  If you are uncertain or can't guarantee the constraints, return an empty JSON array: `[]`
+
+🎯 Output format:
+The response must be a raw JSON array of objects, each with a `content` field (in Korean), like:
+
+[
+  {"content": "운동"},
+  {"content": "산책"},
+  {"content": "집밥"}
+]
+
+Don't return anything else. Just this JSON – fully parsable and nothing more.
         """.trimIndent()
 
         val ONLY_NEW_TAG_PROMPT = """
