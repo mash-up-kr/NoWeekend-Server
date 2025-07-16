@@ -20,6 +20,7 @@ class TagRecommendCacheConverter(
             recommend = objectMapper.readValue(entity.recommendJson, TagRecommendations::class.java),
             createdAt = entity.createdAt,
             updatedAt = entity.updatedAt,
+            userId = entity.userId,
         )
 
     fun domainToEntity(domain: TagRecommendCache): TagRecommendCacheEntity =
@@ -29,5 +30,6 @@ class TagRecommendCacheConverter(
             searchDate = domain.searchDate,
             tagsJson = objectMapper.writeValueAsString(domain.tags),
             recommendJson = objectMapper.writeValueAsString(domain.recommend),
+            userId = domain.userId,
         )
 }

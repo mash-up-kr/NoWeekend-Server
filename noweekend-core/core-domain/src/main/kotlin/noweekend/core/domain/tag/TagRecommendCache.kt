@@ -12,6 +12,7 @@ data class TagRecommendCache(
     val recommend: TagRecommendations,
     val createdAt: LocalDateTime?,
     val updatedAt: LocalDateTime?,
+    val userId: String,
 ) {
     companion object {
         fun register(
@@ -19,6 +20,7 @@ data class TagRecommendCache(
             searchDate: LocalDate,
             tags: UserTags,
             recommend: TagRecommendations,
+            userId: String,
         ): TagRecommendCache {
             val now = LocalDateTime.now()
             return TagRecommendCache(
@@ -29,6 +31,7 @@ data class TagRecommendCache(
                 recommend = recommend,
                 createdAt = now,
                 updatedAt = now,
+                userId = userId,
             )
         }
     }
