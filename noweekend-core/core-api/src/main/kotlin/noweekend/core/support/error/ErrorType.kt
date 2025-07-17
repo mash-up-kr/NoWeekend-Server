@@ -20,7 +20,7 @@ enum class ErrorType(
     USER_TAGS_ERROR(HttpStatus.BAD_REQUEST, ErrorCode.E400, "사용자의 태그가 3개 미만입니다. 초기화되지 않았습니다.", LogLevel.WARN),
     MCP_SERVER_TAGS_ERROR(HttpStatus.GATEWAY_TIMEOUT, ErrorCode.E504, "MCP 추천 서버에서 장애가 발생했습니다. 새로운 태그를 추천할 수 없습니다. 잠시 후 시도해주세요.", LogLevel.ERROR),
     MCP_SERVER_WEATHER_ERROR(HttpStatus.GATEWAY_TIMEOUT, ErrorCode.E504, "MCP 추천 서버에서 장애가 발생했습니다. 날씨를 추천할 수 없습니다. 잠시 후 시도해주세요.", LogLevel.ERROR),
-    MCP_SERVER_INTERNAL_ERROR(HttpStatus.GATEWAY_TIMEOUT, ErrorCode.E504, "MCP 추천 서버에서 알 수 없는 장애가 발생했습니다. 잠시 후 시도해주세요.", LogLevel.ERROR),
+    MCP_SERVER_INTERNAL_ERROR(HttpStatus.GATEWAY_TIMEOUT, ErrorCode.E504, "MCP 추천 서버가 추천할 수 있는 상황이 아닙니다. 잠시 후 시도해주세요.", LogLevel.ERROR),
     USER_BIRTH_DAY_NOT_FOUND(HttpStatus.BAD_REQUEST, ErrorCode.E400, "사용자가 생일을 갖고있지 않습니다. 생일 먼저 추가해주세요.", LogLevel.WARN),
     MCP_SERVER_SANDWICH_ERROR(HttpStatus.GATEWAY_TIMEOUT, ErrorCode.E504, "MCP 추천 서버의 응답이 없습니다. 잠시 후 다시 시도해주세요.", LogLevel.ERROR),
     INVALID_LOCATION(HttpStatus.BAD_REQUEST, ErrorCode.E400, "사용자가 한국 위치가 아니기 때문에 날씨를 추천할 수 없습니다.", LogLevel.WARN),

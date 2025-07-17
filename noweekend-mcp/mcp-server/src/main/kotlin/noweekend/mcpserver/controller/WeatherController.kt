@@ -19,8 +19,5 @@ class WeatherController(
             longitude = 126.3131,
         )
         val rawKmaForecast = futureWeatherTool.getRainSnowSummaryByDay(request)
-        for (entry in rawKmaForecast) {
-            println(entry)
-        }
     }
 }
