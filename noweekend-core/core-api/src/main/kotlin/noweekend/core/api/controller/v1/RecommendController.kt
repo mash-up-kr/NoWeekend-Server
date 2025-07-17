@@ -53,11 +53,7 @@ class RecommendController(
     override fun getSandwich(
         @CurrentUserId userId: String,
     ): ApiResponse<SandwichApiResponse> {
-        try {
-            return ApiResponse.success(
-                recommendService.getSandwich(userId),
-            )
-        } catch (_: Exception) {
+//            return ApiResponse.success(recommendService.getSandwich(userId))
             val mockResponse = SandwichApiResponse(
                 responses = listOf(
                     SandwichResponse(
@@ -75,7 +71,6 @@ class RecommendController(
                 ),
             )
             return ApiResponse.success(mockResponse)
-        }
     }
 
     @PostMapping("/generate-vacation")
