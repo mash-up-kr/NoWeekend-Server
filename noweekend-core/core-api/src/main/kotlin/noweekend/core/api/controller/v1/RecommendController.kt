@@ -54,23 +54,23 @@ class RecommendController(
         @CurrentUserId userId: String,
     ): ApiResponse<SandwichApiResponse> {
 //            return ApiResponse.success(recommendService.getSandwich(userId))
-            val mockResponse = SandwichApiResponse(
-                responses = listOf(
-                    SandwichResponse(
-                        startDate = LocalDate.of(2025, 8, 14),
-                        endDate = LocalDate.of(2025, 8, 16),
-                        useAnnualLeave = 1,
-                        totalVacationDays = 3,
-                    ),
-                    SandwichResponse(
-                        startDate = LocalDate.of(2025, 9, 11),
-                        endDate = LocalDate.of(2025, 9, 15),
-                        useAnnualLeave = 2,
-                        totalVacationDays = 5,
-                    ),
+        val mockResponse = SandwichApiResponse(
+            responses = listOf(
+                SandwichResponse(
+                    startDate = LocalDate.of(2025, 8, 14),
+                    endDate = LocalDate.of(2025, 8, 16),
+                    useAnnualLeave = 1,
+                    totalVacationDays = 3,
                 ),
-            )
-            return ApiResponse.success(mockResponse)
+                SandwichResponse(
+                    startDate = LocalDate.of(2025, 9, 11),
+                    endDate = LocalDate.of(2025, 9, 15),
+                    useAnnualLeave = 2,
+                    totalVacationDays = 5,
+                ),
+            ),
+        )
+        return ApiResponse.success(mockResponse)
     }
 
     @PostMapping("/generate-vacation")
