@@ -1,5 +1,6 @@
 package noweekend.core.domain.recommend
 
+import noweekend.client.mcp.McpNotRespondingException
 import noweekend.client.mcp.recommend.RecommendClient
 import noweekend.client.mcp.recommend.model.AiGenerateVacationRequest
 import noweekend.client.mcp.recommend.model.SandwichApiResponse
@@ -217,23 +218,28 @@ class RecommendServiceImpl(
 
         val holidayOrWeekendSet = holidays.toSet() + weekends.toSet()
         val remainingAnnualLeave = findUser.remainingAnnualLeave ?: throw CoreException(ErrorType.INVALID_LOCATION)
-        val bridgePeriods = recommendClient.getSandwich(
-            SandwichRequest(birthDay = birthDate, holidays = holidays, remainingAnnualLeave.toInt(), weekends),
-        )
-        return SandwichApiResponse(
-            bridgePeriods.map { period ->
-                val allDates = generateDateRange(period.startDate, period.endDate)
-                val useAnnualLeaveDates = allDates.filter { date ->
-                    !holidayOrWeekendSet.contains(date) && date.dayOfWeek.value in 1..5
-                }
-                SandwichResponse(
-                    startDate = period.startDate,
-                    endDate = period.endDate,
-                    useAnnualLeave = useAnnualLeaveDates.size,
-                    totalVacationDays = allDates.size,
-                )
-            }.toList(),
-        )
+
+        try {
+            val bridgePeriods = recommendClient.getSandwich(
+                SandwichRequest(birthDay = birthDate, holidays = holidays, remainingAnnualLeave.toInt(), weekends),
+            )
+            return SandwichApiResponse(
+                bridgePeriods.map { period ->
+                    val allDates = generateDateRange(period.startDate, period.endDate)
+                    val useAnnualLeaveDates = allDates.filter { date ->
+                        !holidayOrWeekendSet.contains(date) && date.dayOfWeek.value in 1..5
+                    }
+                    SandwichResponse(
+                        startDate = period.startDate,
+                        endDate = period.endDate,
+                        useAnnualLeave = useAnnualLeaveDates.size,
+                        totalVacationDays = allDates.size,
+                    )
+                }.toList(),
+            )
+        } catch (_: McpNotRespondingException) {
+            throw CoreException(ErrorType.MCP_SERVER_INTERNAL_ERROR)
+        }
     }
 
     fun generateDateRange(start: LocalDate, end: LocalDate): List<LocalDate> {

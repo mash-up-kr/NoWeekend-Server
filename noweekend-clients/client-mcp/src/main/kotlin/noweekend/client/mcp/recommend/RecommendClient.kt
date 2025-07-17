@@ -1,6 +1,7 @@
 package noweekend.client.mcp.recommend
 
 import feign.FeignException
+import noweekend.client.mcp.McpNotRespondingException
 import noweekend.client.mcp.recommend.model.AiGenerateVacationRequest
 import noweekend.client.mcp.recommend.model.AiGenerateVacationResponse
 import noweekend.client.mcp.recommend.model.BridgeVacationPeriod
@@ -86,10 +87,10 @@ class RecommendClient(
             api.getSandwich(request)
         } catch (e: FeignException) {
             log.warn("[getSandwich] FeignException, empty 반환. msg=${e.message}")
-            return null
+            throw McpNotRespondingException()
         } catch (e: Exception) {
             log.error("[getSandwich] 예기치 못한 예외, empty 반환.", e)
-            return null
+            throw McpNotRespondingException()
         }
     }
 
