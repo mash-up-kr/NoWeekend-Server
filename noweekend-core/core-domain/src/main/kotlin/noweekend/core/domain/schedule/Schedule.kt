@@ -13,7 +13,7 @@ data class Schedule(
     val endTime: LocalDateTime,
     val category: ScheduleCategory,
     val temperature: Int,
-    val allDay: Boolean,
+    val allDay: Boolean = false,
     val alarmOption: AlarmOption,
     val completed: Boolean,
     val createdAt: LocalDateTime?,
@@ -39,6 +39,30 @@ data class Schedule(
                 category = category,
                 temperature = temperature,
                 allDay = allDay,
+                alarmOption = alarmOption,
+                completed = false,
+                createdAt = null,
+                updatedAt = null,
+            )
+        }
+
+        fun newScheduleV2(
+            userId: String,
+            title: String,
+            startTime: LocalDateTime,
+            endTime: LocalDateTime,
+            category: ScheduleCategory,
+            temperature: Int,
+            alarmOption: AlarmOption,
+        ): Schedule {
+            return Schedule(
+                id = IdGenerator.generate(),
+                userId = userId,
+                title = title,
+                startTime = startTime,
+                endTime = endTime,
+                category = category,
+                temperature = temperature,
                 alarmOption = alarmOption,
                 completed = false,
                 createdAt = null,

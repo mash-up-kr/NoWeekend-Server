@@ -4,6 +4,8 @@ import noweekend.core.api.controller.v1.request.ScheduleCreateRequest
 import noweekend.core.api.controller.v1.request.ScheduleUpdateRequest
 import noweekend.core.api.controller.v1.response.DailyScheduleResponse
 import noweekend.core.api.controller.v1.response.ScheduleResponse
+import noweekend.core.api.controller.v2.request.ScheduleCreateRequestV2
+import noweekend.core.api.controller.v2.request.ScheduleUpdateRequestV2
 import noweekend.core.domain.schedule.Schedule
 import noweekend.core.domain.schedule.ScheduleReader
 import noweekend.core.domain.schedule.ScheduleWriter
@@ -25,10 +27,21 @@ interface ScheduleApplicationService {
         request: ScheduleCreateRequest,
     ): ScheduleResponse
 
+    fun createScheduleV2(
+        userId: String,
+        request: ScheduleCreateRequestV2,
+    ): ScheduleResponse
+
     fun updateSchedule(
         userId: String,
         scheduleId: String,
         request: ScheduleUpdateRequest,
+    ): ScheduleResponse
+
+    fun updateScheduleV2(
+        userId: String,
+        scheduleId: String,
+        request: ScheduleUpdateRequestV2,
     ): ScheduleResponse
 
     fun updateScheduleState(
@@ -108,6 +121,28 @@ class ScheduleApplicationServiceImpl(
         return savedSchedule.toResponse()
     }
 
+    override fun createScheduleV2(
+        userId: String,
+        request: ScheduleCreateRequestV2,
+    ): ScheduleResponse {
+        if (request.startDateTime > request.endDateTime) {
+            throw CoreException(ErrorType.INVALID_PARAMETER, "startDateTime must greater than endDateTime")
+        }
+
+        val schedule = Schedule.newScheduleV2(
+            userId = userId,
+            title = request.title,
+            startTime = request.startDateTime,
+            endTime = request.startDateTime,
+            category = request.category,
+            temperature = request.temperature,
+            alarmOption = request.alarmOption,
+        )
+
+        val savedSchedule = scheduleWriter.save(schedule)
+        return savedSchedule.toResponse()
+    }
+
     override fun updateSchedule(
         userId: String,
         scheduleId: String,
@@ -140,6 +175,35 @@ class ScheduleApplicationServiceImpl(
             category = request.category,
             temperature = request.temperature,
             allDay = request.allDay,
+            alarmOption = request.alarmOption,
+        )
+
+        val savedSchedule = scheduleWriter.update(updatedSchedule)
+        return savedSchedule.toResponse()
+    }
+
+    override fun updateScheduleV2(
+        userId: String,
+        scheduleId: String,
+        request: ScheduleUpdateRequestV2,
+    ): ScheduleResponse {
+        val existingSchedule = scheduleReader.findScheduleById(scheduleId)
+            ?: throw CoreException(ErrorType.NOT_FOUND_ERROR, "Schedule not found: $scheduleId")
+
+        if (existingSchedule.userId != userId) {
+            throw CoreException(ErrorType.FORBIDDEN_ERROR, "You don't have permission to update this schedule")
+        }
+
+        if (request.startDateTime > request.endDateTime) {
+            throw CoreException(ErrorType.INVALID_PARAMETER, "startDateTime must greater than endDateTime")
+        }
+
+        val updatedSchedule = existingSchedule.copy(
+            title = request.title,
+            startTime = request.startDateTime,
+            endTime = request.endDateTime,
+            category = request.category,
+            temperature = request.temperature,
             alarmOption = request.alarmOption,
         )
 
