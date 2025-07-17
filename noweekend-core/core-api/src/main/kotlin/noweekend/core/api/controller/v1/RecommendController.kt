@@ -73,10 +73,17 @@ class RecommendController(
         return ApiResponse.success(mockResponse)
     }
 
-    @PostMapping("/generate-vacation")
+    @PostMapping("/vacation")
     override fun generateVacation(
         @CurrentUserId userId: String,
         @RequestBody request: GenerateVacationRequest,
+    ): ApiResponse<String> {
+        return ApiResponse.success("휴가 생성 요청이 완료되었습니다.")
+    }
+
+    @GetMapping("/vacation")
+    override fun getVacation(
+        @CurrentUserId userId: String,
     ): ApiResponse<AiGenerateVacationApiResponse> {
         return ApiResponse.success(
             AiGenerateVacationApiResponse(

@@ -14,6 +14,7 @@ import noweekend.core.api.security.annotations.CurrentUserId
 import noweekend.core.domain.tag.TagRecommendations
 import noweekend.core.support.response.ApiResponse
 import org.springframework.web.bind.annotation.RequestBody
+import io.swagger.v3.oas.annotations.parameters.RequestBody as SwaggerRequestBody
 import io.swagger.v3.oas.annotations.responses.ApiResponse as SwaggerApiResponse
 
 @Tag(
@@ -325,27 +326,77 @@ interface RecommendControllerDocs {
     ): ApiResponse<SandwichApiResponse>
 
     @Operation(
-        summary = "AI 기반 여행 일정 생성",
-        description = "샌드위치 날짜를 계산 후, chunk 단위로 AI 호출하여 여행 일정을 생성합니다.",
+        summary = "사용자 맞춤 휴가 생성 요청",
+        description = """
+            사용자가 원하는 연차 일수, 여행 스타일, 활동/휴식 유형, 관심사를 입력하면 
+            AI 기반으로 맞춤형 휴가 플랜 생성을 요청합니다.
+            (입력 값이 유효하지 않거나, 추천 불가 시 에러 반환)
+        """,
+        requestBody = SwaggerRequestBody(
+            required = true,
+            content = [
+                Content(
+                    mediaType = "application/json",
+                    schema = Schema(implementation = GenerateVacationRequest::class),
+                    examples = [
+                        ExampleObject(
+                            name = "예시 요청",
+                            value = """
+{
+  "days": 5,
+  "travelStyle": "PLANNER",
+  "activityType": "OUTDOOR",
+  "restPreference": "REST",
+  "leisurePreference": "TOURISM"
+}
+""",
+                        ),
+                    ],
+                ),
+            ],
+        ),
         responses = [
             SwaggerApiResponse(
                 responseCode = "200",
-                description = "일정 생성 성공",
+                description = "휴가 생성 요청 성공",
                 content = [
                     Content(
                         mediaType = "application/json",
-                        schema = Schema(implementation = AiGenerateVacationApiResponse::class),
+                        schema = Schema(implementation = ApiResponse::class),
                         examples = [
                             ExampleObject(
-                                name = "생일 정보 없음 에러 예시",
+                                name = "예시 응답",
                                 value = """
 {
   "result": "SUCCESS",
-  "data": {
-    "title": "바다산책 여행",
-    "content": "• Day 1 ...\n• Day 2 ...\n"
-  },
+  "data": "휴가 생성 요청이 완료되었습니다.",
   "error": null
+}
+""",
+                            ),
+                        ],
+                    ),
+                ],
+            ),
+            SwaggerApiResponse(
+                responseCode = "400",
+                description = "잘못된 요청 (필수 파라미터 누락, 범위 초과 등)",
+                content = [
+                    Content(
+                        mediaType = "application/json",
+                        schema = Schema(implementation = ApiResponse::class),
+                        examples = [
+                            ExampleObject(
+                                name = "파라미터 누락/에러 예시",
+                                value = """
+{
+  "result": "ERROR",
+  "data": null,
+  "error": {
+    "code": "INVALID_PARAMETER",
+    "message": "사용할 연차 일수는 필수입니다.",
+    "data": {}
+  }
 }
 """,
                             ),
@@ -358,5 +409,70 @@ interface RecommendControllerDocs {
     fun generateVacation(
         @Parameter(hidden = true) @CurrentUserId userId: String,
         @RequestBody request: GenerateVacationRequest,
+    ): ApiResponse<String>
+
+    @Operation(
+        summary = "생성된 맞춤 휴가 플랜 조회",
+        description = """
+            사용자가 요청한 맞춤 휴가 플랜(AI 기반 추천 휴가 일차별 상세 일정, 아이콘 포함)을 조회합니다.
+            (생성된 휴가 플랜이 없거나, 조회 불가 시 에러 반환)
+        """,
+        responses = [
+            SwaggerApiResponse(
+                responseCode = "200",
+                description = "휴가 플랜 상세 조회 성공",
+                content = [
+                    Content(
+                        mediaType = "application/json",
+                        schema = Schema(implementation = ApiResponse::class),
+                        examples = [
+                            ExampleObject(
+                                name = "예시 응답",
+                                value = """
+{
+  "result": "SUCCESS",
+  "data": {
+    "title": "5일간의 맞춤 휴가 일정 예시",
+    "content": "• Day 1 (07/07 월) ...\n",
+    "iconStyle": "STAR"
+  },
+  "error": null
+}
+""",
+                            ),
+                        ],
+                    ),
+                ],
+            ),
+            SwaggerApiResponse(
+                responseCode = "404",
+                description = "휴가 플랜이 존재하지 않음",
+                content = [
+                    Content(
+                        mediaType = "application/json",
+                        schema = Schema(implementation = ApiResponse::class),
+                        examples = [
+                            ExampleObject(
+                                name = "미생성/미존재 에러 예시",
+                                value = """
+{
+  "result": "ERROR",
+  "data": null,
+  "error": {
+    "code": "NOT_FOUND",
+    "message": "생성된 휴가 플랜이 없습니다. 먼저 휴가를 생성해 주세요.",
+    "data": {}
+  }
+}
+""",
+                            ),
+                        ],
+                    ),
+                ],
+            ),
+        ],
+    )
+    fun getVacation(
+        @Parameter(hidden = true) @CurrentUserId userId: String,
     ): ApiResponse<AiGenerateVacationApiResponse>
 }
