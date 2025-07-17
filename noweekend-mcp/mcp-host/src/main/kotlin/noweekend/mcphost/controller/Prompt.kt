@@ -11,7 +11,7 @@ import java.util.Locale
 class Prompt(
     private val objectMapper: ObjectMapper,
 ) {
-    val WEATHER_PROMPT = """
+    val weatherPrompt = """
 You MUST call the TOOL to get the weather data.
 DO NOT generate, guess, or hallucinate weather data yourself.
 ALWAYS use the TOOL OUTPUT ONLY to create your answer.
@@ -56,9 +56,9 @@ AGAIN:
 - Only output dates where you can recommend "연차" or "반차" according to the rules above.
 - Never output a recommendation like "연차 쓰지 마세요" or "휴가를 추천하지 않습니다".
 
-        """.trimIndent()
+    """.trimIndent()
 
-        val TAG_SYSTEM_PROMPT = """
+    val tagSystemPrompt = """
 You are an assistant specialized in Korean lifestyle and activity tag recommendations for daily schedules.
 
 Your ONLY allowed output is a valid JSON array of 3 tag objects as shown below. If you output anything else, your answer is invalid.
@@ -86,9 +86,9 @@ Output example:
 ]
 
 Return ONLY this JSON array. Never add any other text, explanation, or formatting.
-        """.trimIndent()
+    """.trimIndent()
 
-    val ONLY_NEW_TAG_PROMPT = """
+    val onlyNewTagSystemPrompt = """
             You are an expert assistant for tag recommendations.
             
             Below is a JSON object representing the user's tag lists, all in Korean.
@@ -116,7 +116,7 @@ Return ONLY this JSON array. Never add any other text, explanation, or formattin
             ]
             
             Here is the user's tag information in JSON:
-        """.trimIndent()
+    """.trimIndent()
 
     /**
      * 1단계: 생일·공휴일·주말·연차를 조합해 최대 연속 휴가 날짜(dates)를 계산
@@ -143,7 +143,7 @@ RULES:
 
 OUTPUT:
 {"dates":["YYYY-MM-DD", ...]}
-""".trimIndent()
+        """.trimIndent()
     }
 
     fun detailedPlanPrompt(
@@ -151,7 +151,7 @@ OUTPUT:
         dates: List<String>,
         offset: Int,
         totalDays: Int,
-        prevUsed: List<String>
+        prevUsed: List<String>,
     ): String {
         val headers = dates.mapIndexed { i, d ->
             val num = offset + i + 1
@@ -160,9 +160,11 @@ OUTPUT:
             "• Day $num ($label)"
         }.joinToString("\n")
 
-        val usedClause = if (prevUsed.isNotEmpty())
+        val usedClause = if (prevUsed.isNotEmpty()) {
             "Recently used items: ${prevUsed.joinToString(", ")}.\nDo NOT reuse in this block.\n\n"
-        else ""
+        } else {
+            ""
+        }
 
         // profile JSON with Korean tags
         val profileJson = objectMapper.writeValueAsString(
@@ -172,8 +174,8 @@ OUTPUT:
                 "restPreference" to req.chosenRestPreferenceLabel,
                 "leisurePreference" to req.chosenLeisurePreferenceLabel,
                 "preferredTags" to req.selectedTags,
-                "excludedTags" to req.unselectedTags
-            )
+                "excludedTags" to req.unselectedTags,
+            ),
         )
 
         return """
@@ -216,6 +218,6 @@ HEADERS:
 $headers
 
 Now generate the itinerary.
-""".trimIndent()
+        """.trimIndent()
     }
 }

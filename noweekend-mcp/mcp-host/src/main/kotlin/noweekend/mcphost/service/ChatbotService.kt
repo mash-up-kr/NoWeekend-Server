@@ -4,11 +4,11 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import noweekend.mcphost.controller.Prompt
-import noweekend.mcphost.controller.request.Tag
-import noweekend.mcphost.controller.request.TagRequest
 import noweekend.mcphost.controller.request.AiGenerateVacationRequest
 import noweekend.mcphost.controller.request.AiGenerateVacationResponse
 import noweekend.mcphost.controller.request.SandwichRequest
+import noweekend.mcphost.controller.request.Tag
+import noweekend.mcphost.controller.request.TagRequest
 import noweekend.mcphost.controller.request.WeatherRequest
 import noweekend.mcphost.controller.response.BridgeVacationPeriod
 import noweekend.mcphost.controller.response.WeatherResponse
@@ -46,7 +46,7 @@ class ChatbotService(
         for (attempt in 0 until maxRetries) {
             try {
                 val jsonString = chatClient.prompt()
-                    .system(prompt.WEATHER_PROMPT)
+                    .system(prompt.weatherPrompt)
                     .user(userMsg)
                     .call()
                     .content()
@@ -81,7 +81,7 @@ Based on the above rules, return ONLY a valid JSON array of 3 Korean lifestyle a
         repeat(7) { attempt ->
             try {
                 val rawResponse = chatClient.prompt()
-                    .system(prompt.TAG_SYSTEM_PROMPT)
+                    .system(prompt.tagSystemPrompt)
                     .user(userPrompt)
                     .call()
                     .content()
@@ -124,7 +124,7 @@ Based on the above rules, return ONLY a valid JSON array of 3 Korean lifestyle a
 
         repeat(5) { attempt ->
             val jsonString = chatClient.prompt()
-                .system(prompt.ONLY_NEW_TAG_PROMPT)
+                .system(prompt.onlyNewTagSystemPrompt)
                 .user(userMsg)
                 .call()
                 .content()
@@ -134,9 +134,9 @@ Based on the above rules, return ONLY a valid JSON array of 3 Korean lifestyle a
                 if (jsonString != null) {
                     val tags: List<Tag> = objectMapper.readValue(jsonString)
                     val allOldTags = (
-                            request.userTag.selectedBasicTags + request.userTag.unselectedBasicTags +
-                                    request.userTag.selectedCustomTags + request.userTag.unselectedCustomTags
-                            ).map { it.content }.toSet()
+                        request.userTag.selectedBasicTags + request.userTag.unselectedBasicTags +
+                            request.userTag.selectedCustomTags + request.userTag.unselectedCustomTags
+                        ).map { it.content }.toSet()
                     require(tags.all { it.content !in allOldTags }) { "추천 결과에 기존 태그가 포함됨" }
                     return tags
                 }
@@ -191,7 +191,6 @@ Based on the above rules, return ONLY a valid JSON array of 3 Korean lifestyle a
                     usedItems += extractUsedItems(content)
                     chunkCache[idx] = content
                     return@mapIndexed content
-
                 } catch (e: NonTransientAiException) {
                     val cause = e.cause
                     val status = (cause as? RestClientResponseException)?.statusCode?.value()
@@ -210,8 +209,6 @@ Based on the above rules, return ONLY a valid JSON array of 3 Korean lifestyle a
                     throw e
                 }
             }
-
-
         }
 
         val planRaw = itineraryChunks.joinToString("\n\n")
@@ -221,7 +218,7 @@ Based on the above rules, return ONLY a valid JSON array of 3 Korean lifestyle a
                 """
             You are an expert at creating concise and catchy Korean titles for vacation plans.
             Summarize core concept in 15 characters max, Korean only.
-        """.trimIndent(),
+                """.trimIndent(),
             )
             .user(
                 """
@@ -229,14 +226,13 @@ Based on the above rules, return ONLY a valid JSON array of 3 Korean lifestyle a
             $planRaw
 
             핵심 키워드 중심으로 15자 이내 제목 하나 만들어 주세요.
-        """.trimIndent(),
+                """.trimIndent(),
             )
             .call()
             .content() ?: error("제목 요약 실패")
 
         return AiGenerateVacationResponse(title = summary, content = planRaw)
     }
-
 
     private fun minimalProfileMap(req: AiGenerateVacationRequest) = mapOf(
         "days" to req.days,
@@ -306,7 +302,7 @@ EXAMPLE (must follow this format exactly):
 ]
 
 ***Return ONLY a JSON array as above. No explanation, markdown, or extra text.***
-""".trimIndent()
+        """.trimIndent()
 
         val objectMapper = jacksonObjectMapper().findAndRegisterModules()
 

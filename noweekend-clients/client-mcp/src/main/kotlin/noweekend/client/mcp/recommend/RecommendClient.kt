@@ -86,10 +86,10 @@ class RecommendClient(
         return try {
             api.getSandwich(request)
         } catch (e: FeignException) {
-            log.warn("[getSandwich] FeignException, empty 반환. msg=${e.message}")
+            log.warn("[getSandwich] FeignException occurred. msg=${e.message}")
             throw McpNotRespondingException()
         } catch (e: Exception) {
-            log.error("[getSandwich] 예기치 못한 예외, empty 반환.", e)
+            log.error("[getSandwich] Unexpected exception occurred.", e)
             throw McpNotRespondingException()
         }
     }

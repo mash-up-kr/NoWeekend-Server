@@ -9,4 +9,3 @@ class McpHostApplication
 fun main(args: Array<String>) {
     runApplication<McpHostApplication>(*args)
 }
-
