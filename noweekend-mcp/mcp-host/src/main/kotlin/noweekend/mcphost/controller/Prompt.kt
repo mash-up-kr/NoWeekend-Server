@@ -1,4 +1,4 @@
-package noweekend.mcphost.service
+package noweekend.mcphost.controller
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import noweekend.mcphost.controller.request.AiGenerateVacationRequest

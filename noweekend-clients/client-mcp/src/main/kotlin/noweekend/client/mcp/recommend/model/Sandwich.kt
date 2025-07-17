@@ -9,16 +9,18 @@ data class SandwichRequest(
     val weekends: List<LocalDate>,
 )
 
+data class BridgeVacationPeriod(
+    val startDate: LocalDate,
+    val endDate: LocalDate,
+)
+
 data class SandwichResponse(
     val startDate: LocalDate,
     val endDate: LocalDate,
-    val totalDays: Int,
-    val usedAnnualLeaveDates: List<LocalDate>,
+    val useAnnualLeave: Int,
+    val totalVacationDays: Int,
 )
 
-data class SandwichResult(
-    val useAnnualLeave4: List<SandwichResponse> = emptyList(),
-    val useAnnualLeave3: List<SandwichResponse> = emptyList(),
-    val useAnnualLeave2: List<SandwichResponse> = emptyList(),
-    val useAnnualLeave1: List<SandwichResponse> = emptyList(),
+data class SandwichApiResponse(
+    val responses: List<SandwichResponse>,
 )

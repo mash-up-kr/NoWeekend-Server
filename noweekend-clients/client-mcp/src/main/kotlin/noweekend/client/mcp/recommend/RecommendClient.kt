@@ -3,8 +3,8 @@ package noweekend.client.mcp.recommend
 import feign.FeignException
 import noweekend.client.mcp.recommend.model.AiGenerateVacationRequest
 import noweekend.client.mcp.recommend.model.AiGenerateVacationResponse
+import noweekend.client.mcp.recommend.model.BridgeVacationPeriod
 import noweekend.client.mcp.recommend.model.SandwichRequest
-import noweekend.client.mcp.recommend.model.SandwichResult
 import noweekend.client.mcp.recommend.model.TagRequest
 import noweekend.client.mcp.recommend.model.WeatherRequest
 import noweekend.client.mcp.recommend.model.toRequestType
@@ -81,7 +81,7 @@ class RecommendClient(
         )
     }
 
-    fun getSandwich(request: SandwichRequest): SandwichResult? {
+    fun getSandwich(request: SandwichRequest): List<BridgeVacationPeriod> {
         return try {
             api.getSandwich(request)
         } catch (e: FeignException) {

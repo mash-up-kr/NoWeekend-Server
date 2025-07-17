@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.media.Content
 import io.swagger.v3.oas.annotations.media.ExampleObject
 import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.tags.Tag
+import noweekend.client.mcp.recommend.model.SandwichApiResponse
 import noweekend.core.api.controller.v1.request.GenerateVacationRequest
 import noweekend.core.api.controller.v1.response.AiGenerateVacationApiResponse
 import noweekend.core.api.controller.v1.response.WeatherResponse
@@ -248,15 +249,15 @@ interface RecommendControllerDocs {
     ): ApiResponse<TagRecommendations>
 
     @Operation(
-        summary = "샌드위치 연휴 추천",
+        summary = "유저의 남은 연차와 올해 남은 공휴일/주말로 샌드위치 휴가(bridge vacation) 추천",
         description = """
-        사용자 생일 및 공휴일 정보를 기반으로  
-        샌드위치 연차(연휴 시작일·종료일) 기간을 추천합니다.
+    유저의 남은 연차, 올해 남은 공휴일/주말을 바탕으로, 연속으로 쉴 수 있는 휴가(샌드위치 휴가) 구간을 추천합니다.
+    각 휴가 구간별 실제 사용 연차 일수와 전체 휴가 일수도 반환됩니다.
     """,
         responses = [
             SwaggerApiResponse(
                 responseCode = "200",
-                description = "샌드위치 연차 기간 반환 성공",
+                description = "샌드위치 휴가 추천 성공",
                 content = [
                     Content(
                         mediaType = "application/json",
@@ -268,8 +269,20 @@ interface RecommendControllerDocs {
 {
   "result": "SUCCESS",
   "data": {
-    "startDate": "2025-07-14",
-    "endDate": "2025-07-16"
+    "responses": [
+      {
+        "startDate": "2025-10-02",
+        "endDate": "2025-10-09",
+        "useAnnualLeave": 1,
+        "totalVacationDays": 8
+      },
+      {
+        "startDate": "2025-12-24",
+        "endDate": "2025-12-28",
+        "useAnnualLeave": 1,
+        "totalVacationDays": 5
+      }
+    ]
   },
   "error": null
 }
@@ -288,66 +301,14 @@ interface RecommendControllerDocs {
                         schema = Schema(implementation = ApiResponse::class),
                         examples = [
                             ExampleObject(
-                                name = "잘못된 요청 예시",
+                                name = "에러 예시",
                                 value = """
 {
   "result": "ERROR",
   "data": null,
   "error": {
     "code": "INVALID_PARAMETER",
-    "message": "잘못된 요청입니다.",
-    "data": {}
-  }
-}
-""",
-                            ),
-                        ],
-                    ),
-                ],
-            ),
-            SwaggerApiResponse(
-                responseCode = "400",
-                description = "생일 정보 없음",
-                content = [
-                    Content(
-                        mediaType = "application/json",
-                        schema = Schema(implementation = ApiResponse::class),
-                        examples = [
-                            ExampleObject(
-                                name = "생일 정보 없음 에러 예시",
-                                value = """
-{
-  "result": "ERROR",
-  "data": null,
-  "error": {
-    "code": "USER_BIRTH_DAY_NOT_FOUND",
-    "message": "사용자가 생일을 갖고있지 않습니다. 생일 먼저 추가해주세요.",
-    "data": {}
-  }
-}
-""",
-                            ),
-                        ],
-                    ),
-                ],
-            ),
-            SwaggerApiResponse(
-                responseCode = "504",
-                description = "MCP 추천 서버 무응답",
-                content = [
-                    Content(
-                        mediaType = "application/json",
-                        schema = Schema(implementation = ApiResponse::class),
-                        examples = [
-                            ExampleObject(
-                                name = "MCP 서버 타임아웃 에러 예시",
-                                value = """
-{
-  "result": "ERROR",
-  "data": null,
-  "error": {
-    "code": "MCP_SERVER_SANDWICH_ERROR",
-    "message": "MCP 추천 서버의 응답이 없습니다. 잠시 후 다시 시도해주세요.",
+    "message": "사용자 정보를 찾을 수 없습니다.",
     "data": {}
   }
 }
@@ -361,7 +322,7 @@ interface RecommendControllerDocs {
     )
     fun getSandwich(
         @Parameter(hidden = true) @CurrentUserId userId: String,
-    )
+    ): ApiResponse<SandwichApiResponse>
 
     @Operation(
         summary = "AI 기반 여행 일정 생성",

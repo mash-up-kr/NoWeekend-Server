@@ -3,15 +3,14 @@ package noweekend.mcphost.service
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
-import dev.langchain4j.data.message.SystemMessage
-import dev.langchain4j.data.message.UserMessage
+import noweekend.mcphost.controller.Prompt
+import noweekend.mcphost.controller.request.Tag
+import noweekend.mcphost.controller.request.TagRequest
 import noweekend.mcphost.controller.request.AiGenerateVacationRequest
 import noweekend.mcphost.controller.request.AiGenerateVacationResponse
 import noweekend.mcphost.controller.request.SandwichRequest
-import noweekend.mcphost.controller.request.Tag
-import noweekend.mcphost.controller.request.TagRequest
 import noweekend.mcphost.controller.request.WeatherRequest
-import noweekend.mcphost.controller.response.SandwichResult
+import noweekend.mcphost.controller.response.BridgeVacationPeriod
 import noweekend.mcphost.controller.response.WeatherResponse
 import org.slf4j.LoggerFactory
 import org.springframework.ai.chat.client.ChatClient
@@ -135,9 +134,9 @@ Based on the above rules, return ONLY a valid JSON array of 3 Korean lifestyle a
                 if (jsonString != null) {
                     val tags: List<Tag> = objectMapper.readValue(jsonString)
                     val allOldTags = (
-                        request.userTag.selectedBasicTags + request.userTag.unselectedBasicTags +
-                            request.userTag.selectedCustomTags + request.userTag.unselectedCustomTags
-                        ).map { it.content }.toSet()
+                            request.userTag.selectedBasicTags + request.userTag.unselectedBasicTags +
+                                    request.userTag.selectedCustomTags + request.userTag.unselectedCustomTags
+                            ).map { it.content }.toSet()
                     require(tags.all { it.content !in allOldTags }) { "추천 결과에 기존 태그가 포함됨" }
                     return tags
                 }
@@ -273,109 +272,75 @@ Based on the above rules, return ONLY a valid JSON array of 3 Korean lifestyle a
         return raw.substring(start, end + 1)
     }
 
-    fun getSandwich(request: SandwichRequest): SandwichResult {
+    fun getSandwich(request: SandwichRequest): List<BridgeVacationPeriod> {
         request.holidays.forEach { holiday -> println(holiday) }
         request.weekends.forEach { weekend -> println(weekend) }
 
-
-        var remainingAnnualLeaveDays: Int = request.remainingAnnualLeave
-        if (remainingAnnualLeaveDays > 4) {
-            remainingAnnualLeaveDays = 4
-        }
         val systemPrompt = """
-Given the following input data:
-- All remaining public holidays this year: [${request.holidays.joinToString(", ") { it.toString() }}]
-- All remaining weekends this year: [${request.weekends.joinToString(", ") { it.toString() }}]
-- Your birthday: ${request.birthDay}
-- The number of annual leave days you can use: ${remainingAnnualLeaveDays}
+Given the input data below, find all possible "bridge vacation" periods for the rest of the year.
 
-**Rules:**
-1. Output MUST be a single, valid JSON object. ABSOLUTELY NO natural language, explanation, markdown, or code block (no backticks, no text before or after the JSON).
-2. Object keys MUST be: "useAnnualLeaveN" (N = 4, 3, ..., 1), ONLY for N that results in a vacation longer than 2 days.
-3. Each value is an array of vacation objects for that leave count, each with:
-   - "startDate": LocalDate (yyyy-MM-dd)
-   - "endDate": LocalDate (yyyy-MM-dd)
-   - "totalDays": Int (number of consecutive days off)
-   - "usedAnnualLeaveDates": Array of LocalDate (yyyy-MM-dd) — **this MUST be a list of only NORMAL weekdays (not holidays or weekends) when annual leave is actually used**.
-4. **CRITICAL**: Every date in "usedAnnualLeaveDates" MUST NOT be:
-   - a public holiday (see input list above)
-   - a weekend (see input list above)
-   - If any "usedAnnualLeaveDates" entry matches a holiday or weekend, the result is INVALID. Repeat: **No annual leave on holidays or weekends, ever.**
-5. "usedAnnualLeaveDates" array length MUST be exactly N (the leave count in the key). Only include dates that are eligible for annual leave (weekdays, not in holidays or weekends).
-6. DO NOT include duplicate or overlapping vacation periods across any array.
-7. DO NOT include keys for N where no vacation longer than 2 days is possible.
-8. Output must be JSON only. No text, no explanation, no markdown.
+INPUT:
+- Public holidays: [${request.holidays.joinToString(", ")}]
+- Weekends: [${request.weekends.joinToString(", ")}]
 
-**Output example (ONLY THIS FORMAT, NO OTHERS):**
-{
-  "useAnnualLeave4": [
-    {
-      "startDate": "2025-10-01",
-      "endDate": "2025-10-13",
-      "totalDays": 13,
-      "usedAnnualLeaveDates": ["2025-10-01", "2025-10-02", "2025-10-10", "2025-10-13"]
-      // Each date above is a weekday, not a holiday or weekend
-    }
-  ],
-  "useAnnualLeave3": [
-    {
-      "startDate": "2025-10-02",
-      "endDate": "2025-10-13",
-      "totalDays": 12,
-      "usedAnnualLeaveDates": ["2025-10-02", "2025-10-10", "2025-10-13"]
-    }
-  ]
-}
+RULES:
+1. A "bridge vacation" is a period that connects public holidays and weekends, allowing for up to 1 or 2 weekdays ("gaps") between them, if those weekdays can be replaced with annual leave.
+2. If more than 2 consecutive weekdays (gaps) occur, **end the current vacation block before these weekdays begin**, and start a new block from the next holiday or weekend.
+3. If after using up the allowed gaps (1 or 2 consecutive weekdays), another holiday or weekend immediately follows, **continue the same block**.
+4. If there are 3 or more consecutive weekdays (not holidays or weekends), **break the block** and start a new vacation block after the next holiday/weekend.
+5. For each bridge vacation block, output ONLY:
+   - "startDate": yyyy-MM-dd (first date of the period)
+   - "endDate": yyyy-MM-dd (last date of the period)
+6. Only output blocks that are at least 3 days long (inclusive).
+7. DO NOT return overlapping or duplicate blocks.
+8. Output MUST be a valid JSON array of objects, each with "startDate" and "endDate". 
+   - No totalDays, no extra fields.
+   - NO markdown, code block, explanation, or any other text—**JSON array ONLY**.
+9. If the output includes anything other than the JSON array, it is INVALID.
 
-**REPEAT: Return ONLY the JSON object above. NEVER include any explanation, markdown, or non-JSON text. If any annual leave is placed on a holiday or weekend, the output is INVALID.**
+EXAMPLE (must follow this format exactly):
+
+[
+  { "startDate": "2025-10-02", "endDate": "2025-10-09" },
+  { "startDate": "2025-12-24", "endDate": "2025-12-28" }
+]
+
+***Return ONLY a JSON array as above. No explanation, markdown, or extra text.***
 """.trimIndent()
-
-
 
         val objectMapper = jacksonObjectMapper().findAndRegisterModules()
 
-        val sandwichResult: SandwichResult = retryJsonParse(
-            times = 10,
-            block = {
-                chatClient.prompt()
+        var lastException: Throwable? = null
+        repeat(10) { attempt ->
+            try {
+                val rawResponse = chatClient.prompt()
                     .system(systemPrompt)
                     .user("It's Order")
                     .call()
                     .content() ?: throw IllegalStateException("No response from MCP host")
-            },
-            parse = { fixedContent -> objectMapper.readValue(fixedContent, SandwichResult::class.java) }
-        )
 
-        sandwichResult.useAnnualLeave4.forEach { println(it) }
-        sandwichResult.useAnnualLeave3.forEach { println(it) }
-        sandwichResult.useAnnualLeave2.forEach { println(it) }
-        sandwichResult.useAnnualLeave1.forEach { println(it) }
+                println("rawResponse = $rawResponse")
 
-        return sandwichResult
-    }
+                var cleaned = rawResponse.trim()
+                if (cleaned.startsWith("```json")) cleaned = cleaned.removePrefix("```json").trim()
+                if (cleaned.startsWith("```")) cleaned = cleaned.removePrefix("```").trim()
+                if (cleaned.endsWith("```")) cleaned = cleaned.removeSuffix("```").trim()
 
-}
+                val arrStart = cleaned.indexOfFirst { it == '[' }
+                val arrEnd = cleaned.lastIndexOf(']')
+                if (arrStart != -1 && arrEnd != -1 && arrEnd > arrStart) {
+                    cleaned = cleaned.substring(arrStart, arrEnd + 1)
+                }
 
-fun <T> retryJsonParse(times: Int = 3, block: () -> String, parse: (String) -> T): T {
-    var last: Throwable? = null
-    repeat(times) {
-        try {
-            val content = block()
-            // 아래는 JSON만 추출하는 부분(코드 재활용)
-            var fixedContent = content.trim()
-            if (fixedContent.startsWith("```json")) {
-                fixedContent = fixedContent.removePrefix("```json").trim()
+                println("cleaned = $cleaned")
+
+                // 바로 파싱 (실패시 예외 발생)
+                return objectMapper.readValue(cleaned)
+            } catch (e: Throwable) {
+                lastException = e
+                println("getSandwich retry ${attempt + 1}/5: ${e.message}")
             }
-            if (fixedContent.startsWith("```")) {
-                fixedContent = fixedContent.removePrefix("```").trim()
-            }
-            if (fixedContent.endsWith("```")) {
-                fixedContent = fixedContent.removeSuffix("```").trim()
-            }
-            return parse(fixedContent)
-        } catch (e: Throwable) {
-            last = e
         }
+        throw IllegalStateException("Failed to get valid bridge vacation periods after 5 attempts", lastException)
     }
-    throw last ?: IllegalStateException("Unknown error in retryJsonParse")
 }

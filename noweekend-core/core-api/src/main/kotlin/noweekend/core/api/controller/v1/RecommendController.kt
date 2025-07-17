@@ -1,5 +1,6 @@
 package noweekend.core.api.controller.v1
 
+import noweekend.client.mcp.recommend.model.SandwichApiResponse
 import noweekend.core.api.controller.v1.docs.RecommendControllerDocs
 import noweekend.core.api.controller.v1.request.GenerateVacationRequest
 import noweekend.core.api.controller.v1.response.AiGenerateVacationApiResponse
@@ -49,15 +50,10 @@ class RecommendController(
     @GetMapping("/sandwich")
     override fun getSandwich(
         @CurrentUserId userId: String,
-    ) {
-//        val mockData = SandwichResponse(
-//            startDate = LocalDate.now(),
-//            endDate = LocalDate.now().plusDays(3),
-//            totalDays = 1,
-//
-//        )
-        recommendService.getSandwich(userId)
-//        return ApiResponse.success(mockData)
+    ): ApiResponse<SandwichApiResponse> {
+        return ApiResponse.success(
+            recommendService.getSandwich(userId),
+        )
     }
 
     @PostMapping("/generate-vacation")

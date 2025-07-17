@@ -2,6 +2,7 @@ package noweekend.core.domain.recommend
 
 import noweekend.client.mcp.recommend.RecommendClient
 import noweekend.client.mcp.recommend.model.AiGenerateVacationRequest
+import noweekend.client.mcp.recommend.model.SandwichApiResponse
 import noweekend.client.mcp.recommend.model.SandwichRequest
 import noweekend.client.mcp.recommend.model.SandwichResponse
 import noweekend.client.mcp.recommend.model.WeatherRequest
@@ -34,6 +35,7 @@ import noweekend.core.support.error.CoreException
 import noweekend.core.support.error.ErrorType
 import org.springframework.stereotype.Service
 import java.time.LocalDate
+import java.time.temporal.ChronoUnit
 import kotlin.random.Random
 
 @Service
@@ -205,19 +207,37 @@ class RecommendServiceImpl(
         throw CoreException(ErrorType.MCP_SERVER_TAGS_ERROR)
     }
 
-    override fun getSandwich(userId: String): SandwichResponse? {
+    override fun getSandwich(userId: String): SandwichApiResponse {
         val findUser = userReader.findUserById(userId) ?: throw CoreException(ErrorType.USER_NOT_FOUND_INTERNAL)
         val birthDate = findUser.birthDate ?: throw CoreException(ErrorType.USER_BIRTH_DAY_NOT_FOUND)
         val holidays: List<LocalDate> = holidayReader.findRemainingHolidays(LocalDate.now())
             .map { holiday: Holiday -> holiday.date }
 
-        val weekends: List<LocalDate> = weekendReader.getAllThisYearWeekends().map { weekend -> weekend.date }
+        val weekends: List<LocalDate> = weekendReader.getUpcomingWeekends().map { weekend -> weekend.date }
 
-        val sandwich = recommendClient.getSandwich(
-            SandwichRequest(birthDay = birthDate, holidays = holidays, findUser.remainingAnnualLeave.toInt(), weekends),
+        val holidayOrWeekendSet = holidays.toSet() + weekends.toSet()
+        val remainingAnnualLeave = findUser.remainingAnnualLeave ?: throw CoreException(ErrorType.INVALID_LOCATION)
+        val bridgePeriods = recommendClient.getSandwich(
+            SandwichRequest(birthDay = birthDate, holidays = holidays, remainingAnnualLeave.toInt(), weekends),
         )
-        println(sandwich)
-        return null
+        return SandwichApiResponse(
+            bridgePeriods.map { period ->
+                val allDates = generateDateRange(period.startDate, period.endDate)
+                val useAnnualLeaveDates = allDates.filter { date ->
+                    !holidayOrWeekendSet.contains(date) && date.dayOfWeek.value in 1..5
+                }
+                SandwichResponse(
+                    startDate = period.startDate,
+                    endDate = period.endDate,
+                    useAnnualLeave = useAnnualLeaveDates.size,
+                    totalVacationDays = allDates.size,
+                )
+            }.toList(),
+        )
+    }
+
+    fun generateDateRange(start: LocalDate, end: LocalDate): List<LocalDate> {
+        return (0..ChronoUnit.DAYS.between(start, end)).map { start.plusDays(it) }
     }
 
     override fun generateVacation(userId: String, request: GenerateVacationRequest): AiGenerateVacationApiResponse {
