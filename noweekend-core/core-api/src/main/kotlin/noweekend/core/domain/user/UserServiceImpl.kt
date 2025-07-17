@@ -4,6 +4,8 @@ import noweekend.core.api.controller.v1.request.LeaveInputRequest
 import noweekend.core.api.controller.v1.request.LocationRequest
 import noweekend.core.api.controller.v1.request.ProfileRequest
 import noweekend.core.api.controller.v1.request.TagUpdateRequest
+import noweekend.core.api.controller.v1.response.OnboardingStatus
+import noweekend.core.api.controller.v1.response.OnboardingStatusResponse
 import noweekend.core.api.controller.v1.response.UserInformationResponse
 import noweekend.core.domain.enumerate.ScheduleCategory
 import noweekend.core.domain.schedule.ScheduleReader
@@ -66,7 +68,7 @@ class UserServiceImpl(
             daysToAdd += 0.5
         }
         val updatedUser = user.copy(
-            remainingAnnualLeave = user.remainingAnnualLeave + daysToAdd,
+            remainingAnnualLeave = (user.remainingAnnualLeave ?: 0.0) + daysToAdd,
         )
         userWriter.upsert(updatedUser)
     }
@@ -118,5 +120,37 @@ class UserServiceImpl(
         }
 
         return UserInformationResponse.of(user, averageTemperature)
+    }
+
+    override fun getOnboardingStatus(userId: String): OnboardingStatusResponse {
+        val user = userReader.findUserById(userId) ?: throw CoreException(ErrorType.USER_NOT_FOUND_INTERNAL)
+
+        val nameAndBirthdayEntered = user.birthDate != null && user.name != null
+        val annualLeaveEntered = user.remainingAnnualLeave != null
+        val userTags = tagReader.getUserTags(userId)
+        val selectedTagsCount = (userTags.selectedBasicTags + userTags.unselectedBasicTags + userTags.selectedCustomTags + userTags.unselectedCustomTags).count { it.selected }
+        val tagEntered = selectedTagsCount > 0
+
+        // 1. 이름/생년월일 안됨 -> NONE
+        if (!nameAndBirthdayEntered && !annualLeaveEntered && !tagEntered) {
+            return OnboardingStatusResponse(OnboardingStatus.NONE)
+        }
+
+        // 2. 이름/생년월일만 됨 -> NAME_AND_BIRTHDAY
+        if (nameAndBirthdayEntered && !annualLeaveEntered && !tagEntered) {
+            return OnboardingStatusResponse(OnboardingStatus.NAME_AND_BIRTHDAY)
+        }
+
+        // 3. 연차까지 됨(이름/생년월일, 연차 ok, 태그 없음) -> ANNUAL_LEAVE
+        if (nameAndBirthdayEntered && annualLeaveEntered && !tagEntered) {
+            return OnboardingStatusResponse(OnboardingStatus.ANNUAL_LEAVE)
+        }
+
+        // 4. 모든게 정상적으로 입력됨 -> DONE
+        if (nameAndBirthdayEntered && annualLeaveEntered && tagEntered) {
+            return OnboardingStatusResponse(OnboardingStatus.DONE)
+        }
+
+        throw CoreException(ErrorType.INVALID_ONBOARD_STATUS)
     }
 }

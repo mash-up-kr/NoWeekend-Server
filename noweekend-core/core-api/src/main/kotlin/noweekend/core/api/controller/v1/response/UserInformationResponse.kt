@@ -20,7 +20,7 @@ data class UserInformationResponse(
     val revocableToken: String?,
     val role: Role,
     val birthDate: LocalDate,
-    val remainingAnnualLeave: Double,
+    val remainingAnnualLeave: Double?,
     val createdAt: LocalDateTime,
     val updatedAt: LocalDateTime?,
     var location: Location?,

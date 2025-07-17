@@ -25,4 +25,5 @@ enum class ErrorType(
     MCP_SERVER_SANDWICH_ERROR(HttpStatus.GATEWAY_TIMEOUT, ErrorCode.E504, "MCP 추천 서버의 응답이 없습니다. 잠시 후 다시 시도해주세요.", LogLevel.ERROR),
     INVALID_LOCATION(HttpStatus.BAD_REQUEST, ErrorCode.E400, "사용자가 한국 위치가 아니기 때문에 날씨를 추천할 수 없습니다.", LogLevel.WARN),
     INVALID_SCHEDULE_TAG(HttpStatus.BAD_REQUEST, ErrorCode.E400, "유효하지 않은 태그가 포함되어 있습니다.", LogLevel.WARN),
+    INVALID_ONBOARD_STATUS(HttpStatus.BAD_REQUEST, ErrorCode.E400, "온보딩 순서에 맞게 요청하지 않은 상태입니다. 사용자 정보조회하여 어떤 값이 입력되지 않았는지 확인해주세요.", LogLevel.WARN),
 }

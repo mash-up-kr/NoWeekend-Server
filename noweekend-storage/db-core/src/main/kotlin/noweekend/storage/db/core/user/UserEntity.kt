@@ -56,7 +56,7 @@ class UserEntity(
     val birthDate: LocalDate? = null,
 
     @Column(name = "remaining_annual_leave", nullable = true)
-    val remainingAnnualLeave: Double = 0.0,
+    val remainingAnnualLeave: Double?,
 
     @Embedded
     var location: LocationEmbeddable?,
