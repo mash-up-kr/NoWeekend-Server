@@ -320,9 +320,7 @@ interface RecommendControllerDocs {
             ),
         ],
     )
-    fun getSandwich(
-        @Parameter(hidden = true) @CurrentUserId userId: String,
-    ): ApiResponse<SandwichApiResponse>
+    fun getSandwich(): ApiResponse<SandwichApiResponse>
 
     @Operation(
         summary = "AI 기반 여행 일정 생성",

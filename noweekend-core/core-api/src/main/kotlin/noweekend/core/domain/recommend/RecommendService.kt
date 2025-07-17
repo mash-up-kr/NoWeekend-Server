@@ -10,6 +10,6 @@ interface RecommendService {
     fun getWeatherRecommend(userId: String): WeatherResponse
     fun getTagRecommend(userId: String): TagRecommendations
     fun getTagRecommendOnlyNew(userId: String): TagRecommendations
-    fun getSandwich(userId: String): SandwichApiResponse
+    fun getSandwich(): SandwichApiResponse
     fun generateVacation(userId: String, request: GenerateVacationRequest): AiGenerateVacationApiResponse
 }
