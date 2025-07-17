@@ -6,8 +6,10 @@ import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.tags.Tag
 import noweekend.core.domain.auth.TestUserService
 import noweekend.core.domain.auth.UserWithToken
+import noweekend.core.domain.sandwich.SandwichBatchScheduler
 import noweekend.core.support.response.ApiResponse
 import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RestController
 import io.swagger.v3.oas.annotations.responses.ApiResponse as SwaggerApiResponse
 
@@ -15,6 +17,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse as SwaggerApiResponse
 @RestController
 class TempController(
     private val testUserService: TestUserService,
+    private val sandwichBatchScheduler: SandwichBatchScheduler,
 ) {
 
     @Operation(
@@ -41,5 +44,38 @@ class TempController(
         return ApiResponse.success(
             testUserService.testUserGen(),
         )
+    }
+
+    @PostMapping("/sandwich")
+    fun generateSandwichCacheManual(): ApiResponse<String> {
+        val now = java.time.LocalDateTime.now()
+        val yesterday = now.minusDays(1).toLocalDate()
+
+        sandwichBatchScheduler.generateAndSaveSandwichRecommend(
+            yesterday.atTime(22, 0, 0),
+        )
+//        sandwichBatchScheduler.generateAndSaveSandwichRecommend(
+//            yesterday.atTime(23, 0, 0)
+//        )
+
+        // === 3~4시 ===
+        // sandwichBatchScheduler.generateAndSaveSandwichRecommend(
+        //     yesterday.atTime(3, 0, 0)
+        // )
+        // sandwichBatchScheduler.generateAndSaveSandwichRecommend(
+        //     yesterday.atTime(4, 0, 0)
+        // )
+
+        // === 5~6시 ===
+        // sandwichBatchScheduler.generateAndSaveSandwichRecommend(
+        //     yesterday.atTime(5, 0, 0)
+        // )
+        // sandwichBatchScheduler.generateAndSaveSandwichRecommend(
+        //     yesterday.atTime(6, 0, 0)
+        // )
+
+        // 필요할 때 위 주석을 풀어서 실행!
+
+        return ApiResponse.success("어제 1시~2시 샌드위치 캐시 생성 완료 (필요시 주석 풀어서 더 추가 가능)")
     }
 }
