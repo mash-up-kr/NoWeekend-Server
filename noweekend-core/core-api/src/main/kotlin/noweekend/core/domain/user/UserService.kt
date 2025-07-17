@@ -4,6 +4,7 @@ import noweekend.core.api.controller.v1.request.LeaveInputRequest
 import noweekend.core.api.controller.v1.request.LocationRequest
 import noweekend.core.api.controller.v1.request.ProfileRequest
 import noweekend.core.api.controller.v1.request.TagUpdateRequest
+import noweekend.core.api.controller.v1.response.OnboardingStatusResponse
 import noweekend.core.api.controller.v1.response.UserInformationResponse
 import noweekend.core.domain.tag.BasicTag
 import noweekend.core.domain.tag.UserTags
@@ -17,4 +18,5 @@ interface UserService {
     fun getStateTags(userId: String): UserTags
     fun updateLocation(request: LocationRequest, userId: String)
     fun getUserInformationById(userId: String): UserInformationResponse
+    fun getOnboardingStatus(userId: String): OnboardingStatusResponse
 }

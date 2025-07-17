@@ -5,6 +5,7 @@ import noweekend.core.api.controller.v1.request.LeaveInputRequest
 import noweekend.core.api.controller.v1.request.ProfileRequest
 import noweekend.core.api.controller.v1.request.TagRequest
 import noweekend.core.api.controller.v1.response.DefaultTags
+import noweekend.core.api.controller.v1.response.OnboardingStatusResponse
 import noweekend.core.api.security.annotations.CurrentUserId
 import noweekend.core.domain.user.UserService
 import noweekend.core.support.response.ApiResponse
@@ -60,6 +61,15 @@ class OnboardingController(
         userService.updateRemainingAnnualLeave(request, userId)
         return ApiResponse.success(
             "연차 정보가 성공적으로 저장되었습니다.",
+        )
+    }
+
+    @GetMapping("/onboarding/status")
+    override fun getOnboardingStatus(
+        @CurrentUserId userId: String,
+    ): ApiResponse<OnboardingStatusResponse> {
+        return ApiResponse.success(
+            userService.getOnboardingStatus(userId),
         )
     }
 }

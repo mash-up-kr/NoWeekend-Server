@@ -11,6 +11,7 @@ import noweekend.core.api.controller.v1.request.LeaveInputRequest
 import noweekend.core.api.controller.v1.request.ProfileRequest
 import noweekend.core.api.controller.v1.request.TagRequest
 import noweekend.core.api.controller.v1.response.DefaultTags
+import noweekend.core.api.controller.v1.response.OnboardingStatusResponse
 import noweekend.core.api.security.annotations.CurrentUserId
 import noweekend.core.support.response.ApiResponse
 import io.swagger.v3.oas.annotations.responses.ApiResponse as SwaggerApiResponse
@@ -340,4 +341,72 @@ interface OnboardingControllerDocs {
     fun getDefaultTag(
         @Parameter(hidden = true) @CurrentUserId userId: String,
     ): ApiResponse<DefaultTags>
+
+    @Operation(
+        summary = "온보딩: 사용자 진행 상태 조회",
+        description = """
+        온보딩 플로우(이름/생년월일, 연차, 일정 태그) 입력 진행 상황을 반환합니다.
+
+        status 값 설명:
+        - NONE: 이름/생년월일 미입력 상태
+        - NAME_AND_BIRTHDAY: 이름/생년월일 입력만 완료
+        - ANNUAL_LEAVE: 연차 입력까지 완료
+        - DONE: 모든 온보딩 절차 완료
+    """,
+        responses = [
+            SwaggerApiResponse(
+                responseCode = "200",
+                description = "온보딩 상태 조회 성공",
+                content = [
+                    Content(
+                        mediaType = "application/json",
+                        schema = Schema(implementation = ApiResponse::class),
+                        examples = [
+                            ExampleObject(
+                                name = "예시 응답",
+                                value = """
+{
+  "result": "SUCCESS",
+  "data": {
+    "status": "DONE"
+  },
+  "error": null
+}
+""",
+                            ),
+                        ],
+                    ),
+                ],
+            ),
+            SwaggerApiResponse(
+                responseCode = "400",
+                description = "온보딩 순서에 맞지 않게 데이터가 입력된 경우",
+                content = [
+                    Content(
+                        mediaType = "application/json",
+                        schema = Schema(implementation = ApiResponse::class),
+                        examples = [
+                            ExampleObject(
+                                name = "온보딩 순서 오류 예시",
+                                value = """
+{
+  "result": "ERROR",
+  "data": null,
+  "error": {
+    "code": "INVALID_ONBOARD_STATUS",
+    "message": "온보딩 순서에 맞게 요청하지 않은 상태입니다. 사용자 정보조회하여 어떤 값이 입력되지 않았는지 확인해주세요.",
+    "data": {}
+  }
+}
+""",
+                            ),
+                        ],
+                    ),
+                ],
+            ),
+        ],
+    )
+    fun getOnboardingStatus(
+        @Parameter(hidden = true) @CurrentUserId userId: String,
+    ): ApiResponse<OnboardingStatusResponse>
 }
