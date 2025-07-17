@@ -128,11 +128,11 @@ class UserServiceImpl(
         val nameAndBirthdayEntered = user.birthDate != null && user.name != null
         val annualLeaveEntered = user.remainingAnnualLeave != null
         val userTags = tagReader.getUserTags(userId)
-        val selectedTagsCount = (userTags.selectedBasicTags + userTags.selectedCustomTags + userTags.selectedCustomTags + userTags.unselectedCustomTags).count { it.selected }
+        val selectedTagsCount = (userTags.selectedBasicTags + userTags.unselectedBasicTags + userTags.selectedCustomTags + userTags.unselectedCustomTags).count { it.selected }
         val tagEntered = selectedTagsCount > 0
 
         // 1. 이름/생년월일 안됨 -> NONE
-        if (!nameAndBirthdayEntered && (!annualLeaveEntered || !tagEntered)) {
+        if (!nameAndBirthdayEntered && !annualLeaveEntered && !tagEntered) {
             return OnboardingStatusResponse(OnboardingStatus.NONE)
         }
 
@@ -147,7 +147,7 @@ class UserServiceImpl(
         }
 
         // 4. 모든게 정상적으로 입력됨 -> DONE
-        if (nameAndBirthdayEntered && annualLeaveEntered) {
+        if (nameAndBirthdayEntered && annualLeaveEntered && tagEntered) {
             return OnboardingStatusResponse(OnboardingStatus.DONE)
         }
 

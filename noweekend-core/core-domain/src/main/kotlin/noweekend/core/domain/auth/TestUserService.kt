@@ -84,7 +84,7 @@ data class UserWithToken(
                 revocableToken = user.revocableToken,
                 role = user.role,
                 birthDate = user.birthDate,
-                remainingAnnualLeave = user.remainingAnnualLeave,
+                remainingAnnualLeave = 10.0,
                 createdAt = user.createdAt,
                 updatedAt = user.updatedAt,
             )
