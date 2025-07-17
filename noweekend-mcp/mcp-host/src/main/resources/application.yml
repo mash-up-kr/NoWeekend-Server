@@ -48,7 +48,7 @@ spring:
                 - "-y"
                 - "server-perplexity-ask"
               env:
-                PERPLEXITY_API_KEY: example
+                PERPLEXITY_API_KEY: ENC(az7SSvHLhX8edbEueje4Hds6SaMn4YOvlgaAFVDuRBkYlROjLriocCmgZbQUx7jVzNc4fQJwn0CbyVY2xOal3g==
         type: SYNC
         request-timeout: 60s
 
