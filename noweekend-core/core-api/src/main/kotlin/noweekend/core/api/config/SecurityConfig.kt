@@ -30,7 +30,6 @@ class SecurityConfig {
             "/v3/api-docs/**",
             "/api/v1/login/**",
             "/test-gen",
-            "/api/v1/holiday",
         ),
         "deny" to arrayOf(),
     )
