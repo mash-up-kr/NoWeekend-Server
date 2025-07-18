@@ -307,7 +307,7 @@ EXAMPLE (must follow this format exactly):
         val objectMapper = jacksonObjectMapper().findAndRegisterModules()
 
         var lastException: Throwable? = null
-        repeat(10) { attempt ->
+        repeat(30) { attempt ->
             try {
                 val rawResponse = chatClient.prompt()
                     .system(systemPrompt)
@@ -334,9 +334,9 @@ EXAMPLE (must follow this format exactly):
                 return objectMapper.readValue(cleaned)
             } catch (e: Throwable) {
                 lastException = e
-                println("getSandwich retry ${attempt + 1}/5: ${e.message}")
+                println("getSandwich retry ${attempt + 1}/30: ${e.message}")
             }
         }
-        throw IllegalStateException("Failed to get valid bridge vacation periods after 5 attempts", lastException)
+        throw IllegalStateException("Failed to get valid bridge vacation periods after 30 attempts", lastException)
     }
 }

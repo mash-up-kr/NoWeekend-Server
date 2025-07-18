@@ -6,9 +6,9 @@ import io.swagger.v3.oas.annotations.media.Content
 import io.swagger.v3.oas.annotations.media.ExampleObject
 import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.tags.Tag
-import noweekend.client.mcp.recommend.model.SandwichApiResponse
 import noweekend.core.api.controller.v1.request.GenerateVacationRequest
 import noweekend.core.api.controller.v1.response.AiGenerateVacationApiResponse
+import noweekend.core.api.controller.v1.response.SandwichApiResponse
 import noweekend.core.api.controller.v1.response.WeatherResponse
 import noweekend.core.api.security.annotations.CurrentUserId
 import noweekend.core.domain.tag.TagRecommendations
@@ -321,9 +321,7 @@ interface RecommendControllerDocs {
             ),
         ],
     )
-    fun getSandwich(
-        @Parameter(hidden = true) @CurrentUserId userId: String,
-    ): ApiResponse<SandwichApiResponse>
+    fun getSandwich(): ApiResponse<SandwichApiResponse>
 
     @Operation(
         summary = "사용자 맞춤 휴가 생성 요청",
