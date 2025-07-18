@@ -26,7 +26,8 @@ class SandwichBatchScheduler(
     fun generateAndSaveSandwichRecommend(searchDate: LocalDateTime) {
         val holidays = holidayReader.findRemainingHolidays(searchDate.toLocalDate())
             .map { it.date }
-        val weekends = weekendReader.getUpcomingWeekends()
+        val weekends = weekendReader.getAllThisYearWeekends()
+            .filter { it -> it.date > LocalDate.now() }
             .map { it.date }
 
         val sandwichRequest = SandwichRequest(

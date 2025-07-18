@@ -49,13 +49,17 @@ class TempController(
     @PostMapping("/sandwich")
     fun generateSandwichCacheManual(): ApiResponse<String> {
         val now = java.time.LocalDateTime.now()
-        val yesterday = now.minusDays(1).toLocalDate()
+        val yesterday = now.minusDays(0).toLocalDate()
 
-        sandwichBatchScheduler.generateAndSaveSandwichRecommend(
-            yesterday.atTime(22, 0, 0),
-        )
 //        sandwichBatchScheduler.generateAndSaveSandwichRecommend(
-//            yesterday.atTime(23, 0, 0)
+//            yesterday.atTime(22, 0, 0),
+//        )
+        sandwichBatchScheduler.generateAndSaveSandwichRecommend(
+            yesterday.atTime(0, 0, 0)
+        )
+
+//        sandwichBatchScheduler.generateAndSaveSandwichRecommend(
+//            yesterday.atTime(1, 0, 0)
 //        )
 
         // === 3~4시 ===
