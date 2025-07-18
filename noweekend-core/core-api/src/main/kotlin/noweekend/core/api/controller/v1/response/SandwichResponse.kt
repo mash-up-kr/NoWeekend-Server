@@ -1,16 +1,6 @@
-package noweekend.client.mcp.recommend.model
+package noweekend.core.api.controller.v1.response
 
 import java.time.LocalDate
-
-data class SandwichRequest(
-    val holidays: List<LocalDate>,
-    val weekends: List<LocalDate>,
-)
-
-data class BridgeVacationPeriod(
-    val startDate: LocalDate,
-    val endDate: LocalDate,
-)
 
 data class SandwichResponse(
     val startDate: LocalDate,

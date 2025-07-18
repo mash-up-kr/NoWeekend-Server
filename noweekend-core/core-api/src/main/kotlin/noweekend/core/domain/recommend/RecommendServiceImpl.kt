@@ -2,11 +2,11 @@ package noweekend.core.domain.recommend
 
 import noweekend.client.mcp.recommend.RecommendClient
 import noweekend.client.mcp.recommend.model.AiGenerateVacationRequest
-import noweekend.client.mcp.recommend.model.SandwichApiResponse
-import noweekend.client.mcp.recommend.model.SandwichResponse
 import noweekend.client.mcp.recommend.model.WeatherRequest
 import noweekend.core.api.controller.v1.request.GenerateVacationRequest
 import noweekend.core.api.controller.v1.response.AiGenerateVacationApiResponse
+import noweekend.core.api.controller.v1.response.SandwichApiResponse
+import noweekend.core.api.controller.v1.response.SandwichResponse
 import noweekend.core.api.controller.v1.response.WeatherResponse
 import noweekend.core.domain.ActivityType
 import noweekend.core.domain.IconStyle
@@ -14,7 +14,7 @@ import noweekend.core.domain.LeisurePreference
 import noweekend.core.domain.RestPreference
 import noweekend.core.domain.TravelStyle
 import noweekend.core.domain.holiday.HolidayReader
-import noweekend.core.domain.sandwich.SandwichReader
+import noweekend.core.domain.sandwich.SandwichCalculator
 import noweekend.core.domain.tag.RecommendType
 import noweekend.core.domain.tag.TagReader
 import noweekend.core.domain.tag.TagRecommendCache
@@ -29,11 +29,13 @@ import noweekend.core.domain.weather.WeatherReader
 import noweekend.core.domain.weather.WeatherRecommendCache
 import noweekend.core.domain.weather.WeatherRecommendation
 import noweekend.core.domain.weather.WeatherWriter
+import noweekend.core.domain.weekend.WeekendReader
 import noweekend.core.support.error.CoreException
 import noweekend.core.support.error.ErrorType
 import org.springframework.stereotype.Service
 import java.time.LocalDate
-import java.time.LocalDateTime
+import java.time.Year
+import java.time.temporal.ChronoUnit
 import kotlin.random.Random
 
 @Service
@@ -46,7 +48,8 @@ class RecommendServiceImpl(
     private val weatherWriter: WeatherWriter,
     private val tagRecommendCacheReader: TagRecommendCacheReader,
     private val tagRecommendCacheWriter: TagRecommendCacheWriter,
-    private val sandwichReader: SandwichReader,
+    private val weekendReader: WeekendReader,
+    private val calculator: SandwichCalculator,
 ) : RecommendService {
 
     override fun getWeatherRecommend(userId: String): WeatherResponse {
@@ -206,30 +209,42 @@ class RecommendServiceImpl(
     }
 
     override fun getSandwich(): SandwichApiResponse {
-        val now = LocalDateTime.now()
-        var searchDate = now.minusDays(1)
-            .withHour(0)
-            .withMinute(0)
-            .withSecond(0)
-            .withNano(0)
+        // 1) 기준 날짜
+        val today = LocalDate.now()
 
-        val maxTry = 24
-        repeat(maxTry) {
-            val caches = sandwichReader.findBySearchDate(searchDate)
-            if (caches.isNotEmpty()) {
-                val responses = caches.map {
-                    SandwichResponse(
-                        startDate = it.startDate,
-                        endDate = it.endDate,
-                        useAnnualLeave = it.useAnnualLeave,
-                        totalVacationDays = it.totalVacationDays,
-                    )
-                }
-                return SandwichApiResponse(responses)
-            }
-            searchDate = searchDate.minusHours(1)
+        // 2) 남은 공휴일, 주말 조회
+        val holidays = holidayReader.findRemainingHolidays(today).map { it.date }.toSet()
+        val weekends = weekendReader.getAllThisYearWeekends()
+            .map { it.date }
+            .filter { it.isAfter(today) }
+            .toSet()
+
+        // 3) 연말까지 계산
+        val until = Year.now().atMonth(12).atEndOfMonth()
+        val periods = calculator.recommendSandwich(
+            holidays = holidays,
+            weekends = weekends,
+            maxGap = 2,
+            minSpan = 3,
+            from = today,
+            until = until,
+        )
+
+        // 4) VacationPeriod → SandwichResponse 매핑
+        val responses = periods.map { period ->
+            val totalDays = ChronoUnit.DAYS.between(period.startDate, period.endDate).toInt() + 1
+            val useAnnualLeave = generateSequence(period.startDate) { it.plusDays(1) }
+                .takeWhile { !it.isAfter(period.endDate) }
+                .count { date -> date !in holidays && date !in weekends }
+            SandwichResponse(
+                startDate = period.startDate,
+                endDate = period.endDate,
+                useAnnualLeave = useAnnualLeave,
+                totalVacationDays = totalDays,
+            )
         }
-        return SandwichApiResponse(emptyList())
+
+        return SandwichApiResponse(responses = responses)
     }
 
     override fun generateVacation(userId: String, request: GenerateVacationRequest): AiGenerateVacationApiResponse {

@@ -1,8 +1,8 @@
 package noweekend.core.domain.recommend
 
-import noweekend.client.mcp.recommend.model.SandwichApiResponse
 import noweekend.core.api.controller.v1.request.GenerateVacationRequest
 import noweekend.core.api.controller.v1.response.AiGenerateVacationApiResponse
+import noweekend.core.api.controller.v1.response.SandwichApiResponse
 import noweekend.core.api.controller.v1.response.WeatherResponse
 import noweekend.core.domain.tag.TagRecommendations
 

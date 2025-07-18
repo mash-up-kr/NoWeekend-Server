@@ -1,10 +1,9 @@
 package noweekend.core.api.controller.v1
 
-import noweekend.client.mcp.recommend.model.SandwichApiResponse
-import noweekend.client.mcp.recommend.model.SandwichResponse
 import noweekend.core.api.controller.v1.docs.RecommendControllerDocs
 import noweekend.core.api.controller.v1.request.GenerateVacationRequest
 import noweekend.core.api.controller.v1.response.AiGenerateVacationApiResponse
+import noweekend.core.api.controller.v1.response.SandwichApiResponse
 import noweekend.core.api.controller.v1.response.WeatherResponse
 import noweekend.core.api.security.annotations.CurrentUserId
 import noweekend.core.domain.IconStyle
@@ -16,7 +15,6 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
-import java.time.LocalDate
 
 @RestController
 @RequestMapping("/api/v1/recommend")
@@ -52,9 +50,6 @@ class RecommendController(
     @GetMapping("/sandwich")
     override fun getSandwich(): ApiResponse<SandwichApiResponse> {
         val sandwichApiResponse = recommendService.getSandwich()
-        if (sandwichApiResponse.responses.isEmpty()) {
-            return apiNotResponding()
-        }
         return ApiResponse.success(sandwichApiResponse)
     }
 
@@ -70,25 +65,5 @@ class RecommendController(
                 IconStyle.STAR,
             ),
         )
-    }
-
-    private fun apiNotResponding(): ApiResponse<SandwichApiResponse> {
-        val mockResponse = SandwichApiResponse(
-            responses = listOf(
-                SandwichResponse(
-                    startDate = LocalDate.of(2025, 8, 14),
-                    endDate = LocalDate.of(2025, 8, 16),
-                    useAnnualLeave = 1,
-                    totalVacationDays = 3,
-                ),
-                SandwichResponse(
-                    startDate = LocalDate.of(2025, 9, 11),
-                    endDate = LocalDate.of(2025, 9, 15),
-                    useAnnualLeave = 2,
-                    totalVacationDays = 5,
-                ),
-            ),
-        )
-        return ApiResponse.success(mockResponse)
     }
 }
