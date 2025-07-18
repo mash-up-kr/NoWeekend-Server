@@ -4,7 +4,6 @@ import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.media.Content
 import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.tags.Tag
-import noweekend.core.api.controller.v1.response.SandwichApiResponse
 import noweekend.core.domain.auth.TestUserService
 import noweekend.core.domain.auth.UserWithToken
 import noweekend.core.domain.recommend.RecommendService
@@ -44,11 +43,5 @@ class TempController(
         return ApiResponse.success(
             testUserService.testUserGen(),
         )
-    }
-
-    @GetMapping("/sandwich")
-    fun getSandwich(): ApiResponse<SandwichApiResponse> {
-        val sandwichApiResponse = recommendService.getSandwich()
-        return ApiResponse.success(sandwichApiResponse)
     }
 }
