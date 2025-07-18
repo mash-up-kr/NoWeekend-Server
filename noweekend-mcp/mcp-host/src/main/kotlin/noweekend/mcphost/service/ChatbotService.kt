@@ -5,7 +5,6 @@ import com.fasterxml.jackson.module.kotlin.readValue
 import noweekend.mcphost.controller.Prompt
 import noweekend.mcphost.controller.request.AiGenerateVacationRequest
 import noweekend.mcphost.controller.request.AiVacationContent
-import noweekend.mcphost.controller.request.AiVacationResponse
 import noweekend.mcphost.controller.request.AiVacationTitle
 import noweekend.mcphost.controller.request.Tag
 import noweekend.mcphost.controller.request.TagRequest
@@ -147,37 +146,51 @@ Based on the above rules, return ONLY a valid JSON array of 3 Korean lifestyle a
     fun generateVacationContent(request: AiGenerateVacationRequest): AiVacationContent {
         val allDates: List<String> = generateSequence(request.startDate) { prev ->
             if (prev < request.endDate) prev.plusDays(1) else null
-        }
-            .map(LocalDate::toString)
-            .toList()
+        }.map(LocalDate::toString).toList()
 
         val usedItems = mutableListOf<String>()
+        val chunkedDates = allDates.chunked(chunkSize)
+        val itineraryChunks = mutableListOf<String>()
 
-        val itineraryChunks = allDates
-            .chunked(chunkSize)
-            .mapIndexed { idx, datesChunk ->
-                val detailPrompt = prompt.detailedPlanPrompt(
-                    request,
-                    datesChunk,
-                    idx * chunkSize,
-                    allDates.size,
-                    usedItems,
-                )
-                val userJson = objectMapper.writeValueAsString(
-                    mapOf(
-                        "dates" to datesChunk,
-                        "profile" to minimalProfileMap(request),
-                        "totalDays" to allDates.size,
-                    ),
-                )
-                val resp = chatClient.prompt()
-                    .system(detailPrompt)
-                    .user(userJson)
-                    .call()
-                val content = resp.content() ?: error("Empty chunk at index $idx")
-                usedItems += extractUsedItems(content)
-                content
+        for ((idx, datesChunk) in chunkedDates.withIndex()) {
+            val maxAttempts = 10
+            var attempt = 0
+            var chunkContent: String?
+
+            while (true) {
+                try {
+                    val detailPrompt = prompt.detailedPlanPrompt(
+                        request,
+                        datesChunk,
+                        idx * chunkSize,
+                        allDates.size,
+                        usedItems,
+                    )
+                    val userJson = objectMapper.writeValueAsString(
+                        mapOf(
+                            "dates" to datesChunk,
+                            "profile" to minimalProfileMap(request),
+                            "totalDays" to allDates.size,
+                        ),
+                    )
+                    val resp = chatClient.prompt()
+                        .system(detailPrompt)
+                        .user(userJson)
+                        .call()
+                    chunkContent = resp.content() ?: error("Empty chunk at index $idx")
+                    usedItems += extractUsedItems(chunkContent)
+                    break // 성공했으면 while 빠져나감
+                } catch (e: Exception) {
+                    attempt++
+                    if (attempt >= maxAttempts) {
+                        throw IllegalStateException("Chunk $idx 생성 실패: ${e.message}", e)
+                    }
+                    // 재시도 딜레이 추가
+                    Thread.sleep(1000)
+                }
             }
+            itineraryChunks += chunkContent ?: "" // null이 올 일은 없음(실패면 위에서 throw)
+        }
 
         val planRaw = itineraryChunks.joinToString("\n\n")
         return AiVacationContent(content = planRaw)
@@ -201,18 +214,12 @@ Based on the above rules, return ONLY a valid JSON array of 3 Korean lifestyle a
         return items
     }
 
-    private fun printRaw(text: String) {
-        println("------------------------------------------------\n")
-        println(text)
-        println("------------------------------------------------\n")
-    }
-
     fun summarizeTitle(content: AiVacationContent): AiVacationTitle {
         val systemPrompt = """
         당신은 여행 일정을 한눈에 파악할 수 있는 전문가입니다.
         아래 여행 일정을 최대 15글자로 요약해 주세요.
         장소/테마/특징을 간결하게 써주세요. 불필요한 설명, 감탄사, 접두사 빼고 핵심만!
-    """.trimIndent()
+        """.trimIndent()
         val userPrompt = content.content
 
         val resp = chatClient.prompt()
@@ -224,6 +231,4 @@ Based on the above rules, return ONLY a valid JSON array of 3 Korean lifestyle a
         val response = if (summary.length > 15) summary.take(15) else summary
         return AiVacationTitle(response)
     }
-
-
 }

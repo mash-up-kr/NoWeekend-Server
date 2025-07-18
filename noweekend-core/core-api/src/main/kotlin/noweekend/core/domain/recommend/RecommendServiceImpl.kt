@@ -36,7 +36,6 @@ import noweekend.core.domain.weather.WeatherWriter
 import noweekend.core.domain.weekend.WeekendReader
 import noweekend.core.support.error.CoreException
 import noweekend.core.support.error.ErrorType
-import org.springframework.scheduling.annotation.Async
 import org.springframework.stereotype.Service
 import java.time.LocalDate
 import java.time.Year
@@ -270,7 +269,6 @@ class RecommendServiceImpl(
         throw CoreException(ErrorType.VACATION_NOT_FOUND)
     }
 
-    @Async
     override fun generateVacation(userId: String, request: GenerateVacationRequest) {
         val tags = tagReader.getUserTags(userId)
         val selected = (tags.selectedBasicTags + tags.selectedCustomTags).map { it.content }

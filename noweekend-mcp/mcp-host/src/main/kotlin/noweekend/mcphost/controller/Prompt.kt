@@ -127,7 +127,7 @@ Return ONLY this JSON array. Never add any other text, explanation, or formattin
         // 헤더 생성 (Day 번호 & 날짜)
         val headers = dates.mapIndexed { i, d ->
             val dayNum = offset + i + 1
-            val label  = LocalDate.parse(d)
+            val label = LocalDate.parse(d)
                 .format(DateTimeFormatter.ofPattern("MM/dd E", Locale.KOREAN))
             "• Day $dayNum ($label)"
         }.joinToString("\n")
@@ -142,13 +142,13 @@ Return ONLY this JSON array. Never add any other text, explanation, or formattin
         // profile JSON (태그 부분은 변경 금지)
         val profileJson = objectMapper.writeValueAsString(
             mapOf(
-                "travelStyle"      to req.chosenTravelStyleLabel,
-                "activityType"     to req.chosenActivityTypeLabel,
-                "restPreference"   to req.chosenRestPreferenceLabel,
+                "travelStyle" to req.chosenTravelStyleLabel,
+                "activityType" to req.chosenActivityTypeLabel,
+                "restPreference" to req.chosenRestPreferenceLabel,
                 "leisurePreference" to req.chosenLeisurePreferenceLabel,
-                "preferredTags"    to req.selectedTags,
-                "excludedTags"     to req.unselectedTags,
-            )
+                "preferredTags" to req.selectedTags,
+                "excludedTags" to req.unselectedTags,
+            ),
         )
 
         return """
@@ -187,8 +187,6 @@ FORMAT:
 6. 밤: 숙소명(또는 '집'), 교통수단, 체크인 정보 또는 시간
 
 출력은 **불릿만**, 추가 질문·JSON·코드펜스·해설 없이 마지막 불릿 직후 종료하세요.
-""".trimIndent()
+        """.trimIndent()
     }
-
-
 }
