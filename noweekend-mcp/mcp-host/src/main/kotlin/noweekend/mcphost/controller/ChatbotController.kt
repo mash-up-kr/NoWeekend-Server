@@ -1,12 +1,10 @@
 package noweekend.mcphost.controller
 
 import noweekend.mcphost.controller.request.AiGenerateVacationRequest
-import noweekend.mcphost.controller.request.AiGenerateVacationResponse
-import noweekend.mcphost.controller.request.SandwichRequest
+import noweekend.mcphost.controller.request.AiVacationResponse
 import noweekend.mcphost.controller.request.Tag
 import noweekend.mcphost.controller.request.TagRequest
 import noweekend.mcphost.controller.request.WeatherRequest
-import noweekend.mcphost.controller.response.BridgeVacationPeriod
 import noweekend.mcphost.controller.response.WeatherResponse
 import noweekend.mcphost.service.ChatbotService
 import org.springframework.http.MediaType
@@ -36,13 +34,16 @@ class ChatbotController(
         return chatbotService.tagRecommendationOnlyNew(request)
     }
 
-    @PostMapping("/getSandwich")
-    fun getSandwich(@RequestBody request: SandwichRequest): List<BridgeVacationPeriod> {
-        return chatbotService.getSandwich(request)
-    }
-
     @PostMapping("/generate-vacation")
-    fun getTagOnlyNew(@RequestBody request: AiGenerateVacationRequest): AiGenerateVacationResponse {
-        return chatbotService.generateVacation(request)
+    fun generateVacation(@RequestBody request: AiGenerateVacationRequest): AiVacationResponse {
+        val content = chatbotService.generateVacationContent(request)
+        val title = chatbotService.summarizeTitle(content)
+
+        return AiVacationResponse(
+            title = title.title,
+            content = content.content,
+            startDate = request.startDate,
+            endDate = request.endDate,
+        )
     }
 }

@@ -7,7 +7,7 @@ import io.swagger.v3.oas.annotations.media.ExampleObject
 import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.tags.Tag
 import noweekend.core.api.controller.v1.request.GenerateVacationRequest
-import noweekend.core.api.controller.v1.response.AiGenerateVacationApiResponse
+import noweekend.core.api.controller.v1.response.AiVacationApiResponse
 import noweekend.core.api.controller.v1.response.SandwichApiResponse
 import noweekend.core.api.controller.v1.response.WeatherResponse
 import noweekend.core.api.security.annotations.CurrentUserId
@@ -412,9 +412,9 @@ interface RecommendControllerDocs {
     @Operation(
         summary = "생성된 맞춤 휴가 플랜 조회",
         description = """
-            사용자가 요청한 맞춤 휴가 플랜(AI 기반 추천 휴가 일차별 상세 일정, 아이콘 포함)을 조회합니다.
-            (생성된 휴가 플랜이 없거나, 조회 불가 시 에러 반환)
-        """,
+        사용자가 요청한 맞춤 휴가 플랜(AI 기반 추천 휴가 일차별 상세 일정, 아이콘 포함, 시작/종료일 포함)을 조회합니다.
+        (생성된 휴가 플랜이 없거나, 조회 불가 시 에러 반환)
+    """,
         responses = [
             SwaggerApiResponse(
                 responseCode = "200",
@@ -430,8 +430,10 @@ interface RecommendControllerDocs {
 {
   "result": "SUCCESS",
   "data": {
-    "title": "5일간의 맞춤 휴가 일정 예시",
-    "content": "• Day 1 (07/07 월) ...\n",
+    "title": "가을 도심 미식+예술 여행",
+    "content": "## Day 1 of 10 (10/03 금)\\n\\n• 아침: 집→대학로, 지하철 2호선, 08:30 출발\\n• 오전 활동: 아르코예술극장, 뮤지컬 '세종 1446' 관람 ... (생략)",
+    "startDate": "2025-10-03",
+    "endDate": "2025-10-12",
     "iconStyle": "STAR"
   },
   "error": null
@@ -472,5 +474,5 @@ interface RecommendControllerDocs {
     )
     fun getVacation(
         @Parameter(hidden = true) @CurrentUserId userId: String,
-    ): ApiResponse<AiGenerateVacationApiResponse>
+    ): ApiResponse<AiVacationApiResponse>
 }

@@ -49,10 +49,3 @@ enum class LeisurePreference(
     @Schema(description = "관광")
     TOURISM("관광"),
 }
-
-enum class IconStyle {
-    STAR,
-    TRAIN,
-    PLANE,
-    HOUSE,
-}
