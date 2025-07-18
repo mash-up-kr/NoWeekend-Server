@@ -26,4 +26,5 @@ enum class ErrorType(
     INVALID_LOCATION(HttpStatus.BAD_REQUEST, ErrorCode.E400, "사용자가 한국 위치가 아니기 때문에 날씨를 추천할 수 없습니다.", LogLevel.WARN),
     INVALID_SCHEDULE_TAG(HttpStatus.BAD_REQUEST, ErrorCode.E400, "유효하지 않은 태그가 포함되어 있습니다.", LogLevel.WARN),
     INVALID_ONBOARD_STATUS(HttpStatus.BAD_REQUEST, ErrorCode.E400, "온보딩 순서에 맞게 요청하지 않은 상태입니다. 사용자 정보조회하여 어떤 값이 입력되지 않았는지 확인해주세요.", LogLevel.WARN),
+    VACATION_NOT_FOUND(HttpStatus.NOT_FOUND, ErrorCode.E404, "아직 휴가가 생성되지 않았습니다.", LogLevel.INFO),
 }

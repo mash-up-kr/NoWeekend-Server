@@ -3,7 +3,8 @@ package noweekend.mcphost.controller.request
 import java.time.LocalDate
 
 data class AiGenerateVacationRequest(
-    val days: Int,
+    val startDate: LocalDate,
+    val endDate: LocalDate,
 
     val travelStyleOptionLabels: List<String>,
     val chosenTravelStyleLabel: String,
@@ -17,13 +18,21 @@ data class AiGenerateVacationRequest(
     val leisurePreferenceOptionLabels: List<String>,
     val chosenLeisurePreferenceLabel: String,
 
-    val birthDate: LocalDate,
     val selectedTags: List<String>,
     val unselectedTags: List<String>,
-    val upcomingHolidays: List<String>,
 )
 
-data class AiGenerateVacationResponse(
+data class AiVacationContent(
+    val content: String,
+)
+
+data class AiVacationTitle(
+    val title: String,
+)
+
+data class AiVacationResponse(
     val title: String,
     val content: String,
+    val startDate: LocalDate,
+    val endDate: LocalDate,
 )

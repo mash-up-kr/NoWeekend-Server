@@ -4,16 +4,16 @@ import noweekend.client.mcp.recommend.RecommendClient
 import noweekend.client.mcp.recommend.model.AiGenerateVacationRequest
 import noweekend.client.mcp.recommend.model.WeatherRequest
 import noweekend.core.api.controller.v1.request.GenerateVacationRequest
-import noweekend.core.api.controller.v1.response.AiGenerateVacationApiResponse
+import noweekend.core.api.controller.v1.response.AiVacationApiResponse
 import noweekend.core.api.controller.v1.response.SandwichApiResponse
 import noweekend.core.api.controller.v1.response.SandwichResponse
 import noweekend.core.api.controller.v1.response.WeatherResponse
 import noweekend.core.domain.ActivityType
-import noweekend.core.domain.IconStyle
 import noweekend.core.domain.LeisurePreference
 import noweekend.core.domain.RestPreference
 import noweekend.core.domain.TravelStyle
 import noweekend.core.domain.holiday.HolidayReader
+import noweekend.core.domain.sandwich.Sandwich
 import noweekend.core.domain.sandwich.SandwichCalculator
 import noweekend.core.domain.tag.RecommendType
 import noweekend.core.domain.tag.TagReader
@@ -25,6 +25,10 @@ import noweekend.core.domain.tag.TagRecommendations
 import noweekend.core.domain.tag.UserTags
 import noweekend.core.domain.user.Location
 import noweekend.core.domain.user.UserReader
+import noweekend.core.domain.vacation.AiVacation
+import noweekend.core.domain.vacation.AiVacationReader
+import noweekend.core.domain.vacation.AiVacationWriter
+import noweekend.core.domain.vacation.IconStyle
 import noweekend.core.domain.weather.WeatherReader
 import noweekend.core.domain.weather.WeatherRecommendCache
 import noweekend.core.domain.weather.WeatherRecommendation
@@ -32,6 +36,7 @@ import noweekend.core.domain.weather.WeatherWriter
 import noweekend.core.domain.weekend.WeekendReader
 import noweekend.core.support.error.CoreException
 import noweekend.core.support.error.ErrorType
+import org.springframework.scheduling.annotation.Async
 import org.springframework.stereotype.Service
 import java.time.LocalDate
 import java.time.Year
@@ -50,6 +55,9 @@ class RecommendServiceImpl(
     private val tagRecommendCacheWriter: TagRecommendCacheWriter,
     private val weekendReader: WeekendReader,
     private val calculator: SandwichCalculator,
+
+    private val aiVacationReader: AiVacationReader,
+    private val aiVacationWriter: AiVacationWriter,
 ) : RecommendService {
 
     override fun getWeatherRecommend(userId: String): WeatherResponse {
@@ -247,28 +255,38 @@ class RecommendServiceImpl(
         return SandwichApiResponse(responses = responses)
     }
 
-    override fun generateVacation(userId: String, request: GenerateVacationRequest): AiGenerateVacationApiResponse {
-        val user = userReader.findUserById(userId) ?: throw CoreException(ErrorType.USER_NOT_FOUND_INTERNAL)
-        val birthDate = user.birthDate ?: throw CoreException(ErrorType.USER_BIRTH_DAY_NOT_FOUND)
+    override fun getVacation(userId: String): AiVacationApiResponse {
+        val cache = aiVacationReader.findByUserIdAndSearchDate(userId, LocalDate.now())
+        if (cache != null) {
+            return AiVacationApiResponse(
+                title = cache.title,
+                content = cache.content,
+                startDate = cache.startDate,
+                endDate = cache.endDate,
+                iconStyle = cache.iconStyle,
+            )
+        }
 
+        throw CoreException(ErrorType.VACATION_NOT_FOUND)
+    }
+
+    @Async
+    override fun generateVacation(userId: String, request: GenerateVacationRequest) {
         val tags = tagReader.getUserTags(userId)
         val selected = (tags.selectedBasicTags + tags.selectedCustomTags).map { it.content }
         val unselected = (tags.unselectedBasicTags + tags.unselectedCustomTags).map { it.content }
-
-        val today = LocalDate.now()
-        val endDate = today.plusDays(15)
-        val holidaysY = holidayReader.findAllByYear(today.year)
-        val upcomingH = holidaysY
-            .filter { it.date in today..endDate }
-            .map { "${it.date}(${it.dayOfWeekKor.display})" }
 
         val travelStyleLabels = TravelStyle.entries.map { it.korean }
         val activityTypeLabels = ActivityType.entries.map { it.korean }
         val restPreferenceLabels = RestPreference.entries.map { it.korean }
         val leisurePrefLabels = LeisurePreference.entries.map { it.korean }
 
+        val periods = getSandwichLocalDates(LocalDate.now())
+
+        val startDate = startDate(periods, request.days.toLong())
+        val endDate = endDate(periods, request.days.toLong())
+
         val aiRequest = AiGenerateVacationRequest(
-            days = request.days,
             travelStyleOptionLabels = travelStyleLabels,
             chosenTravelStyleLabel = request.travelStyle.korean,
 
@@ -281,19 +299,43 @@ class RecommendServiceImpl(
             leisurePreferenceOptionLabels = leisurePrefLabels,
             chosenLeisurePreferenceLabel = request.leisurePreference.korean,
 
-            birthDate = birthDate,
             selectedTags = selected,
             unselectedTags = unselected,
-            upcomingHolidays = upcomingH,
+            startDate = startDate,
+            endDate = endDate,
         )
+
         val iconStyle = solveIcon(request)
         val aiResponse =
             recommendClient.generateVacation(aiRequest) ?: throw CoreException(ErrorType.MCP_SERVER_INTERNAL_ERROR)
-        return AiGenerateVacationApiResponse(
-            title = aiResponse.title,
-            content = aiResponse.content,
-            iconStyle = iconStyle,
+
+        aiVacationWriter.register(
+            AiVacation.register(
+                title = aiResponse.title,
+                content = aiResponse.content,
+                iconStyle = iconStyle,
+                searchDate = LocalDate.now(),
+                startDate = aiResponse.startDate,
+                endDate = endDate,
+                userId = userId,
+            ),
         )
+    }
+
+    fun startDate(periods: List<Sandwich>, days: Long): LocalDate {
+        return if (periods.isEmpty()) {
+            LocalDate.now().plusMonths(1).plusDays(days)
+        } else {
+            periods[0].startDate
+        }
+    }
+
+    fun endDate(periods: List<Sandwich>, days: Long): LocalDate {
+        return if (periods.isEmpty()) {
+            LocalDate.now().plusDays(days)
+        } else {
+            periods[0].endDate
+        }
     }
 
     private fun solveIcon(request: GenerateVacationRequest): IconStyle {
@@ -312,5 +354,22 @@ class RecommendServiceImpl(
         }
 
         return IconStyle.STAR
+    }
+
+    fun getSandwichLocalDates(today: LocalDate): List<Sandwich> {
+        val holidays = holidayReader.findRemainingHolidays(today).map { it.date }.toSet()
+        val weekends = weekendReader.getAllThisYearWeekends()
+            .map { it.date }
+            .filter { it.isAfter(today) }
+            .toSet()
+
+        return calculator.recommendSandwich(
+            holidays = holidays,
+            weekends = weekends,
+            maxGap = 2,
+            minSpan = 3,
+            from = today,
+            until = Year.now().atMonth(12).atEndOfMonth(),
+        )
     }
 }

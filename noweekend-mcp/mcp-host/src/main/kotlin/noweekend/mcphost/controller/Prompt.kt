@@ -117,35 +117,6 @@ Return ONLY this JSON array. Never add any other text, explanation, or formattin
             
             Here is the user's tag information in JSON:
     """.trimIndent()
-
-    /**
-     * 1단계: 생일·공휴일·주말·연차를 조합해 최대 연속 휴가 날짜(dates)를 계산
-     */
-    fun sandwichDatePrompt(req: AiGenerateVacationRequest): String {
-        return """
-You are a Vacation Date Optimizer.
-
-INPUT (exactly one JSON):
-{"days": number, "birthDate": "YYYY-MM-DD" or null, "upcomingHolidays": ["YYYY-MM-DD", ...]}
-
-INSTRUCTIONS:
-- Treat weekends (Sat, Sun) and upcomingHolidays as automatic non-working days.
-- Use available vacation days ("days") on weekdays only to form the **longest continuous break** within targetMonth.
-- If birthDate is a weekday in targetMonth, you may include it as a vacation day.
-- **Output EXACTLY one valid JSON object** with key "dates", containing a sorted list of "YYYY-MM-DD".
-- **Do NOT include any extra text, explanation, or debugging information.**
-- If no valid continuous block exists, output: {"dates":[]}
-
-RULES:
-- Only count weekdays toward "days".
-- Continuous block may span weekends/holidays, but vacation days apply only to weekdays.
-- Do not reference events outside targetMonth.
-
-OUTPUT:
-{"dates":["YYYY-MM-DD", ...]}
-        """.trimIndent()
-    }
-
     fun detailedPlanPrompt(
         req: AiGenerateVacationRequest,
         dates: List<String>,
@@ -153,71 +124,71 @@ OUTPUT:
         totalDays: Int,
         prevUsed: List<String>,
     ): String {
+        // 헤더 생성 (Day 번호 & 날짜)
         val headers = dates.mapIndexed { i, d ->
-            val num = offset + i + 1
-            val label = LocalDate.parse(d)
+            val dayNum = offset + i + 1
+            val label  = LocalDate.parse(d)
                 .format(DateTimeFormatter.ofPattern("MM/dd E", Locale.KOREAN))
-            "• Day $num ($label)"
+            "• Day $dayNum ($label)"
         }.joinToString("\n")
 
+        // 최근 사용 아이템 안내
         val usedClause = if (prevUsed.isNotEmpty()) {
-            "Recently used items: ${prevUsed.joinToString(", ")}.\nDo NOT reuse in this block.\n\n"
+            "최근 사용된 활동/식당/숙소: ${prevUsed.joinToString(", ")}\n다음 블록에서는 절대 재사용 금지\n\n"
         } else {
             ""
         }
 
-        // profile JSON with Korean tags
+        // profile JSON (태그 부분은 변경 금지)
         val profileJson = objectMapper.writeValueAsString(
             mapOf(
-                "travelStyle" to req.chosenTravelStyleLabel,
-                "activityType" to req.chosenActivityTypeLabel,
-                "restPreference" to req.chosenRestPreferenceLabel,
+                "travelStyle"      to req.chosenTravelStyleLabel,
+                "activityType"     to req.chosenActivityTypeLabel,
+                "restPreference"   to req.chosenRestPreferenceLabel,
                 "leisurePreference" to req.chosenLeisurePreferenceLabel,
-                "preferredTags" to req.selectedTags,
-                "excludedTags" to req.unselectedTags,
-            ),
+                "preferredTags"    to req.selectedTags,
+                "excludedTags"     to req.unselectedTags,
+            )
         )
 
         return """
-You are a Vacation Planning Expert. Use Perplexity to fetch real-time facts.
+You are a Vacation Planning Expert.
+– 여행계획을 세울 때 반드시 Perplexity를 사용하여 실시간 사실을 검색하세요.
+– 절대 날씨 정보(예: 비, 눈, 기온 등)를 사용하거나 질문하지 마세요.
 
 $usedClause
+HEADERS:
+$headers
+
 INPUT (JSON):
 {"dates":[${dates.joinToString(","){ "\"$it\"" }}],"profile":$profileJson,"totalDays":$totalDays}
 
 TASK:
-Create a personalized itinerary over ${dates.size} days:
-- If activityType == "집콕", propose home-based plans (e.g. cooking, movies, reading).
-- Else (travel): plan actual trips with real departure→arrival chains.
-  * The origin of Day N must match the destination of Day N-1.
-  * The final day must include return to home.
+- activityType이 "집콕"인 경우: 집 기반 활동 제안(요리, 영화, 독서 등).
+- 그 외(여행)인 경우: 출발→도착 체인을 갖춘 실제 이동 일정 계획.
+  * Day N의 출발지는 Day N-1의 도착지와 일치해야 함.
+  * 마지막 날은 반드시 귀가로 마무리.
 
 STYLE:
-- travelStyle == "계획형": use precise times, transport modes, and locations.
-- travelStyle == "즉흥 자유형": allow flexible timing, optional excursions.
-- Honor restPreference and leisurePreference from profile.
-- Include preferredTags, avoid excludedTags.
-- Prevent reuse of activities/restaurants/accommodations used within the last 2 days.
-- Mention "Day X of Y" to orient days within totalDays.
+- travelStyle == "계획형": 구체적 시간·교통수단·장소 포함.
+- travelStyle == "즉흥 자유형": 유동적 일정·옵션 제안.
+- restPreference, leisurePreference 반영.
+- preferredTags 우선, excludedTags 절대 제외.
+- 2일 이내 사용한 활동/식당/숙소 재사용 금지.
+- "Day X of Y" 형식으로 일차 표기.
 
 FORMAT:
-For each day, produce exactly 6 Korean bullet points:
-1. Morning: 출발지→도착지, 교통수단, 출발시간  
-2. Morning activity: 장소 및 내용, 이동 방식·소요시간  
-3. Lunch: 식당명(추천메뉴), 지역  
-4. Afternoon activity: 장소 및 내용, 이동 방식·소요시간  
-5. Dinner: 식당명(추천메뉴), 지역  
-6. Night: 숙소명 (or '집'), 교통수단, 체크인 or evening time
+각 Day별로 **정확히 6개**의 한국어 불릿 포인트 작성:
+1. 아침: 출발지→도착지, 교통수단, 출발시간  
+2. 오전 활동: 장소, 내용, 이동 방식·소요시간  
+3. 점심: 식당명(추천메뉴), 지역  
+4. 오후 활동: 장소, 내용, 이동 방식·소요시간  
+5. 저녁: 식당명(추천메뉴), 지역  
+6. 밤: 숙소명(또는 '집'), 교통수단, 체크인 정보 또는 시간
 
-REQUIREMENTS:
-- Use Perplexity to verify opening hours or popularity info.
-- Do not include JSON, code fences, or extra commentary.
-- End output right after the last bullet.
-
-HEADERS:
-$headers
-
-Now generate the itinerary.
-        """.trimIndent()
+출력은 **불릿만**, 추가 질문·JSON·코드펜스·해설 없이 마지막 불릿 직후 종료하세요.
+""".trimIndent()
     }
+
+
 }

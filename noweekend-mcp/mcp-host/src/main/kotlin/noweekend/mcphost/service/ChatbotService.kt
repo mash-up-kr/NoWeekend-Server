@@ -1,26 +1,21 @@
 package noweekend.mcphost.service
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import noweekend.mcphost.controller.Prompt
 import noweekend.mcphost.controller.request.AiGenerateVacationRequest
-import noweekend.mcphost.controller.request.AiGenerateVacationResponse
-import noweekend.mcphost.controller.request.SandwichRequest
+import noweekend.mcphost.controller.request.AiVacationContent
+import noweekend.mcphost.controller.request.AiVacationResponse
+import noweekend.mcphost.controller.request.AiVacationTitle
 import noweekend.mcphost.controller.request.Tag
 import noweekend.mcphost.controller.request.TagRequest
 import noweekend.mcphost.controller.request.WeatherRequest
-import noweekend.mcphost.controller.response.BridgeVacationPeriod
 import noweekend.mcphost.controller.response.WeatherResponse
 import org.slf4j.LoggerFactory
 import org.springframework.ai.chat.client.ChatClient
-import org.springframework.ai.retry.NonTransientAiException
 import org.springframework.stereotype.Service
-import org.springframework.web.client.RestClientResponseException
 import java.time.LocalDate
 import java.time.ZoneId
-
-data class DateList(val dates: List<String>)
 
 @Service
 class ChatbotService(
@@ -140,7 +135,7 @@ Based on the above rules, return ONLY a valid JSON array of 3 Korean lifestyle a
                     require(tags.all { it.content !in allOldTags }) { "추천 결과에 기존 태그가 포함됨" }
                     return tags
                 }
-            } catch (e: Exception) {
+            } catch (_: Exception) {
                 if (attempt == 4) throw IllegalStateException("태그 추천을 받아올 수 없습니다.")
             }
         }
@@ -149,93 +144,46 @@ Based on the above rules, return ONLY a valid JSON array of 3 Korean lifestyle a
 
     private val chunkSize = 2
 
-    fun generateVacation(request: AiGenerateVacationRequest): AiGenerateVacationResponse {
-        // 1) 샌드위치 날짜 계산 (기존 로직)
-        val sandwichJson = objectMapper.writeValueAsString(
-            mapOf(
-                "days" to request.days,
-                "birthDate" to request.birthDate.toString(),
-                "upcomingHolidays" to request.upcomingHolidays,
-            ),
-        )
-        val sandwichRaw = chatClient.prompt()
-            .system(prompt.sandwichDatePrompt(request))
-            .user(sandwichJson)
-            .call()
-            .content() ?: error("샌드위치 휴가 날짜 생성 실패")
-        val cleanedSandwichJson = extractJsonObject(sandwichRaw)
-        val allDates = objectMapper.readValue<DateList>(cleanedSandwichJson).dates
+    fun generateVacationContent(request: AiGenerateVacationRequest): AiVacationContent {
+        val allDates: List<String> = generateSequence(request.startDate) { prev ->
+            if (prev < request.endDate) prev.plusDays(1) else null
+        }
+            .map(LocalDate::toString)
+            .toList()
 
-        val chunkCache = mutableMapOf<Int, String>()
         val usedItems = mutableListOf<String>()
 
-        val itineraryChunks = allDates.chunked(chunkSize).mapIndexed { idx, datesChunk ->
-            chunkCache[idx]?.let { return@mapIndexed it }
-
-            val detailPrompt = prompt.detailedPlanPrompt(request, datesChunk, idx * chunkSize, allDates.size, usedItems)
-            val userJson = objectMapper.writeValueAsString(
-                mapOf(
-                    "dates" to datesChunk,
-                    "profile" to minimalProfileMap(request),
-                    "totalDays" to allDates.size,
-                ),
-            )
-
-            while (true) {
-                try {
-                    val resp = chatClient.prompt()
-                        .system(detailPrompt)
-                        .user(userJson)
-                        .call()
-                    val content = resp.content() ?: error("Empty chunk")
-                    usedItems += extractUsedItems(content)
-                    chunkCache[idx] = content
-                    return@mapIndexed content
-                } catch (e: NonTransientAiException) {
-                    val cause = e.cause
-                    val status = (cause as? RestClientResponseException)?.statusCode?.value()
-                    val headers = (cause as? RestClientResponseException)?.responseHeaders
-
-                    if (status == 429) {
-                        val retryAfterSec = headers
-                            ?.getFirst("retry-after")
-                            ?.toLongOrNull()
-                            ?: 180L
-
-                        logger.warn("429 rate limit hit, waiting $retryAfterSec seconds before retry")
-                        Thread.sleep(retryAfterSec * 1000)
-                        continue
-                    }
-                    throw e
-                }
+        val itineraryChunks = allDates
+            .chunked(chunkSize)
+            .mapIndexed { idx, datesChunk ->
+                val detailPrompt = prompt.detailedPlanPrompt(
+                    request,
+                    datesChunk,
+                    idx * chunkSize,
+                    allDates.size,
+                    usedItems,
+                )
+                val userJson = objectMapper.writeValueAsString(
+                    mapOf(
+                        "dates" to datesChunk,
+                        "profile" to minimalProfileMap(request),
+                        "totalDays" to allDates.size,
+                    ),
+                )
+                val resp = chatClient.prompt()
+                    .system(detailPrompt)
+                    .user(userJson)
+                    .call()
+                val content = resp.content() ?: error("Empty chunk at index $idx")
+                usedItems += extractUsedItems(content)
+                content
             }
-        }
 
         val planRaw = itineraryChunks.joinToString("\n\n")
-
-        val summary = chatClient.prompt()
-            .system(
-                """
-            You are an expert at creating concise and catchy Korean titles for vacation plans.
-            Summarize core concept in 15 characters max, Korean only.
-                """.trimIndent(),
-            )
-            .user(
-                """
-            아래는 사용자 일정입니다:
-            $planRaw
-
-            핵심 키워드 중심으로 15자 이내 제목 하나 만들어 주세요.
-                """.trimIndent(),
-            )
-            .call()
-            .content() ?: error("제목 요약 실패")
-
-        return AiGenerateVacationResponse(title = summary, content = planRaw)
+        return AiVacationContent(content = planRaw)
     }
 
     private fun minimalProfileMap(req: AiGenerateVacationRequest) = mapOf(
-        "days" to req.days,
         "travelStyle" to req.chosenTravelStyleLabel,
         "activityType" to req.chosenActivityTypeLabel,
         "restPreference" to req.chosenRestPreferenceLabel,
@@ -259,84 +207,23 @@ Based on the above rules, return ONLY a valid JSON array of 3 Korean lifestyle a
         println("------------------------------------------------\n")
     }
 
-    private fun extractJsonObject(raw: String): String {
-        val start = raw.indexOfFirst { it == '{' }
-        val end = raw.lastIndexOf('}')
-        if (start == -1 || end == -1 || end <= start) {
-            error("응답에서 유효한 JSON을 찾을 수 없습니다: $raw")
-        }
-        return raw.substring(start, end + 1)
-    }
-
-    fun getSandwich(request: SandwichRequest): List<BridgeVacationPeriod> {
-        request.holidays.forEach { holiday -> println(holiday) }
-        request.weekends.forEach { weekend -> println(weekend) }
-
+    fun summarizeTitle(content: AiVacationContent): AiVacationTitle {
         val systemPrompt = """
-Given the input data below, find all possible "bridge vacation" periods for the rest of the year.
+        당신은 여행 일정을 한눈에 파악할 수 있는 전문가입니다.
+        아래 여행 일정을 최대 15글자로 요약해 주세요.
+        장소/테마/특징을 간결하게 써주세요. 불필요한 설명, 감탄사, 접두사 빼고 핵심만!
+    """.trimIndent()
+        val userPrompt = content.content
 
-INPUT:
-- Public holidays: [${request.holidays.joinToString(", ")}]
-- Weekends: [${request.weekends.joinToString(", ")}]
-
-RULES:
-1. A "bridge vacation" is a period that connects public holidays and weekends, allowing for up to 1 or 2 weekdays ("gaps") between them, if those weekdays can be replaced with annual leave.
-2. If more than 2 consecutive weekdays (gaps) occur, **end the current vacation block before these weekdays begin**, and start a new block from the next holiday or weekend.
-3. If after using up the allowed gaps (1 or 2 consecutive weekdays), another holiday or weekend immediately follows, **continue the same block**.
-4. If there are 3 or more consecutive weekdays (not holidays or weekends), **break the block** and start a new vacation block after the next holiday/weekend.
-5. For each bridge vacation block, output ONLY:
-   - "startDate": yyyy-MM-dd (first date of the period)
-   - "endDate": yyyy-MM-dd (last date of the period)
-6. Only output blocks that are at least 3 days long (inclusive).
-7. DO NOT return overlapping or duplicate blocks.
-8. Output MUST be a valid JSON array of objects, each with "startDate" and "endDate". 
-   - No totalDays, no extra fields.
-   - NO markdown, code block, explanation, or any other text—**JSON array ONLY**.
-9. If the output includes anything other than the JSON array, it is INVALID.
-
-EXAMPLE (must follow this format exactly):
-
-[
-  { "startDate": "2025-10-02", "endDate": "2025-10-09" },
-  { "startDate": "2025-12-24", "endDate": "2025-12-28" }
-]
-
-***Return ONLY a JSON array as above. No explanation, markdown, or extra text.***
-        """.trimIndent()
-
-        val objectMapper = jacksonObjectMapper().findAndRegisterModules()
-
-        var lastException: Throwable? = null
-        repeat(30) { attempt ->
-            try {
-                val rawResponse = chatClient.prompt()
-                    .system(systemPrompt)
-                    .user("It's Order")
-                    .call()
-                    .content() ?: throw IllegalStateException("No response from MCP host")
-
-                println("rawResponse = $rawResponse")
-
-                var cleaned = rawResponse.trim()
-                if (cleaned.startsWith("```json")) cleaned = cleaned.removePrefix("```json").trim()
-                if (cleaned.startsWith("```")) cleaned = cleaned.removePrefix("```").trim()
-                if (cleaned.endsWith("```")) cleaned = cleaned.removeSuffix("```").trim()
-
-                val arrStart = cleaned.indexOfFirst { it == '[' }
-                val arrEnd = cleaned.lastIndexOf(']')
-                if (arrStart != -1 && arrEnd != -1 && arrEnd > arrStart) {
-                    cleaned = cleaned.substring(arrStart, arrEnd + 1)
-                }
-
-                println("cleaned = $cleaned")
-
-                // 바로 파싱 (실패시 예외 발생)
-                return objectMapper.readValue(cleaned)
-            } catch (e: Throwable) {
-                lastException = e
-                println("getSandwich retry ${attempt + 1}/30: ${e.message}")
-            }
-        }
-        throw IllegalStateException("Failed to get valid bridge vacation periods after 30 attempts", lastException)
+        val resp = chatClient.prompt()
+            .system(systemPrompt)
+            .user(userPrompt)
+            .call()
+        val summary = resp.content() ?: error("요약 실패")
+        // 혹시 15글자 넘는 경우 substring(0, 15) 등 처리
+        val response = if (summary.length > 15) summary.take(15) else summary
+        return AiVacationTitle(response)
     }
+
+
 }

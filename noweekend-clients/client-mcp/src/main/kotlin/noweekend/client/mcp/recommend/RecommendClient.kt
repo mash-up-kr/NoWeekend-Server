@@ -2,7 +2,7 @@ package noweekend.client.mcp.recommend
 
 import feign.FeignException
 import noweekend.client.mcp.recommend.model.AiGenerateVacationRequest
-import noweekend.client.mcp.recommend.model.AiGenerateVacationResponse
+import noweekend.client.mcp.recommend.model.AiVacationResponse
 import noweekend.client.mcp.recommend.model.TagRequest
 import noweekend.client.mcp.recommend.model.WeatherRequest
 import noweekend.client.mcp.recommend.model.toRequestType
@@ -79,7 +79,7 @@ class RecommendClient(
         )
     }
 
-    fun generateVacation(request: AiGenerateVacationRequest): AiGenerateVacationResponse? {
+    fun generateVacation(request: AiGenerateVacationRequest): AiVacationResponse? {
         return try {
             api.generateVacation(request)
         } catch (e: FeignException) {
