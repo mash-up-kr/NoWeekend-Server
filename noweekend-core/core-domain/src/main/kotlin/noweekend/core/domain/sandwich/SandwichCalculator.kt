@@ -1,5 +1,6 @@
 package noweekend.core.domain.sandwich
 
+import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import java.time.LocalDate
 import java.time.Year
@@ -8,6 +9,8 @@ import java.util.concurrent.ThreadLocalRandom
 
 @Service
 class SandwichCalculator {
+
+    private val logger = LoggerFactory.getLogger(this::class.java)
 
     fun recommendSandwich(
         holidays: Set<LocalDate>,
@@ -69,37 +72,37 @@ class SandwichCalculator {
                 group[ThreadLocalRandom.current().nextInt(group.size)]
             }
 
-        println("=========================== HOLIDAY ===========================")
+        logger.info("=========================== HOLIDAY ===========================")
         holidays.forEach { holiday ->
             print(holiday)
             print(" ")
         }
-        println()
-        println("=========================== HOLIDAY ===========================")
+        logger.info("")
+        logger.info("=========================== HOLIDAY ===========================")
 
-        println("=========================== WEEKEND ===========================")
+        logger.info("=========================== WEEKEND ===========================")
         weekends.forEach { weekend ->
             print(weekend)
             print(" ")
         }
-        println()
-        println("=========================== WEEKEND ===========================")
-        println()
-        println("=========================== rawPeriods ===========================")
+        logger.info("")
+        logger.info("=========================== WEEKEND ===========================")
+        logger.info("")
+        logger.info("=========================== rawPeriods ===========================")
         rawPeriods.forEach {
             print(it.startDate)
             print("     ~    ")
-            println(it.endDate)
+            logger.info(it.endDate.toString())
         }
-        println("=========================== rawPeriods ===========================")
+        logger.info("=========================== rawPeriods ===========================")
 
-        println("=========================== response ===========================")
+        logger.info("=========================== response ===========================")
         response.forEach {
             print(it.startDate)
             print("     ~    ")
-            println(it.endDate)
+            logger.info(it.endDate.toString())
         }
-        println("=========================== response ===========================")
+        logger.info("=========================== response ===========================")
 
         return response
     }
