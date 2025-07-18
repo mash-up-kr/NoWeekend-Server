@@ -474,6 +474,5 @@ interface RecommendControllerDocs {
     )
     fun getVacation(
         @Parameter(hidden = true) @CurrentUserId userId: String,
-        @RequestBody request: GenerateVacationRequest,
     ): ApiResponse<AiVacationApiResponse>
 }

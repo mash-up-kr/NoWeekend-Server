@@ -35,7 +35,7 @@ class ChatbotController(
     }
 
     @PostMapping("/generate-vacation")
-    fun getTagOnlyNew(@RequestBody request: AiGenerateVacationRequest): AiVacationResponse {
+    fun generateVacation(@RequestBody request: AiGenerateVacationRequest): AiVacationResponse {
         val content = chatbotService.generateVacationContent(request)
         val title = chatbotService.summarizeTitle(content)
 

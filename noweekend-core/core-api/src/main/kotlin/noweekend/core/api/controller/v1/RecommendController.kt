@@ -64,7 +64,6 @@ class RecommendController(
     @GetMapping("/vacation")
     override fun getVacation(
         @CurrentUserId userId: String,
-        @RequestBody request: GenerateVacationRequest,
     ): ApiResponse<AiVacationApiResponse> {
         return ApiResponse.success(
             recommendService.getVacation(userId),

@@ -313,7 +313,7 @@ class RecommendServiceImpl(
                 content = aiResponse.content,
                 iconStyle = iconStyle,
                 searchDate = LocalDate.now(),
-                startDate = aiResponse.startDate,
+                startDate = startDate,
                 endDate = endDate,
                 userId = userId,
             ),
