@@ -14,7 +14,7 @@ spring:
       on-http-codes: 429
 
     anthropic:
-      api-key: ENC(DSDMqqudORinUFWutrGj/hFq31Rcp+1B5SqZmhQUZKe5g5G01KIcngKwmep3K0aDGrqMIGsxlAxj9Bx9fe2MwHnpQ+pZYCT/vYAp/6hKIiuSQULyrMWgkTxd08+RWnzP9DNZb7BpX1NYuZ3dsIqPo0qVCVsyLLjc)
+      api-key: ${ANTHROPIC_KEY}
 #      api-key: ENC(q6WkPzavRozxQbgOktG6eCgCIMtfAlLQuakXP4sBXPDS+Ij8dvo9p0GJyE0+FJgEOkhys5DM50qsMOedjdZS5ewcc1ACvpRw6TcHWi7Mu158YCQUC5M4A5RGqC5ACDNnbrjrA1dmmJtEi8dNHCPlYLXRKK2m/t5Z)
       chat:
         options:
