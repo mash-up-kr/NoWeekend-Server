@@ -45,6 +45,7 @@ services:
     environment:
       - TZ=Asia/Seoul
       - JASYPT_ENCRYPTOR_PASSWORD=${JASYPT_ENCRYPTOR_PASSWORD}
+      - PERPLEXITY_API_KEY=${PERPLEXITY_API_KEY}
       - SERVER_PORT=8082
       - JAVA_TOOL_OPTIONS=-Duser.timezone=Asia/Seoul
     volumes:

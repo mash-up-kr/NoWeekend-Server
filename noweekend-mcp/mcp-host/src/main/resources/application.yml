@@ -29,9 +29,9 @@ spring:
           connections:
             author-tool-server:
               # prod
-              url: http://mcp-server:8081
+#              url: http://mcp-server:8081
               # local
-#              url: http://localhost:8081
+              url: http://localhost:8081
               enabled: true
         stdio:
           connections:
@@ -48,7 +48,7 @@ spring:
                 - "-y"
                 - "server-perplexity-ask"
               env:
-                PERPLEXITY_API_KEY: ENC(az7SSvHLhX8edbEueje4Hds6SaMn4YOvlgaAFVDuRBkYlROjLriocCmgZbQUx7jVzNc4fQJwn0CbyVY2xOal3g==
+                PERPLEXITY_API_KEY: ${PERPLEXITY_API_KEY}
         type: SYNC
         request-timeout: 60s
 
